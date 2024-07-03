@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/background_color"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/padding16">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
     <Button
         android:id="@+id/search_button"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/weight"
         android:layout_marginTop="24dp"
         android:layout_weight="1"
         android:backgroundTint="@color/white"
@@ -34,7 +34,7 @@
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_22"
-        app:cornerRadius="@dimen/button_radius"
+        app:cornerRadius="@dimen/padding16"
         app:icon="@drawable/search_button"
         app:iconGravity="textStart"
         app:iconTint="@color/black" />
@@ -42,8 +42,8 @@
     <Button
         android:id="@+id/media_button"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/margin_top_16"
+        android:layout_height="@dimen/weight"
+        android:layout_marginTop="@dimen/padding16"
         android:layout_weight="1"
         android:backgroundTint="@color/white"
         android:foreground="?attr/selectableItemBackground"
@@ -51,7 +51,7 @@
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_22"
-        app:cornerRadius="@dimen/button_radius"
+        app:cornerRadius="@dimen/padding16"
         app:icon="@drawable/mediateka"
         app:iconGravity="textStart"
         app:iconTint="@color/black" />
@@ -59,8 +59,8 @@
     <Button
         android:id="@+id/settings_button"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/margin_top_16"
+        android:layout_height="@dimen/weight"
+        android:layout_marginTop="@dimen/padding16"
         android:layout_weight="1"
         android:backgroundTint="@color/white"
         android:foreground="?attr/selectableItemBackground"
@@ -68,7 +68,7 @@
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_22"
-        app:cornerRadius="@dimen/button_radius"
+        app:cornerRadius="@dimen/padding16"
         app:icon="@drawable/settings"
         app:iconGravity="textStart"
         app:iconTint="@color/black" />

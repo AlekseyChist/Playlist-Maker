@@ -18,17 +18,11 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         val backButton = findViewById<ImageView>(R.id.button_back)
-//        val settingsPush = findViewById<LinearLayout>(R.id.share_app) Для себя проверил будет ли работать нажатие
 
         backButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-
-//        settingsPush.setOnClickListener {
-//            val intent = Intent(this, MainActivity::class.java)
-//            startActivity(intent)
-//        } Для себя проверил будет ли работать нажатие
     }
 }
 

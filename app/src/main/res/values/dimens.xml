@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="button_radius">16dp</dimen>
     <dimen name="text_size_22">22sp</dimen>
-    <dimen name="margin_top_16">16dp</dimen>
+    <dimen name="padding16">16dp</dimen>
     <dimen name="text_size_settings">16sp</dimen>
-    <dimen name="padding_settings">16dp</dimen>
+    <dimen name="weight">0dp</dimen>
+    <dimen name="paddind4">4dp</dimen>
+    <dimen name="padding12dp">12dp</dimen>
 </resources>
