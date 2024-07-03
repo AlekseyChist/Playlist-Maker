@@ -19,7 +19,7 @@
             android:layout_gravity="start"
             android:text="@string/playlist_maker"
             android:textColor="@color/text_color_white"
-            android:textSize="@dimen/text_size_22" />
+            android:textSize="@dimen/text_size_22"/>
     </FrameLayout>
 
     <Button
@@ -37,7 +37,7 @@
         app:cornerRadius="@dimen/padding16"
         app:icon="@drawable/search_button"
         app:iconGravity="textStart"
-        app:iconTint="@color/black" />
+        app:iconTint="@color/black"/>
 
     <Button
         android:id="@+id/media_button"
@@ -54,7 +54,7 @@
         app:cornerRadius="@dimen/padding16"
         app:icon="@drawable/mediateka"
         app:iconGravity="textStart"
-        app:iconTint="@color/black" />
+        app:iconTint="@color/black"/>
 
     <Button
         android:id="@+id/settings_button"
@@ -71,7 +71,7 @@
         app:cornerRadius="@dimen/padding16"
         app:icon="@drawable/settings"
         app:iconGravity="textStart"
-        app:iconTint="@color/black" />
+        app:iconTint="@color/black"/>
 
 
 </LinearLayout>
