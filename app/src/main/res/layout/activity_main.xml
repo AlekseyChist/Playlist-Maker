@@ -26,7 +26,7 @@
         android:id="@+id/search_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/weight"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/padding24"
         android:layout_weight="1"
         android:backgroundTint="@color/white"
         android:foreground="?attr/selectableItemBackground"

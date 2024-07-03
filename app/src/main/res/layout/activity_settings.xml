@@ -37,6 +37,8 @@
         android:id="@+id/switcher"
         android:paddingStart="@dimen/padding16"
         android:paddingEnd="@dimen/padding16"
+        android:paddingTop="@dimen/padding24"
+        android:paddingBottom="8dp"
         android:text="@string/Dark_theme"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_settings"
@@ -54,7 +56,7 @@
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_settings"
         android:drawableEnd="@drawable/share_button"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"/>
 
 
     <TextView
@@ -68,7 +70,7 @@
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_settings"
         android:drawableEnd="@drawable/support_logo"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"/>
 
 
     <TextView
@@ -82,6 +84,6 @@
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_settings"
         android:drawableEnd="@drawable/user_agreement"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"/>
 
 </LinearLayout>
