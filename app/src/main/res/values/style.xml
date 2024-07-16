@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ButtonViewStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:elevation">0dp</item>
+        <item name="fontFamily">@font/ys_text_medium</item>
+        <item name="android:layout_height">@dimen/weight</item>
+        <item name="android:layout_marginTop">@dimen/padding24</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/text_size_22</item>
+        <item name="cornerRadius">@dimen/padding16</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconTint">@color/black</item>
+    </style>
+
+    <style name="TextViewSettings" >
+        <item name="android:textColor">@color/my_on_secondary</item>
+        <item name="fontFamily">@font/ys_text_light</item>
+        <item name="android:textSize">@dimen/text_size_settings</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">@dimen/padding16</item>
+        <item name="android:paddingEnd">@dimen/padding16</item>
+        <item name="android:paddingTop">@dimen/padding12dp</item>
+        <item name="android:paddingBottom">@dimen/padding12dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="iconTint">@color/my_on_secondary</item>
+    </style>
+
+</resources>

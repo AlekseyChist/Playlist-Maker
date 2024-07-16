@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/settings"
+    android:background="@color/my_on_primary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -14,8 +14,9 @@
         <ImageView
             android:layout_width="wrap_content"
             android:id="@+id/button_back"
+            android:iconTint="@color/my_on_secondary"
             android:layout_height="match_parent"
-            android:src="@drawable/back_button"
+            android:src="@drawable/back_button_vector"
             android:paddingEnd="@dimen/padding12dp"
             android:layout_gravity="start|center_vertical"/>
 
@@ -23,18 +24,20 @@
             android:layout_width="wrap_content"
             android:textSize="@dimen/text_size_22"
             android:layout_height="match_parent"
-            android:textColor="@color/black"
+            android:textColor="@color/my_on_secondary"
             android:text="@string/Settings"
+            android:fontFamily="@font/ys_text_regular"
             android:layout_gravity="center_vertical"/>
     </androidx.appcompat.widget.Toolbar>
 
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:layout_width="match_parent"
+        android:iconTint="@color/my_on_secondary"
         android:layout_height="wrap_content"
         android:id="@+id/switcher"
         android:text="@string/Dark_theme"
-        android:textColor="@color/black"
+        android:textColor="@color/my_on_secondary"
         android:textSize="@dimen/text_size_settings"
         android:paddingStart="@dimen/padding16"
         android:paddingEnd="@dimen/padding16"
@@ -42,44 +45,20 @@
         android:paddingBottom="16dp"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding16"
-        android:paddingTop="@dimen/padding12dp"
-        android:paddingBottom="@dimen/padding12dp"
-        android:paddingEnd="@dimen/padding16"
+        style="@style/TextViewSettings"
         android:text="@string/Share_the_app"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_settings"
-        android:drawableEnd="@drawable/share_button"
-        android:gravity="center_vertical"/>
+        android:drawableEnd="@drawable/share_button" />
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding16"
-        android:paddingEnd="@dimen/padding16"
-        android:paddingTop="@dimen/padding12dp"
-        android:paddingBottom="@dimen/padding12dp"
+        style="@style/TextViewSettings"
         android:text="@string/write_to_the_support"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_settings"
-        android:drawableEnd="@drawable/support_logo"
-        android:gravity="center_vertical"/>
+        android:drawableEnd="@drawable/support_logo" />
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/padding16"
-        android:paddingTop="@dimen/padding12dp"
-        android:paddingBottom="@dimen/padding12dp"
-        android:paddingEnd="@dimen/padding16"
+        style="@style/TextViewSettings"
         android:text="@string/User_agreement"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_settings"
-        android:drawableEnd="@drawable/user_agreement"
-        android:gravity="center_vertical"/>
+        android:drawableEnd="@drawable/user_agreement" />
 
 </LinearLayout>
