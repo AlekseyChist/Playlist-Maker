@@ -14,7 +14,6 @@
         <ImageView
             android:layout_width="wrap_content"
             android:id="@+id/button_back"
-            android:iconTint="@color/my_on_secondary"
             android:layout_height="match_parent"
             android:src="@drawable/back_button_vector"
             android:paddingEnd="@dimen/padding12dp"
@@ -35,29 +34,33 @@
         android:layout_width="match_parent"
         android:iconTint="@color/my_on_secondary"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/ys_text_light"
         android:id="@+id/switcher"
         android:text="@string/Dark_theme"
         android:textColor="@color/my_on_secondary"
         android:textSize="@dimen/text_size_settings"
         android:paddingStart="@dimen/padding16"
         android:paddingEnd="@dimen/padding16"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"/>
+        android:paddingTop="@dimen/_14dp"
+        android:paddingBottom="@dimen/_14dp"/>
 
     <TextView
         style="@style/TextViewSettings"
+        android:id="@+id/share_the_app"
         android:text="@string/Share_the_app"
         android:drawableEnd="@drawable/share_button" />
 
 
     <TextView
         style="@style/TextViewSettings"
+        android:id="@+id/write_to_the_support"
         android:text="@string/write_to_the_support"
         android:drawableEnd="@drawable/support_logo" />
 
 
     <TextView
         style="@style/TextViewSettings"
+        android:id="@+id/user_agreement"
         android:text="@string/User_agreement"
         android:drawableEnd="@drawable/user_agreement" />
 
