@@ -24,12 +24,18 @@ class SearchActivity : AppCompatActivity() {
 
         initViews()
         setupListeners()
+
+        // Явно скрываем кнопку очистки при инициализации
+        clearButton.visibility = View.GONE
     }
 
     private fun initViews() {
         searchEditText = findViewById(R.id.search_edit_text)
         clearButton = findViewById(R.id.clear_button)
         backButton = findViewById(R.id.button_back)
+
+        // Дополнительно убеждаемся, что кнопка скрыта
+        clearButton.visibility = View.GONE
     }
 
     private fun setupListeners() {
@@ -46,6 +52,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             searchEditText.setText("")
+            clearButton.visibility = View.GONE
             hideKeyboard()
         }
 
@@ -68,6 +75,7 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         searchText = savedInstanceState.getString(SEARCH_TEXT_KEY, "")
         searchEditText.setText(searchText)
+        clearButton.visibility = if (searchText.isEmpty()) View.GONE else View.VISIBLE
     }
 
     companion object {

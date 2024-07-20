@@ -62,9 +62,9 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="8dp"
             android:padding="8dp"
-            android:src="@drawable/back_button"
-             />
+            android:src="@drawable/back_button" />
 
     </FrameLayout>
+
 
 </LinearLayout>
