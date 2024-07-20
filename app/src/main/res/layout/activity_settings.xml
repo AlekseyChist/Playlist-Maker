@@ -8,7 +8,8 @@
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding4"
+        android:paddingTop="@dimen/padding_10dp"
+        android:paddingBottom="@dimen/padding_42dp"
         android:paddingStart="@dimen/padding4">
 
         <ImageView

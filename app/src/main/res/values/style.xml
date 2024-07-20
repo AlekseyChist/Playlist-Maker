@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ButtonViewStyle" parent="Widget.MaterialComponents.Button">
+    <style name="ButtonViewStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:elevation">0dp</item>
         <item name="fontFamily">@font/ys_text_medium</item>
