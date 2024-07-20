@@ -9,7 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+
 
 class SearchActivity : AppCompatActivity() {
 
@@ -25,7 +25,6 @@ class SearchActivity : AppCompatActivity() {
         initViews()
         setupListeners()
 
-        // Явно скрываем кнопку очистки при инициализации
         clearButton.visibility = View.GONE
     }
 
