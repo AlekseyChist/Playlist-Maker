@@ -1,10 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding4"
+        android:paddingStart="@dimen/padding4">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:id="@+id/button_back"
+            android:layout_height="match_parent"
+            android:src="@drawable/back_button_vector"
+            android:paddingEnd="@dimen/padding12dp"
+            android:layout_gravity="start|center_vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/text_size_22"
+            android:paddingLeft="@dimen/_14dp"
+            android:layout_height="match_parent"
+            android:textColor="@color/my_on_secondary"
+            android:text="@string/search"
+            android:fontFamily="@font/ys_text_regular"
+            android:layout_gravity="center_vertical"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding16">
+
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_36dp"
+            android:textCursorDrawable="@drawable/blue_cursor"
+            android:background="@drawable/rounded_edit_text_background"
+            android:hint="@string/search"
+            android:textColorHint="@color/hintcolor"
+            android:textColor="@color/settings_text_color"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="@dimen/padding_36dp"
+            android:paddingEnd="@dimen/padding_36dp"
+            android:textSize="@dimen/text14sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/padding_8dp"
+            android:src="@drawable/search_button"
+            app:tint="@color/iconcolor" />
+
+        <ImageView
+            android:id="@+id/clear_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/padding_8dp"
+            app:tint="@color/iconcolor"
+            android:padding="@dimen/padding_8dp"
+            android:src="@drawable/cancel_button" />
+
+    </FrameLayout>
+
+
+</LinearLayout>

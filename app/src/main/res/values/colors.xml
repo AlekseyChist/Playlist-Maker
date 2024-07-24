@@ -1,8 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="text_color">#ffffff</color>
-    <color name="background_color">#3772E7</color>
-    <color name="text_color_white">#ffffff</color>
+    <!-- Light theme colors -->
+    <color name="my_primary">#3772E7</color>
+    <color name="my_primary_variant">#005BBB</color>
+    <color name="my_secondary">#FF5722</color>
+    <color name="my_on_primary">#FFFFFF</color>
+    <color name="my_on_secondary">#000000</color>
+    <color name="my_for_cancel_button">#AEAFB4</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="hintcolor">#818C99</color>
+    <color name="blue">#3772E7</color>
+    <color name="settings_text_color">#1A1B22</color>
+    <color name="iconcolor">#AEAFB4</color>
+    <color name="search_edited_text">#E6E8EB</color>
 </resources>
