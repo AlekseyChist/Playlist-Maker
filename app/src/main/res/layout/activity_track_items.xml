@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/padding_8dp"
+    android:paddingHorizontal="@dimen/padding16">
+
+    <ImageView
+        android:id="@+id/artworkImageView"
+        android:layout_width="@dimen/padding_52dp"
+        android:layout_height="@dimen/padding_52dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/trackNameTextView"
+        android:layout_width="@dimen/weight"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_20dp"
+        android:layout_marginEnd="@dimen/padding_8dp"
+        android:textSize="@dimen/text_size_settings"
+        android:textColor="@color/black"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintTop_toTopOf="@id/artworkImageView"
+        app:layout_constraintStart_toEndOf="@id/artworkImageView"
+        app:layout_constraintEnd_toStartOf="@id/trackTimeTextView"/>
+
+    <TextView
+        android:id="@+id/artistNameTextView"
+        android:layout_width="@dimen/weight"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="14sp"
+        android:textColor="#808080"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@id/trackNameTextView"
+        app:layout_constraintStart_toStartOf="@id/trackNameTextView"
+        app:layout_constraintEnd_toStartOf="@id/trackTimeTextView"/>
+
+    <TextView
+        android:id="@+id/trackTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textSize="14sp"
+        android:textColor="#808080"
+        app:layout_constraintEnd_toStartOf="@id/arrowImageView"
+        app:layout_constraintBottom_toBottomOf="@id/artistNameTextView"/>
+
+    <ImageView
+        android:id="@+id/arrowImageView"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/user_agreement"
+        android:tint="#CCCCCC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
