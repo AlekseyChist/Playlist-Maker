@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 }
 
+
+
 android {
     namespace = "com.example.playlistmaker"
     compileSdk = 34
@@ -34,6 +36,7 @@ android {
         jvmTarget = "1.8"
     }
 }
+
 
 dependencies {
     implementation (libs.glide)
