@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textSize="14sp"
-        android:textColor="#808080"
+        android:textColor="@color/_808080"
         android:maxLines="1"
         android:ellipsize="end"
         app:layout_constraintTop_toBottomOf="@id/trackNameTextView"
@@ -46,9 +46,9 @@
         android:id="@+id/trackTimeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:textSize="14sp"
-        android:textColor="#808080"
+        android:layout_marginEnd="@dimen/padding_8dp"
+        android:textSize="@dimen/text_14sp"
+        android:textColor="@color/_808080"
         app:layout_constraintEnd_toStartOf="@id/arrowImageView"
         app:layout_constraintBottom_toBottomOf="@id/artistNameTextView"/>
 
@@ -57,15 +57,15 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:src="@drawable/user_agreement"
-        android:tint="#CCCCCC"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:tint="@color/white" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E0E0E0"
+        android:background="@color/e0e0e0"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
