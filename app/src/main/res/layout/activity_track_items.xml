@@ -22,7 +22,7 @@
             android:id="@+id/trackName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/my_on_secondary"
             android:textSize="16sp"
             android:maxLines="1"
             android:ellipsize="end"/>
@@ -37,7 +37,7 @@
                 android:id="@+id/artistName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/iconcolor"
+                android:textColor="@color/my_on_secondary"
                 android:textSize="11sp"/>
 
             <ImageView
@@ -51,7 +51,7 @@
                 android:id="@+id/trackDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/iconcolor"
+                android:textColor="@color/my_on_secondary"
                 android:textSize="11sp"/>
         </LinearLayout>
     </LinearLayout>
