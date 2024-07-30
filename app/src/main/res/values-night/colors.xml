@@ -13,4 +13,5 @@
     <color name="black">#000000</color>
     <color name="iconcolor">#1A1B22</color>
     <color name="search_edited_text">#FFFFFF</color>
+    <color name="placeholder_color">#000000</color>
 </resources>
