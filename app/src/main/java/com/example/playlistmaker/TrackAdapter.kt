@@ -22,7 +22,7 @@ class TrackAdapter(private var tracks: List<Track>) : RecyclerView.Adapter<Track
         fun bind(track: Track) {
             trackNameTextView.text = track.trackName
             artistNameTextView.text = track.artistName
-            trackTimeTextView.text = track.trackTime
+            trackTimeTextView.text = formatTrackTime(track.trackTimeMillis)
 
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
@@ -31,9 +31,13 @@ class TrackAdapter(private var tracks: List<Track>) : RecyclerView.Adapter<Track
                 .transform(RoundedCorners(8))
                 .into(artworkImageView)
         }
-        private fun formatDuration(millis: Long): String {
-            return SimpleDateFormat("mm:ss", Locale.getDefault()).format(millis)
+
+        fun formatTrackTime(trackTimeMillis: Long): String {
+            val minutes = (trackTimeMillis / 60000)
+            val seconds = (trackTimeMillis % 60000 / 1000)
+            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
