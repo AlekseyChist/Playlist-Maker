@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
@@ -23,6 +24,7 @@ class SettingsActivity : AppCompatActivity() {
         val shareButton = findViewById<TextView>(R.id.share_the_app)
         val supportButton = findViewById<TextView>(R.id.write_to_the_support)
         val userAgreementButton = findViewById<TextView>(R.id.user_agreement)
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
         backButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -40,6 +42,12 @@ class SettingsActivity : AppCompatActivity() {
 
         userAgreementButton.setOnClickListener {
             openUserAgreement()
+        }
+
+        themeSwitcher.isChecked = (applicationContext as App).darkTheme
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
         }
 
     }
