@@ -67,89 +67,10 @@
             android:src="@drawable/cancel_button" />
     </FrameLayout>
 
-    <FrameLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/padding16"/>
 
-        <LinearLayout
-            android:id="@+id/historyLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/historyTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/search_history"
-                android:textSize="@dimen/text_size_22"
-                android:textColor="@color/black"
-                android:layout_margin="@dimen/padding16"
-                android:fontFamily="@font/ys_text_medium"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/historyRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/clearHistoryButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_button"
-                android:textColor="@color/clear_history_button_text"
-                android:paddingStart="@dimen/padding16"
-                android:paddingEnd="@dimen/padding16"
-                android:textAllCaps="false"
-                android:text="@string/clear_history"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/padding16"/>
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/padding16"
-            android:visibility="gone"/>
-
-        <LinearLayout
-            android:id="@+id/placeholderLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/placeholderImage"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:src="@drawable/nothing_found" />
-
-            <TextView
-                android:id="@+id/placeholderText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/nothing_found"
-                android:textSize="@dimen/_19sp"
-                android:textColor="@color/my_on_secondary"
-                android:layout_marginTop="@dimen/padding16"
-                android:textAlignment="center" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/refreshButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:background="@drawable/rounded_button"
-                android:text="@string/refresh"
-                android:textColor="@color/placeholder_color"
-                android:textAllCaps="false"
-                android:paddingStart="@dimen/padding16"
-                android:paddingEnd="@dimen/padding16"
-                android:layout_marginTop="@dimen/padding16"
-                android:visibility="visible" />
-        </LinearLayout>
-    </FrameLayout>
 </LinearLayout>

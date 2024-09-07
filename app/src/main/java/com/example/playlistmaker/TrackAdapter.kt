@@ -8,12 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import java.util.Locale
 
-class TrackAdapter(
-    private var tracks: List<Track>,
-    private val onItemClick: (Track) -> Unit
-) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+class TrackAdapter(private val tracks: List<Track>) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
     class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val trackNameTextView: TextView = itemView.findViewById(R.id.trackName)
@@ -21,10 +17,10 @@ class TrackAdapter(
         private val trackTimeTextView: TextView = itemView.findViewById(R.id.trackDuration)
         private val artworkImageView: ImageView = itemView.findViewById(R.id.trackImage)
 
-        fun bind(track: Track, onItemClick: (Track) -> Unit) {
+        fun bind(track: Track) {
             trackNameTextView.text = track.trackName
             artistNameTextView.text = track.artistName
-            trackTimeTextView.text = formatTrackTime(track.trackTimeMillis)
+            trackTimeTextView.text = track.trackTime
 
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
@@ -32,14 +28,6 @@ class TrackAdapter(
                 .error(R.drawable.placeholder_image)
                 .transform(RoundedCorners(8))
                 .into(artworkImageView)
-
-            itemView.setOnClickListener { onItemClick(track) }
-        }
-
-        private fun formatTrackTime(trackTimeMillis: Long): String {
-            val minutes = (trackTimeMillis / 60000)
-            val seconds = (trackTimeMillis % 60000 / 1000)
-            return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
         }
     }
 
@@ -49,13 +37,8 @@ class TrackAdapter(
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position], onItemClick)
+        holder.bind(tracks[position])
     }
 
     override fun getItemCount() = tracks.size
-
-    fun updateTracks(newTracks: List<Track>) {
-        tracks = newTracks
-        notifyDataSetChanged()
-    }
 }

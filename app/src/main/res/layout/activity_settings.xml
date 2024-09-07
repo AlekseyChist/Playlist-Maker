@@ -37,7 +37,7 @@
         android:iconTint="@color/my_on_secondary"
         android:layout_height="wrap_content"
         android:fontFamily="@font/ys_text_light"
-        android:id="@+id/themeSwitcher"
+        android:id="@+id/switcher"
         android:text="@string/Dark_theme"
         android:textColor="@color/my_on_secondary"
         android:textSize="@dimen/text_size_settings"

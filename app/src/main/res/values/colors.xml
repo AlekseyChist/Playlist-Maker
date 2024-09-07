@@ -16,8 +16,4 @@
     <color name="placeholder_color">#E0E0E0</color>
     <color name="_808080">#808080</color>
     <color name="e0e0e0">#E0E0E0</color>
-    <color name="error_symbol_color">#1A1B22</color>
-    <color name="clear_history_button_background">#1A1B22</color>
-    <color name="clear_history_button_text">#FFFFFF</color>
-
 </resources>
