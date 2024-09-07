@@ -93,12 +93,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/clearHistoryButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_button"
-                android:textColor="@color/my_on_secondary"
+                android:textColor="@color/clear_history_button_text"
                 android:paddingStart="@dimen/padding16"
                 android:paddingEnd="@dimen/padding16"
                 android:textAllCaps="false"
