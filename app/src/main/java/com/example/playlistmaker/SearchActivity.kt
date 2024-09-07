@@ -2,57 +2,40 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
+import kotlinx.coroutines.launch
 
 class SearchActivity : AppCompatActivity() {
-
     private lateinit var searchEditText: EditText
     private lateinit var clearButton: ImageView
     private lateinit var backButton: ImageView
     private lateinit var recyclerView: RecyclerView
+    private lateinit var placeholderImage: ImageView
+    private lateinit var placeholderText: TextView
+    private lateinit var refreshButton: Button
     private lateinit var adapter: TrackAdapter
-    private var searchText: String = ""
-    private val tracks = listOf(
-        Track("Smells Like Teen Spirit",
-            "Nirvana",
-            "5:01",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"
-        ),
-        Track("Billie Jean",
-            "Michael Jackson",
-            "4:35",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"
-        ),
-        Track(
-            "Stayin' Alive",
-            "Bee Gees",
-            "4:10",
-            "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"
-        ),
-        Track(
-            "Whole Lotta Love",
-            "Led Zeppelin",
-            "5:33",
-            "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"
-        ),
-        Track(
-            "Sweet Child O'Mine",
-            "Guns N' Roses",
-            "5:03",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"
-        )
+    private lateinit var placeholderLayout: LinearLayout
+    private lateinit var historyLayout: LinearLayout
+    private lateinit var historyTitle: TextView
+    private lateinit var historyRecyclerView: RecyclerView
+    private lateinit var clearHistoryButton: Button
+    private lateinit var historyAdapter: TrackAdapter
+    private lateinit var searchHistory: SearchHistory
 
-    )
-
+    private var isFirstOpen = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,64 +43,178 @@ class SearchActivity : AppCompatActivity() {
 
         initViews()
         setupListeners()
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = TrackAdapter(tracks)
-        recyclerView.adapter = adapter
+        setupRecyclerViews()
 
-        clearButton.visibility = View.GONE
+        searchHistory = SearchHistory(getSharedPreferences("search_history", MODE_PRIVATE))
+        showEmptyState()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isFirstOpen) {
+            updateHistoryVisibility()
+        }
+        isFirstOpen = false
     }
 
     private fun initViews() {
         searchEditText = findViewById(R.id.search_edit_text)
         clearButton = findViewById(R.id.clear_button)
         backButton = findViewById(R.id.button_back)
+        recyclerView = findViewById(R.id.recyclerView)
+        placeholderImage = findViewById(R.id.placeholderImage)
+        placeholderText = findViewById(R.id.placeholderText)
+        refreshButton = findViewById(R.id.refreshButton)
+        placeholderLayout = findViewById(R.id.placeholderLayout)
+        historyLayout = findViewById(R.id.historyLayout)
+        historyTitle = findViewById(R.id.historyTitle)
+        historyRecyclerView = findViewById(R.id.historyRecyclerView)
+        clearHistoryButton = findViewById(R.id.clearHistoryButton)
 
-        // Дополнительно убеждаемся, что кнопка скрыта
-        clearButton.visibility = View.GONE
+        placeholderLayout.visibility = View.GONE
     }
 
     private fun setupListeners() {
-        searchEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
-                searchText = s.toString()
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                performSearch()
+                true
+            } else {
+                false
             }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
+        }
 
         clearButton.setOnClickListener {
-            searchEditText.setText("")
+            searchEditText.text.clear()
             clearButton.visibility = View.GONE
             hideKeyboard()
+            showEmptyState()
         }
 
         backButton.setOnClickListener {
             finish()
         }
+
+        searchEditText.addTextChangedListener {
+            clearButton.visibility = if (it?.isNotEmpty() == true) View.VISIBLE else View.GONE
+            if (it?.isEmpty() == true) {
+                showEmptyState()
+            }
+        }
+
+        refreshButton.setOnClickListener {
+            performSearch()
+        }
+
+        clearHistoryButton.setOnClickListener {
+            searchHistory.clearHistory()
+            updateHistoryVisibility()
+        }
+
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && searchEditText.text.isEmpty()) {
+                updateHistoryVisibility()
+            }
+        }
+    }
+
+    private fun setupRecyclerViews() {
+        adapter = TrackAdapter(emptyList()) { track ->
+            searchHistory.addTrack(track)
+            updateHistoryVisibility()
+            // TODO: Переход на экран аудиоплеера
+        }
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        historyAdapter = TrackAdapter(emptyList()) { track ->
+            searchEditText.setText(track.trackName)
+            performSearch()
+        }
+        historyRecyclerView.adapter = historyAdapter
+        historyRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun updateHistoryVisibility() {
+        val historyTracks = searchHistory.getTracks()
+        val showHistory = searchEditText.text.isEmpty() && historyTracks.isNotEmpty()
+
+        historyLayout.isVisible = showHistory
+        recyclerView.isVisible = !showHistory && adapter.itemCount > 0
+        placeholderLayout.isVisible = false
+
+        if (showHistory) {
+            historyAdapter.updateTracks(historyTracks)
+        }
+    }
+
+    private fun performSearch() {
+        val query = searchEditText.text.toString().trim()
+        if (query.isNotEmpty()) {
+            showLoading()
+            lifecycleScope.launch {
+                try {
+                    val response = iTunesApiService.searchTracks(query)
+                    if (response.results.isEmpty()) {
+                        showNoResults()
+                    } else {
+                        showResults(response.results)
+                        if (response.results.isNotEmpty()) {
+                            searchHistory.addTrack(response.results[0])
+                        }
+                    }
+                } catch (e: Exception) {
+                    showError()
+                }
+            }
+        } else {
+            showEmptyState()
+        }
+    }
+
+    private fun showLoading() {
+        recyclerView.visibility = View.GONE
+        placeholderLayout.visibility = View.GONE
+        historyLayout.visibility = View.GONE
+        // Здесь можно добавить отображение индикатора загрузки
+    }
+
+    private fun showNoResults() {
+        recyclerView.visibility = View.GONE
+        placeholderLayout.visibility = View.VISIBLE
+        historyLayout.visibility = View.GONE
+        placeholderImage.setImageResource(R.drawable.nothing_found)
+        placeholderText.text = getString(R.string.nothing_found)
+        refreshButton.visibility = View.GONE
+    }
+
+    private fun showResults(tracks: List<Track>) {
+        recyclerView.visibility = View.VISIBLE
+        placeholderLayout.visibility = View.GONE
+        historyLayout.visibility = View.GONE
+        adapter.updateTracks(tracks)
+    }
+
+    private fun showError() {
+        recyclerView.visibility = View.GONE
+        placeholderLayout.visibility = View.VISIBLE
+        historyLayout.visibility = View.GONE
+        placeholderImage.setImageResource(R.drawable.connection_error)
+        placeholderText.text = getString(R.string.connection_error)
+        refreshButton.visibility = View.VISIBLE
+    }
+
+    private fun showEmptyState() {
+        recyclerView.visibility = View.GONE
+        placeholderLayout.visibility = View.GONE
+        historyLayout.visibility = View.GONE
+        updateHistoryVisibility()
     }
 
     private fun hideKeyboard() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(searchEditText.windowToken, 0)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_TEXT_KEY, searchText)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString(SEARCH_TEXT_KEY, "")
-        searchEditText.setText(searchText)
-        clearButton.visibility = if (searchText.isEmpty()) View.GONE else View.VISIBLE
-    }
-
-    companion object {
-        private const val SEARCH_TEXT_KEY = "SEARCH_TEXT"
+        currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 }
