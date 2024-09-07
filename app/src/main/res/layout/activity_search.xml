@@ -144,7 +144,7 @@
                 android:layout_height="36dp"
                 android:background="@drawable/rounded_button"
                 android:text="@string/refresh"
-                android:textColor="@color/placeholder_color"
+                android:textColor="@color/clear_history_button_text"
                 android:textAllCaps="false"
                 android:paddingStart="@dimen/padding16"
                 android:paddingEnd="@dimen/padding16"
