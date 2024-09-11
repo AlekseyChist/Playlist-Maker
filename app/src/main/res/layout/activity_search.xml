@@ -111,6 +111,42 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/historyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/historyTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_history"
+                android:textSize="@dimen/text_size_22"
+                android:textColor="@color/black"
+                android:layout_margin="@dimen/padding16"
+                android:fontFamily="@font/ys_text_medium"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/historyRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/clearHistoryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/clear_history_button_text"
+                android:paddingStart="@dimen/padding16"
+                android:paddingEnd="@dimen/padding16"
+                android:textAllCaps="false"
+                android:text="@string/clear_history"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/padding16"/>
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
