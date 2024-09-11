@@ -96,7 +96,6 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
 
-            Алексей Чистяков, [11/09/2024 14:35]
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/clearHistoryButton"
                 android:layout_width="wrap_content"
