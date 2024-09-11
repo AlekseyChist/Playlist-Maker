@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@string/search"
             android:textSize="@dimen/text_size_22"
-            android:textColor="@color/clear_history_button_background"
+            android:textColor="@color/black"
             android:layout_marginStart="@dimen/padding16"
             android:fontFamily="@font/ys_text_medium"/>
     </LinearLayout>
@@ -96,6 +96,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
 
+            Алексей Чистяков, [11/09/2024 14:35]
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/clearHistoryButton"
                 android:layout_width="wrap_content"
