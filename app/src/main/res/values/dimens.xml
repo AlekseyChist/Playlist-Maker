@@ -26,4 +26,5 @@
     <dimen name="text_11sp">11sp</dimen>
     <dimen name="padding_4dp">4dp</dimen>
     <dimen name="_19sp">19sp</dimen>
+    <dimen name="padding_settings">22.5dp</dimen>
 </resources>
