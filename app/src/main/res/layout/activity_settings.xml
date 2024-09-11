@@ -43,8 +43,8 @@
         android:textSize="@dimen/text_size_settings"
         android:paddingStart="@dimen/padding16"
         android:paddingEnd="@dimen/padding16"
-        android:paddingTop="@dimen/_14dp"
-        android:paddingBottom="@dimen/_14dp"/>
+        android:paddingTop="@dimen/padding_settings"
+        android:paddingBottom="@dimen/padding_settings"/>
 
     <TextView
         style="@style/TextViewSettings"

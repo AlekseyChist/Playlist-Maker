@@ -26,8 +26,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingStart">@dimen/padding16</item>
         <item name="android:paddingEnd">@dimen/padding16</item>
-        <item name="android:paddingTop">@dimen/padding12dp</item>
-        <item name="android:paddingBottom">@dimen/padding12dp</item>
+        <item name="android:paddingTop">@dimen/padding_settings</item>
+        <item name="android:paddingBottom">@dimen/padding_settings</item>
         <item name="android:gravity">center_vertical</item>
         <item name="iconTint">@color/my_on_secondary</item>
     </style>
