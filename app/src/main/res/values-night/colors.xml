@@ -15,4 +15,6 @@
     <color name="search_edited_text">#FFFFFF</color>
     <color name="placeholder_color">#000000</color>
     <color name="error_symbol_color">#FFFFFF</color>
+    <color name="clear_history_button_background">#FFFFFF</color>
+    <color name="clear_history_button_text">#000000</color>
 </resources>
