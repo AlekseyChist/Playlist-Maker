@@ -88,8 +88,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/search_history"
+                    android:layout_gravity="center"
                     android:textSize="@dimen/text_size_22"
-                    android:textColor="@color/black"
+                    android:textColor="@color/clear_history_button_background"
                     android:layout_margin="@dimen/padding16"
                     android:fontFamily="@font/ys_text_medium"/>
 
@@ -102,7 +103,7 @@
                     android:id="@+id/clearHistoryButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_button"
+                    android:background="@drawable/clear_button"
                     android:textColor="@color/clear_history_button_text"
                     android:paddingStart="@dimen/padding16"
                     android:paddingEnd="@dimen/padding16"

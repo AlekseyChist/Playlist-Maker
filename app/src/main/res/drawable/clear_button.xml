@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <solid android:color="@color/clear_history_button_background" />
+    <corners android:radius="54dp" />
+
+    <size android:height="@dimen/padding_36dp">
+    </size>
+
+    <size android:width="148dp">
+    </size>
+
+</shape>
