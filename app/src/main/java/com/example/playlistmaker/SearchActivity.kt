@@ -35,8 +35,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var searchHistory: SearchHistory
 
-    private var isFirstOpen = true
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -46,15 +44,7 @@ class SearchActivity : AppCompatActivity() {
         setupRecyclerViews()
 
         searchHistory = SearchHistory(getSharedPreferences("search_history", MODE_PRIVATE))
-        showEmptyState()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!isFirstOpen) {
-            updateHistoryVisibility()
-        }
-        isFirstOpen = false
+        updateHistoryVisibility()
     }
 
     private fun initViews() {
@@ -70,8 +60,6 @@ class SearchActivity : AppCompatActivity() {
         historyTitle = findViewById(R.id.historyTitle)
         historyRecyclerView = findViewById(R.id.historyRecyclerView)
         clearHistoryButton = findViewById(R.id.clearHistoryButton)
-
-        placeholderLayout.visibility = View.GONE
     }
 
     private fun setupListeners() {
@@ -88,17 +76,19 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.text.clear()
             clearButton.visibility = View.GONE
             hideKeyboard()
-            showEmptyState()
+            updateHistoryVisibility()
         }
 
         backButton.setOnClickListener {
             finish()
         }
 
-        searchEditText.addTextChangedListener {
-            clearButton.visibility = if (it?.isNotEmpty() == true) View.VISIBLE else View.GONE
-            if (it?.isEmpty() == true) {
-                showEmptyState()
+        searchEditText.addTextChangedListener { text ->
+            clearButton.visibility = if (text?.isNotEmpty() == true) View.VISIBLE else View.GONE
+            if (text?.isNotEmpty() == true) {
+                hideAllContent()
+            } else {
+                updateHistoryVisibility()
             }
         }
 
@@ -121,18 +111,26 @@ class SearchActivity : AppCompatActivity() {
     private fun setupRecyclerViews() {
         adapter = TrackAdapter(emptyList()) { track ->
             searchHistory.addTrack(track)
-            updateHistoryVisibility()
-            // TODO: Переход на экран аудиоплеера
+            navigateToAudioPlayer(track)
         }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         historyAdapter = TrackAdapter(emptyList()) { track ->
             searchEditText.setText(track.trackName)
+            searchEditText.setSelection(track.trackName.length)
             performSearch()
         }
         historyRecyclerView.adapter = historyAdapter
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun navigateToAudioPlayer(track: Track) {
+        // TODO: Реализовать переход на экран аудиоплеера
+        // Например:
+        // val intent = Intent(this, AudioPlayerActivity::class.java)
+        // intent.putExtra("track", track)
+        // startActivity(intent)
     }
 
     private fun updateHistoryVisibility() {
@@ -159,16 +157,13 @@ class SearchActivity : AppCompatActivity() {
                         showNoResults()
                     } else {
                         showResults(response.results)
-                        if (response.results.isNotEmpty()) {
-                            searchHistory.addTrack(response.results[0])
-                        }
                     }
                 } catch (e: Exception) {
                     showError()
                 }
             }
         } else {
-            showEmptyState()
+            updateHistoryVisibility()
         }
     }
 
@@ -204,11 +199,10 @@ class SearchActivity : AppCompatActivity() {
         refreshButton.visibility = View.VISIBLE
     }
 
-    private fun showEmptyState() {
+    private fun hideAllContent() {
+        historyLayout.visibility = View.GONE
         recyclerView.visibility = View.GONE
         placeholderLayout.visibility = View.GONE
-        historyLayout.visibility = View.GONE
-        updateHistoryVisibility()
     }
 
     private fun hideKeyboard() {
