@@ -60,6 +60,7 @@ class SearchActivity : AppCompatActivity() {
         historyTitle = findViewById(R.id.historyTitle)
         historyRecyclerView = findViewById(R.id.historyRecyclerView)
         clearHistoryButton = findViewById(R.id.clearHistoryButton)
+        clearButton.visibility = View.GONE
     }
 
     private fun setupListeners() {
