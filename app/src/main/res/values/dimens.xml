@@ -33,4 +33,7 @@
     <dimen name="_32dp">32dp</dimen>
     <dimen name="_19dp">19dp</dimen>
     <dimen name="_200dp">200dp</dimen>
+    <dimen name="corner_radius">8dp</dimen>
+    <dimen name="_13sp">13sp</dimen>
+    <dimen name="_16dp">16dp</dimen>
 </resources>
