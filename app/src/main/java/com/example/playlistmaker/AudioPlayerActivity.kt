@@ -3,6 +3,7 @@ package com.example.playlistmaker
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,6 +21,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var trackName: TextView
     private lateinit var artistName: TextView
     private lateinit var albumName: TextView
+    private lateinit var releaseDate: TextView
     private lateinit var genre: TextView
     private lateinit var country: TextView
     private lateinit var duration: TextView
@@ -58,6 +60,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         playButton = findViewById(R.id.playButton)
         addToPlaylistButton = findViewById(R.id.addToPlaylistButton)
         likeButton = findViewById(R.id.likeButton)
+        releaseDate = findViewById(R.id.year)
     }
 
     private fun setupClickListeners() {
@@ -71,8 +74,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         trackName.text = track.trackName
         artistName.text = track.artistName
 
-        val albumAndYear = "${track.collectionName} • ${extractYear(track.releaseDate)}"
-        albumName.text = albumAndYear
+
+        albumName.text = track.collectionName ?:"Unknown"
+        releaseDate.text = extractYear(track.releaseDate)
+
 
         genre.text = track.primaryGenreName
         country.text = track.country
@@ -132,10 +137,14 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun extractYear(releaseDate: String): String {
+        Log.d("AudioPlayerActivity", "Release date: $releaseDate")
         return try {
             val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).parse(releaseDate)
-            SimpleDateFormat("yyyy", Locale.getDefault()).format(date)
+            val year = SimpleDateFormat("yyyy", Locale.getDefault()).format(date)
+            Log.d("AudioPlayerActivity", "Extracted year: $year")
+            year
         } catch (e: Exception) {
+            Log.e("AudioPlayerActivity", "Error parsing release date: ${e.message}")
             "Unknown"
         }
     }
