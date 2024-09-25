@@ -119,6 +119,8 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         historyAdapter = TrackAdapter(emptyList()) { track ->
+            searchHistory.addTrack(track)
+            updateHistoryVisibility()
             openAudioPlayer(track)
         }
         historyRecyclerView.adapter = historyAdapter
