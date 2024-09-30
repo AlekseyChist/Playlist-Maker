@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -112,26 +113,25 @@ class SearchActivity : AppCompatActivity() {
     private fun setupRecyclerViews() {
         adapter = TrackAdapter(emptyList()) { track ->
             searchHistory.addTrack(track)
-            navigateToAudioPlayer(track)
+            openAudioPlayer(track)
         }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         historyAdapter = TrackAdapter(emptyList()) { track ->
-            searchEditText.setText(track.trackName)
-            searchEditText.setSelection(track.trackName.length)
-            performSearch()
+            searchHistory.addTrack(track)
+            updateHistoryVisibility()
+            openAudioPlayer(track)
         }
         historyRecyclerView.adapter = historyAdapter
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun navigateToAudioPlayer(track: Track) {
-        // TODO: Реализовать переход на экран аудиоплеера
-        // Например:
-        // val intent = Intent(this, AudioPlayerActivity::class.java)
-        // intent.putExtra("track", track)
-        // startActivity(intent)
+    private fun openAudioPlayer(track: Track) {
+        val intent = Intent(this, AudioPlayerActivity::class.java).apply {
+            putExtra("track", track)
+        }
+        startActivity(intent)
     }
 
     private fun updateHistoryVisibility() {

@@ -15,16 +15,16 @@
             android:id="@+id/button_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/back_button_vector"
             android:layout_gravity="center_vertical"
-            android:padding="@dimen/padding4"/>
+            android:padding="@dimen/padding4"
+            android:src="@drawable/back_button_vector" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/search"
             android:textSize="@dimen/text_size_22"
-            android:textColor="@color/black"
+            android:textColor="@color/clear_history_button_background"
             android:layout_marginStart="@dimen/padding16"
             android:fontFamily="@font/ys_text_medium"/>
     </LinearLayout>
