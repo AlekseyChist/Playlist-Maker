@@ -26,9 +26,7 @@ object iTunesApiService {
 
     private val iTunesApi = retrofit.create(iTunesApi::class.java)
 
-    fun searchTracks(term: String): SearchResponse? {
-        val call = iTunesApi.search(term)
-        val response = call.execute()
-        return if (response.isSuccessful) response.body() else null
+    fun searchTracks(term: String): Call<SearchResponse> {
+        return iTunesApi.search(term)
     }
 }

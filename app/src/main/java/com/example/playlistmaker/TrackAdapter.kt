@@ -17,8 +17,6 @@ class TrackAdapter(
     private val onItemClick: (Track) -> Unit
 ) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
-    private val handler = Handler(Looper.getMainLooper())
-
     inner class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val trackNameTextView: TextView = itemView.findViewById(R.id.trackName)
         private val artistNameTextView: TextView = itemView.findViewById(R.id.artistName)
@@ -37,12 +35,10 @@ class TrackAdapter(
                 .transform(RoundedCorners(8))
                 .into(artworkImageView)
 
-            var clickRunnable: Runnable? = null
             itemView.setOnClickListener {
-                clickRunnable?.let { handler.removeCallbacks(it) }
-                clickRunnable = Runnable { onItemClick(track) }
-                handler.postDelayed(clickRunnable!!, 300) // 300 мс debounce
+                onItemClick(track)
             }
+
         }
 
         private fun formatTrackTime(trackTimeMillis: Long): String {

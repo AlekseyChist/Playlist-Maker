@@ -2,7 +2,6 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,15 +10,13 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchEditText: EditText
@@ -41,6 +38,8 @@ class SearchActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
+    private val debounceHandler = Handler(Looper.getMainLooper())
+    private var debouncedClick: Runnable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,18 +126,25 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupRecyclerViews() {
         adapter = TrackAdapter(emptyList()) { track ->
-            searchHistory.addTrack(track)
-            navigateToAudioPlayer(track)
+            debouncedTrackClick(track)
         }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         historyAdapter = TrackAdapter(emptyList()) { track ->
-            searchHistory.addTrack(track)
-            navigateToAudioPlayer(track)
+            debouncedTrackClick(track)
         }
         historyRecyclerView.adapter = historyAdapter
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun debouncedTrackClick(track: Track) {
+        debouncedClick?.let { debounceHandler.removeCallbacks(it) }
+        debouncedClick = Runnable {
+            searchHistory.addTrack(track)
+            navigateToAudioPlayer(track)
+        }
+        debounceHandler.postDelayed(debouncedClick!!, 300) // 300 ms debounce
     }
 
     private fun debounceSearch() {
@@ -153,28 +159,28 @@ class SearchActivity : AppCompatActivity() {
         val query = searchEditText.text.toString().trim()
         if (query.isNotEmpty()) {
             showLoading()
-            SearchTracksTask().execute(query)
+            iTunesApiService.searchTracks(query).enqueue(object : Callback<SearchResponse> {
+                override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
+                    hideLoading()
+                    if (response.isSuccessful) {
+                        val searchResponse = response.body()
+                        when {
+                            searchResponse == null -> showError()
+                            searchResponse.results.isEmpty() -> showNoResults()
+                            else -> showResults(searchResponse.results)
+                        }
+                    } else {
+                        showError()
+                    }
+                }
+
+                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                    hideLoading()
+                    showError()
+                }
+            })
         } else {
             updateHistoryVisibility()
-        }
-    }
-
-    private inner class SearchTracksTask : AsyncTask<String, Void, SearchResponse?>() {
-        override fun doInBackground(vararg params: String): SearchResponse? {
-            return try {
-                iTunesApiService.searchTracks(params[0])
-            } catch (e: Exception) {
-                null
-            }
-        }
-
-        override fun onPostExecute(result: SearchResponse?) {
-            hideLoading()
-            when {
-                result == null -> showError()
-                result.results.isEmpty() -> showNoResults()
-                else -> showResults(result.results)
-            }
         }
     }
 

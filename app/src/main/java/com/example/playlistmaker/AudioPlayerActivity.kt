@@ -1,9 +1,11 @@
 package com.example.playlistmaker
 
+import android.content.res.Resources
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -33,12 +35,13 @@ class AudioPlayerActivity : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null
     private val handler = Handler(Looper.getMainLooper())
     var isPlaying = false
+    private val timeFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_player)
 
-        track = intent.getSerializableExtra("track") as Track
+        track = intent.getSerializableExtra(Constants.TRACK_KEY) as Track
 
         initViews()
         setupUI()
@@ -74,8 +77,16 @@ class AudioPlayerActivity : AppCompatActivity() {
         Glide.with(this)
             .load(track.artworkUrl100.replace("100x100", "512x512"))
             .placeholder(R.drawable.placeholder_image)
-            .transform(RoundedCorners(8))
+            .transform(RoundedCorners(dpToPx(8)))
             .into(albumCover)
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            Resources.getSystem().displayMetrics
+        ).toInt()
     }
 
     private fun setupListeners() {
@@ -100,10 +111,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             prepareAsync()
             setOnPreparedListener { playButton.isEnabled = true }
             setOnCompletionListener {
-                this@AudioPlayerActivity.isPlaying = false
-                playButton.setImageResource(R.drawable.play_button)
-                currentTimeTextView.text = "00:00"
-                handler.removeCallbacksAndMessages(null)
+                resetPlayerUI()
             }
         }
     }
@@ -134,8 +142,14 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun formatTime(timeMillis: Long): String {
-        val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-        return dateFormat.format(timeMillis)
+        return timeFormat.format(timeMillis)
+    }
+
+    private fun resetPlayerUI() {
+        isPlaying = false
+        playButton.setImageResource(R.drawable.play_button)
+        currentTimeTextView.text = formatTime(0)
+        handler.removeCallbacksAndMessages(null)
     }
 
     override fun onDestroy() {
