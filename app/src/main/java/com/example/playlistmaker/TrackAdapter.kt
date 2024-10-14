@@ -1,5 +1,7 @@
 package com.example.playlistmaker
 
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,13 +17,13 @@ class TrackAdapter(
     private val onItemClick: (Track) -> Unit
 ) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
-    class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val trackNameTextView: TextView = itemView.findViewById(R.id.trackName)
         private val artistNameTextView: TextView = itemView.findViewById(R.id.artistName)
         private val trackTimeTextView: TextView = itemView.findViewById(R.id.trackDuration)
         private val artworkImageView: ImageView = itemView.findViewById(R.id.trackImage)
 
-        fun bind(track: Track, onItemClick: (Track) -> Unit) {
+        fun bind(track: Track) {
             trackNameTextView.text = track.trackName
             artistNameTextView.text = track.artistName
             trackTimeTextView.text = formatTrackTime(track.trackTimeMillis)
@@ -33,7 +35,10 @@ class TrackAdapter(
                 .transform(RoundedCorners(8))
                 .into(artworkImageView)
 
-            itemView.setOnClickListener { onItemClick(track) }
+            itemView.setOnClickListener {
+                onItemClick(track)
+            }
+
         }
 
         private fun formatTrackTime(trackTimeMillis: Long): String {
@@ -49,7 +54,7 @@ class TrackAdapter(
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position], onItemClick)
+        holder.bind(tracks[position])
     }
 
     override fun getItemCount() = tracks.size
