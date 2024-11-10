@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.activities
 
 import android.content.Context
 import android.content.Intent
@@ -14,6 +14,12 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.storage.SearchHistoryStorage
+import com.example.playlistmaker.data.network.SearchResponse
+import com.example.playlistmaker.data.network.iTunesApiService
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.ui.adapters.TrackAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyRecyclerView: RecyclerView
     private lateinit var clearHistoryButton: Button
     private lateinit var historyAdapter: TrackAdapter
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var searchHistory: SearchHistoryStorage
     private lateinit var progressBar: ProgressBar
 
     private val handler = Handler(Looper.getMainLooper())
@@ -49,7 +55,7 @@ class SearchActivity : AppCompatActivity() {
         setupListeners()
         setupRecyclerViews()
 
-        searchHistory = SearchHistory(getSharedPreferences("search_history", MODE_PRIVATE))
+        searchHistory = SearchHistoryStorage(getSharedPreferences("search_history", MODE_PRIVATE))
         updateHistoryVisibility()
     }
 

@@ -1,5 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.network
 
+import com.example.playlistmaker.domain.models.Track
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,7 +25,7 @@ object iTunesApiService {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    private val iTunesApi = retrofit.create(iTunesApi::class.java)
+    private val iTunesApi = retrofit.create(com.example.playlistmaker.data.network.iTunesApi::class.java)
 
     fun searchTracks(term: String): Call<SearchResponse> {
         return iTunesApi.search(term)
