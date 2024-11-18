@@ -1,13 +1,13 @@
 package com.example.playlistmaker.data.repositories
 
 import com.example.playlistmaker.data.mappers.TrackMapper
-import com.example.playlistmaker.data.network.iTunesApi
+import com.example.playlistmaker.data.network.iTunesApiService
 import com.example.playlistmaker.data.storage.SearchHistoryStorage
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repositories.TrackRepository
 
 class TrackRepositoryImpl(
-    private val api: iTunesApi,
+    private val api: iTunesApiService,
     private val searchHistoryStorage: SearchHistoryStorage,
     private val mapper: TrackMapper
 ) : TrackRepository {
