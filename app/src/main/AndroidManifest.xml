@@ -22,13 +22,13 @@
             android:name=".presentation.ui.activities.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".MediaActivity"
+            android:name=".presentation.ui.activities.MediaActivity"
             android:exported="false" />
         <activity
             android:name=".presentation.ui.activities.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
