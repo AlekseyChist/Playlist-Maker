@@ -17,12 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.storage.SearchHistoryStorage
 import com.example.playlistmaker.data.network.SearchResponse
-import com.example.playlistmaker.data.network.iTunesApiService
+import com.example.playlistmaker.di.App
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.presentation.ui.adapters.TrackAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchEditText: EditText
@@ -39,8 +40,15 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyRecyclerView: RecyclerView
     private lateinit var clearHistoryButton: Button
     private lateinit var historyAdapter: TrackAdapter
-    private lateinit var searchHistory: SearchHistoryStorage
     private lateinit var progressBar: ProgressBar
+
+    private val searchTracksUseCase by lazy {
+        (application as App).getSearchTracksUseCase()
+    }
+
+    private val searchHistoryUseCase by lazy {
+        (application as App).getSearchHistoryUseCase()
+    }
 
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
@@ -54,8 +62,6 @@ class SearchActivity : AppCompatActivity() {
         initViews()
         setupListeners()
         setupRecyclerViews()
-
-        searchHistory = SearchHistoryStorage(getSharedPreferences("search_history", MODE_PRIVATE))
         updateHistoryVisibility()
     }
 
@@ -119,7 +125,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         clearHistoryButton.setOnClickListener {
-            searchHistory.clearHistory()
+            searchHistoryUseCase.clearHistory()
             updateHistoryVisibility()
         }
 
@@ -147,10 +153,10 @@ class SearchActivity : AppCompatActivity() {
     private fun debouncedTrackClick(track: Track) {
         debouncedClick?.let { debounceHandler.removeCallbacks(it) }
         debouncedClick = Runnable {
-            searchHistory.addTrack(track)
+            searchHistoryUseCase.addTrack(track)
             navigateToAudioPlayer(track)
         }
-        debounceHandler.postDelayed(debouncedClick!!, 300) // 300 ms debounce
+        debounceHandler.postDelayed(debouncedClick!!, 300)
     }
 
     private fun debounceSearch() {
@@ -158,33 +164,30 @@ class SearchActivity : AppCompatActivity() {
         searchRunnable = Runnable {
             performSearch()
         }
-        handler.postDelayed(searchRunnable!!, 2000) // 2 секунды debounce
+        handler.postDelayed(searchRunnable!!, 2000)
     }
 
     private fun performSearch() {
         val query = searchEditText.text.toString().trim()
         if (query.isNotEmpty()) {
             showLoading()
-            iTunesApiService.searchTracks(query).enqueue(object : Callback<SearchResponse> {
-                override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
-                    hideLoading()
-                    if (response.isSuccessful) {
-                        val searchResponse = response.body()
+            Thread {
+                try {
+                    val tracks = searchTracksUseCase.execute(query)
+                    runOnUiThread {
+                        hideLoading()
                         when {
-                            searchResponse == null -> showError()
-                            searchResponse.results.isEmpty() -> showNoResults()
-                            else -> showResults(searchResponse.results)
+                            tracks.isEmpty() -> showNoResults()
+                            else -> showResults(tracks)
                         }
-                    } else {
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        hideLoading()
                         showError()
                     }
                 }
-
-                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    hideLoading()
-                    showError()
-                }
-            })
+            }.start()
         } else {
             updateHistoryVisibility()
         }
@@ -230,7 +233,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun updateHistoryVisibility() {
-        val historyTracks = searchHistory.getTracks()
+        val historyTracks = searchHistoryUseCase.getHistory()
         val showHistory = searchEditText.text.isEmpty() && historyTracks.isNotEmpty()
 
         historyLayout.visibility = if (showHistory) View.VISIBLE else View.GONE

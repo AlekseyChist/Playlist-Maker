@@ -6,11 +6,18 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.di.App
 import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
 
+
 class SettingsActivity : AppCompatActivity() {
+
+    private val themeSettingsUseCase by lazy {
+        (application as App).getThemeSettingsUseCase()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -20,6 +27,9 @@ class SettingsActivity : AppCompatActivity() {
         val supportButton = findViewById<TextView>(R.id.write_to_the_support)
         val userAgreementButton = findViewById<TextView>(R.id.user_agreement)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+
+        // Инициализация состояния переключателя темы
+        themeSwitcher.isChecked = themeSettingsUseCase.getDarkThemeEnabled()
 
         backButton.setOnClickListener {
             finish()
@@ -37,12 +47,20 @@ class SettingsActivity : AppCompatActivity() {
             openUserAgreement()
         }
 
-        // Инициализация состояния переключателя темы
-        themeSwitcher.isChecked = (applicationContext as App).darkTheme
-
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            (applicationContext as App).switchTheme(checked)
+            themeSettingsUseCase.setDarkThemeEnabled(checked)
+            // Применяем тему сразу после переключения
+            applyTheme(checked)
         }
+    }
+
+    private fun applyTheme(darkThemeEnabled: Boolean) {
+        val nightMode = if (darkThemeEnabled) {
+            AppCompatDelegate.MODE_NIGHT_YES
+        } else {
+            AppCompatDelegate.MODE_NIGHT_NO
+        }
+        AppCompatDelegate.setDefaultNightMode(nightMode)
     }
 
     private fun openUserAgreement() {

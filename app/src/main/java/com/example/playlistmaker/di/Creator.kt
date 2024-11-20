@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import com.example.playlistmaker.data.mappers.TrackMapper
-import com.example.playlistmaker.data.network.iTunesApiService
+import com.example.playlistmaker.data.network.RetrofitClient
+import com.example.playlistmaker.data.network.iTunesApi
 import com.example.playlistmaker.data.repositories.SettingsRepositoryImpl
 import com.example.playlistmaker.data.repositories.TrackRepositoryImpl
 import com.example.playlistmaker.data.storage.SearchHistoryStorage
@@ -20,17 +21,23 @@ import com.example.playlistmaker.domain.usecases.tracks.SearchTracksUseCase
 import com.example.playlistmaker.domain.usecases.tracks.SearchTracksUseCaseImpl
 
 class Creator(private val context: Context) {
-    // Storage
+
     private val sharedPreferences: SharedPreferences by lazy {
         context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     }
 
+    // Storage
     private val searchHistoryStorage: SearchHistoryStorage by lazy {
         SearchHistoryStorage(sharedPreferences)
     }
 
     private val settingsStorage: SettingsStorage by lazy {
         SettingsStorageImpl(sharedPreferences)
+    }
+
+    // API
+    private val iTunesApi: iTunesApi by lazy {
+        RetrofitClient.iTunesApi
     }
 
     // Mappers
@@ -40,7 +47,7 @@ class Creator(private val context: Context) {
 
     // Repositories
     private val trackRepository: TrackRepository by lazy {
-        TrackRepositoryImpl(iTunesApiService, searchHistoryStorage, trackMapper)
+        TrackRepositoryImpl(iTunesApi, searchHistoryStorage, trackMapper)
     }
 
     private val settingsRepository: SettingsRepository by lazy {
@@ -61,5 +68,7 @@ class Creator(private val context: Context) {
     }
 
     // MediaPlayer
-    fun provideMediaPlayer(): MediaPlayer = MediaPlayer()
+    fun provideMediaPlayer(): MediaPlayer {
+        return MediaPlayer()
+    }
 }

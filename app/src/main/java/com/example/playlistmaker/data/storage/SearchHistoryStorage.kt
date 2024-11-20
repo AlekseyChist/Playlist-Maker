@@ -11,7 +11,7 @@ class SearchHistoryStorage(private val sharedPreferences: SharedPreferences) {
     private val key = "search_history"
     private val maxHistorySize = 10
 
-    fun addTrack(track: TrackDto) {
+    fun addTrack(track: Track) {
         val tracks = getTracks().toMutableList()
         tracks.removeAll { it.trackId == track.trackId }
         tracks.add(0, track)

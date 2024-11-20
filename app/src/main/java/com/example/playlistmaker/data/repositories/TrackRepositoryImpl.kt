@@ -1,23 +1,24 @@
 package com.example.playlistmaker.data.repositories
 
 import com.example.playlistmaker.data.mappers.TrackMapper
-import com.example.playlistmaker.data.network.iTunesApiService
+import com.example.playlistmaker.data.network.iTunesApi
 import com.example.playlistmaker.data.storage.SearchHistoryStorage
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.repositories.TrackRepository
 
 class TrackRepositoryImpl(
-    private val api: iTunesApiService,
+    private val api: iTunesApi,
     private val searchHistoryStorage: SearchHistoryStorage,
     private val mapper: TrackMapper
 ) : TrackRepository {
 
     override fun searchTracks(query: String): List<Track> {
         return try {
-            val call = api.search(query)
-            val response = call.execute() // Синхронный вызов
+            val response = api.search(query).execute() // Синхронный вызов
             if (response.isSuccessful) {
-                response.body()?.results?.map { mapper.mapDtoToDomain(it) } ?: emptyList()
+                response.body()?.results?.map { trackDto ->
+                    mapper.mapDtoToDomain(trackDto)
+                } ?: emptyList()
             } else {
                 emptyList()
             }
@@ -27,11 +28,11 @@ class TrackRepositoryImpl(
     }
 
     override fun addTrackToHistory(track: Track) {
-        searchHistoryStorage.addTrack(mapper.mapDomainToDto(track))
+        searchHistoryStorage.addTrack(track)
     }
 
     override fun getSearchHistory(): List<Track> {
-        return searchHistoryStorage.getTracks().map { mapper.mapDtoToDomain(it) }
+        return searchHistoryStorage.getTracks()
     }
 
     override fun clearSearchHistory() {

@@ -2,6 +2,7 @@ package com.example.playlistmaker.di
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.domain.usecases.settings.ThemeSettingsUseCase
 import com.example.playlistmaker.domain.usecases.tracks.SearchHistoryUseCase

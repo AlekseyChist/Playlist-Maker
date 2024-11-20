@@ -14,10 +14,13 @@ data class SearchResponse(
 
 interface iTunesApi {
     @GET("/search")
-    fun search(@Query("term") term: String, @Query("entity") entity: String = "song"): Call<SearchResponse>
+    fun search(
+        @Query("term") term: String,
+        @Query("entity") entity: String = "song"
+    ): Call<SearchResponse>
 }
 
-object iTunesApiService {
+object RetrofitClient {
     private const val BASE_URL = "https://itunes.apple.com"
 
     private val retrofit = Retrofit.Builder()
@@ -25,7 +28,7 @@ object iTunesApiService {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    private val iTunesApi = retrofit.create(com.example.playlistmaker.data.network.iTunesApi::class.java)
+    val iTunesApi = retrofit.create(com.example.playlistmaker.data.network.iTunesApi::class.java)
 
     fun searchTracks(term: String): Call<SearchResponse> {
         return iTunesApi.search(term)
