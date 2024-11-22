@@ -13,16 +13,15 @@ class TrackRepositoryImpl(
 ) : TrackRepository {
 
     override fun searchTracks(query: String): List<Track> {
-        return try {
-            val response = api.search(query).execute() // Синхронный вызов
+        return runCatching {
+            val call = api.search(query)
+            val response = call.execute()
             if (response.isSuccessful) {
-                response.body()?.results?.map { trackDto ->
-                    mapper.mapDtoToDomain(trackDto)
-                } ?: emptyList()
+                response.body()?.results?.map { mapper.mapDtoToDomain(it) } ?: emptyList()
             } else {
                 emptyList()
             }
-        } catch (e: Exception) {
+        }.getOrElse {
             emptyList()
         }
     }
