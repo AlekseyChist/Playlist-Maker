@@ -75,9 +75,4 @@ object Creator {
     private fun provideTrackMapper(): TrackMapper {
         return TrackMapper()
     }
-
-    // MediaPlayer provider
-    fun provideMediaPlayer(): MediaPlayer {
-        return MediaPlayer()
-    }
 }
