@@ -42,7 +42,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     var isPlaying = false
 
     private val audioPlayerViewModel: AudioPlayerViewModel by lazy {
-        AudioPlayerViewModel(Creator.provideMediaPlayer())
+        AudioPlayerViewModel(MediaPlayer())
     }
 
     private val timeFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
