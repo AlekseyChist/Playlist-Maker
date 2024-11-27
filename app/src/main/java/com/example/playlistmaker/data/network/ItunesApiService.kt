@@ -1,5 +1,6 @@
 package com.example.playlistmaker.data.network
 
+import com.example.playlistmaker.data.dto.SearchResponseDto
 import com.example.playlistmaker.domain.models.Track
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -17,7 +18,7 @@ interface iTunesApi {
     fun search(
         @Query("term") term: String,
         @Query("entity") entity: String = "song"
-    ): Call<SearchResponse>
+    ): Call<SearchResponseDto>
 }
 
 object RetrofitClient {
@@ -30,7 +31,7 @@ object RetrofitClient {
 
     val iTunesApi = retrofit.create(com.example.playlistmaker.data.network.iTunesApi::class.java)
 
-    fun searchTracks(term: String): Call<SearchResponse> {
+    fun searchTracks(term: String): Call<SearchResponseDto> {
         return iTunesApi.search(term)
     }
 }

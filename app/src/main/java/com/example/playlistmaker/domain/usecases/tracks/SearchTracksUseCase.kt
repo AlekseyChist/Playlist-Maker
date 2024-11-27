@@ -1,20 +1,20 @@
 package com.example.playlistmaker.domain.usecases.tracks
 
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.listeners.TracksConsumer
 import com.example.playlistmaker.domain.repositories.TrackRepository
 
 interface SearchTracksUseCase {
-    fun execute(query: String): List<Track>
+    fun execute(query: String, consumer: TracksConsumer)
 }
 
 class SearchTracksUseCaseImpl(
     private val repository: TrackRepository
 ) : SearchTracksUseCase {
-    override fun execute(query: String): List<Track> {
-        return if (query.isBlank()) {
-            emptyList()
+    override fun execute(query: String, consumer: TracksConsumer) {
+        if (query.isBlank()) {
+            consumer.consume(emptyList())
         } else {
-            repository.searchTracks(query)
+            repository.searchTracks(query, consumer)
         }
     }
 }

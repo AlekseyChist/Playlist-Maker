@@ -1,21 +1,17 @@
-package com.example.playlistmaker.presentation.ui.activities
-
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.di.App
 import com.example.playlistmaker.R
+import com.example.playlistmaker.di.Creator
+import com.example.playlistmaker.presentation.viewmodels.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 
-
 class SettingsActivity : AppCompatActivity() {
-
-    private val themeSettingsUseCase by lazy {
-        (application as App).getThemeSettingsUseCase()
+    private val settingsViewModel: SettingsViewModel by lazy {
+        SettingsViewModel(Creator.provideThemeSettingsUseCase())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,9 +24,23 @@ class SettingsActivity : AppCompatActivity() {
         val userAgreementButton = findViewById<TextView>(R.id.user_agreement)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
-        // Инициализация состояния переключателя темы
-        themeSwitcher.isChecked = themeSettingsUseCase.getDarkThemeEnabled()
+        setupObservers(themeSwitcher)
+        setupClickListeners(backButton, shareButton, supportButton, userAgreementButton, themeSwitcher)
+    }
 
+    private fun setupObservers(themeSwitcher: SwitchMaterial) {
+        settingsViewModel.darkThemeEnabled.observe(this) { isDarkTheme ->
+            themeSwitcher.isChecked = isDarkTheme
+        }
+    }
+
+    private fun setupClickListeners(
+        backButton: ImageView,
+        shareButton: TextView,
+        supportButton: TextView,
+        userAgreementButton: TextView,
+        themeSwitcher: SwitchMaterial
+    ) {
         backButton.setOnClickListener {
             finish()
         }
@@ -47,26 +57,15 @@ class SettingsActivity : AppCompatActivity() {
             openUserAgreement()
         }
 
-        themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            themeSettingsUseCase.setDarkThemeEnabled(checked)
-            // Применяем тему сразу после переключения
-            applyTheme(checked)
+        themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
+            settingsViewModel.switchTheme(isChecked)
         }
-    }
-
-    private fun applyTheme(darkThemeEnabled: Boolean) {
-        val nightMode = if (darkThemeEnabled) {
-            AppCompatDelegate.MODE_NIGHT_YES
-        } else {
-            AppCompatDelegate.MODE_NIGHT_NO
-        }
-        AppCompatDelegate.setDefaultNightMode(nightMode)
     }
 
     private fun openUserAgreement() {
         val url = getString(R.string.user_agreement_url)
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(url)
+            var data = Uri.parse(url)
         }
         startActivity(intent)
     }
@@ -92,7 +91,6 @@ class SettingsActivity : AppCompatActivity() {
             putExtra(Intent.EXTRA_TEXT, message)
             type = "text/plain"
         }
-        val shareChooser = Intent.createChooser(shareIntent, null)
-        startActivity(shareChooser)
+        startActivity(Intent.createChooser(shareIntent, null))
     }
 }

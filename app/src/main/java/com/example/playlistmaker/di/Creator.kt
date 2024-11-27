@@ -20,54 +20,63 @@ import com.example.playlistmaker.domain.usecases.tracks.SearchHistoryUseCaseImpl
 import com.example.playlistmaker.domain.usecases.tracks.SearchTracksUseCase
 import com.example.playlistmaker.domain.usecases.tracks.SearchTracksUseCaseImpl
 
-class Creator(private val context: Context) {
+object Creator {
+    private var appContext: Context? = null
+
+    fun init(context: Context) {
+        appContext = context.applicationContext
+    }
 
     private val sharedPreferences: SharedPreferences by lazy {
-        context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        requireNotNull(appContext).getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     }
 
-    // Storage
-    private val searchHistoryStorage: SearchHistoryStorage by lazy {
-        SearchHistoryStorage(sharedPreferences)
+    // Use Case providers
+    fun provideSearchTracksUseCase(): SearchTracksUseCase {
+        return SearchTracksUseCaseImpl(provideTrackRepository())
     }
 
-    private val settingsStorage: SettingsStorage by lazy {
-        SettingsStorageImpl(sharedPreferences)
+    fun provideSearchHistoryUseCase(): SearchHistoryUseCase {
+        return SearchHistoryUseCaseImpl(provideTrackRepository())
     }
 
-    // API
-    private val iTunesApi: iTunesApi by lazy {
-        RetrofitClient.iTunesApi
+    fun provideThemeSettingsUseCase(): ThemeSettingsUseCase {
+        return ThemeSettingsUseCaseImpl(provideSettingsRepository())
     }
 
-    // Mappers
-    private val trackMapper: TrackMapper by lazy {
-        TrackMapper()
+    // Repository providers
+    private fun provideTrackRepository(): TrackRepository {
+        return TrackRepositoryImpl(
+            provideiTunesApi(),
+            provideSearchHistoryStorage(),
+            provideTrackMapper()
+        )
     }
 
-    // Repositories
-    private val trackRepository: TrackRepository by lazy {
-        TrackRepositoryImpl(iTunesApi, searchHistoryStorage, trackMapper)
+    private fun provideSettingsRepository(): SettingsRepository {
+        return SettingsRepositoryImpl(provideSettingsStorage())
     }
 
-    private val settingsRepository: SettingsRepository by lazy {
-        SettingsRepositoryImpl(settingsStorage)
+    // Storage providers
+    private fun provideSearchHistoryStorage(): SearchHistoryStorage {
+        return SearchHistoryStorage(sharedPreferences)
     }
 
-    // Use Cases
-    val searchTracksUseCase: SearchTracksUseCase by lazy {
-        SearchTracksUseCaseImpl(trackRepository)
+    private fun provideSettingsStorage(): SettingsStorage {
+        return SettingsStorageImpl(sharedPreferences)
     }
 
-    val searchHistoryUseCase: SearchHistoryUseCase by lazy {
-        SearchHistoryUseCaseImpl(trackRepository)
+    // API provider
+    private fun provideiTunesApi(): iTunesApi {
+        return RetrofitClient.iTunesApi
     }
 
-    val themeSettingsUseCase: ThemeSettingsUseCase by lazy {
-        ThemeSettingsUseCaseImpl(settingsRepository)
+    // Mapper provider
+    private fun provideTrackMapper(): TrackMapper {
+        return TrackMapper()
     }
 
-    // MediaPlayer
+    // MediaPlayer provider
     fun provideMediaPlayer(): MediaPlayer {
         return MediaPlayer()
     }
