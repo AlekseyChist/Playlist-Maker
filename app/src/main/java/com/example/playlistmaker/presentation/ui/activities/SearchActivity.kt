@@ -60,7 +60,6 @@ class SearchActivity : AppCompatActivity() {
         setupListeners()
         setupRecyclerViews()
         setupObservers()
-        searchViewModel.showHistory()
     }
 
     private fun setupObservers() {
@@ -112,18 +111,27 @@ class SearchActivity : AppCompatActivity() {
                     hideAllContent()
                     debounceSearch()
                 } else {
-                    searchViewModel.showHistory()
+                    updateHistoryVisibility()
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            // Обновляем видимость истории при изменении фокуса
+            if (hasFocus && searchEditText.text.isEmpty()) {
+                updateHistoryVisibility()
+            } else {
+                historyLayout.visibility = View.GONE
+            }
+        }
+
         clearButton.setOnClickListener {
             searchEditText.text.clear()
             clearButton.visibility = View.GONE
             hideKeyboard()
-            searchViewModel.showHistory()
+            updateHistoryVisibility()
         }
 
         backButton.setOnClickListener {
@@ -136,6 +144,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearHistoryButton.setOnClickListener {
             searchViewModel.clearHistory()
+            updateHistoryVisibility()
         }
     }
 
@@ -151,6 +160,28 @@ class SearchActivity : AppCompatActivity() {
         }
         historyRecyclerView.adapter = historyAdapter
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun updateHistoryVisibility() {
+        val historyTracks = searchViewModel.getHistory()
+        // Показываем историю только если:
+        // 1. Поле поиска пустое
+        // 2. История не пустая
+        // 3. Поле поиска в фокусе
+        val showHistory = searchEditText.text.isEmpty() &&
+                historyTracks.isNotEmpty() &&
+                searchEditText.hasFocus()
+
+        if (showHistory) {
+            historyAdapter.updateTracks(historyTracks)
+            historyLayout.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+            placeholderLayout.visibility = View.GONE
+        } else {
+            historyLayout.visibility = View.GONE
+            recyclerView.visibility = if (adapter.itemCount > 0) View.VISIBLE else View.GONE
+            placeholderLayout.visibility = View.GONE
+        }
     }
 
     private fun debouncedTrackClick(track: Track) {
@@ -213,9 +244,13 @@ class SearchActivity : AppCompatActivity() {
     private fun showHistory(tracks: List<Track>) {
         progressBar.visibility = View.GONE
         recyclerView.visibility = View.GONE
-        historyLayout.visibility = View.VISIBLE
         placeholderLayout.visibility = View.GONE
-        historyAdapter.updateTracks(tracks)
+        if (tracks.isNotEmpty() && searchEditText.hasFocus()) {
+            historyLayout.visibility = View.VISIBLE
+            historyAdapter.updateTracks(tracks)
+        } else {
+            historyLayout.visibility = View.GONE
+        }
     }
 
     private fun hideAllContent() {

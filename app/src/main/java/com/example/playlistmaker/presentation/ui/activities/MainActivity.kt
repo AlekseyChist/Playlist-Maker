@@ -1,6 +1,5 @@
 package com.example.playlistmaker.presentation.ui.activities
 
-import SettingsActivity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button

@@ -40,6 +40,10 @@ class SearchViewModel(
         _state.value = SearchState.History(history)
     }
 
+    fun getHistory(): List<Track> {
+        return searchHistoryUseCase.getHistory()
+    }
+
     fun addToHistory(track: Track) {
         searchHistoryUseCase.addTrack(track)
     }

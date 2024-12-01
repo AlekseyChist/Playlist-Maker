@@ -1,9 +1,12 @@
+package com.example.playlistmaker.presentation.ui.activities
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.R
 import com.example.playlistmaker.di.Creator
 import com.example.playlistmaker.presentation.viewmodels.SettingsViewModel
@@ -24,23 +27,9 @@ class SettingsActivity : AppCompatActivity() {
         val userAgreementButton = findViewById<TextView>(R.id.user_agreement)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
 
-        setupObservers(themeSwitcher)
-        setupClickListeners(backButton, shareButton, supportButton, userAgreementButton, themeSwitcher)
-    }
+        // Инициализация состояния переключателя темы
+        themeSwitcher.isChecked = settingsViewModel.darkThemeEnabled.value ?: false
 
-    private fun setupObservers(themeSwitcher: SwitchMaterial) {
-        settingsViewModel.darkThemeEnabled.observe(this) { isDarkTheme ->
-            themeSwitcher.isChecked = isDarkTheme
-        }
-    }
-
-    private fun setupClickListeners(
-        backButton: ImageView,
-        shareButton: TextView,
-        supportButton: TextView,
-        userAgreementButton: TextView,
-        themeSwitcher: SwitchMaterial
-    ) {
         backButton.setOnClickListener {
             finish()
         }
@@ -59,13 +48,17 @@ class SettingsActivity : AppCompatActivity() {
 
         themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             settingsViewModel.switchTheme(isChecked)
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
+                else AppCompatDelegate.MODE_NIGHT_NO
+            )
         }
     }
 
     private fun openUserAgreement() {
         val url = getString(R.string.user_agreement_url)
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            var data = Uri.parse(url)
+            data = Uri.parse(url)
         }
         startActivity(intent)
     }
