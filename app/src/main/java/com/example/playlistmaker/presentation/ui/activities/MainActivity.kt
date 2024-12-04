@@ -1,14 +1,10 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,21 +15,19 @@ class MainActivity : AppCompatActivity() {
         val mediaButton = findViewById<Button>(R.id.media_button)
         val settingsButton = findViewById<Button>(R.id.settings_button)
 
-        searchButton.setOnClickListener{
-            val intent = Intent(this@MainActivity, SearchActivity::class.java)
+        searchButton.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
         }
 
         mediaButton.setOnClickListener {
-            val intent = Intent(this@MainActivity, MediaActivity::class.java)
+            val intent = Intent(this, MediaActivity::class.java)
             startActivity(intent)
         }
 
-        val buttonClickListener: View.OnClickListener = View.OnClickListener { v ->
-            val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+        settingsButton.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
-            }
-        settingsButton.setOnClickListener(buttonClickListener)
         }
-
     }
+}

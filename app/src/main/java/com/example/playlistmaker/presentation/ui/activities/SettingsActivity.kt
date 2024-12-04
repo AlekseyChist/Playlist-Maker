@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.activities
 
 import android.content.Intent
 import android.net.Uri
@@ -6,9 +6,17 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.R
+import com.example.playlistmaker.di.Creator
+import com.example.playlistmaker.presentation.viewmodels.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
+    private val settingsViewModel: SettingsViewModel by lazy {
+        SettingsViewModel(Creator.provideThemeSettingsUseCase())
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -18,6 +26,9 @@ class SettingsActivity : AppCompatActivity() {
         val supportButton = findViewById<TextView>(R.id.write_to_the_support)
         val userAgreementButton = findViewById<TextView>(R.id.user_agreement)
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+
+        // Инициализация состояния переключателя темы
+        themeSwitcher.isChecked = settingsViewModel.darkThemeEnabled.value ?: false
 
         backButton.setOnClickListener {
             finish()
@@ -35,11 +46,12 @@ class SettingsActivity : AppCompatActivity() {
             openUserAgreement()
         }
 
-        // Инициализация состояния переключателя темы
-        themeSwitcher.isChecked = (applicationContext as App).darkTheme
-
-        themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            (applicationContext as App).switchTheme(checked)
+        themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
+            settingsViewModel.switchTheme(isChecked)
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
+                else AppCompatDelegate.MODE_NIGHT_NO
+            )
         }
     }
 
@@ -72,7 +84,6 @@ class SettingsActivity : AppCompatActivity() {
             putExtra(Intent.EXTRA_TEXT, message)
             type = "text/plain"
         }
-        val shareChooser = Intent.createChooser(shareIntent, null)
-        startActivity(shareChooser)
+        startActivity(Intent.createChooser(shareIntent, null))
     }
 }

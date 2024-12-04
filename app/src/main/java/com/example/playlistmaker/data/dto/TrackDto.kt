@@ -1,9 +1,8 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.dto
 
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
-data class Track(
+data class TrackDto(
     @SerializedName("trackId") val trackId: Long,
     @SerializedName("trackName") val trackName: String,
     @SerializedName("artistName") val artistName: String,
@@ -14,4 +13,4 @@ data class Track(
     @SerializedName("primaryGenreName") val primaryGenreName: String,
     @SerializedName("country") val country: String,
     @SerializedName("previewUrl") val previewUrl: String
-) : Serializable
+)

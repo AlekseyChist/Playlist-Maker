@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.di
 
 object Constants {
     const val TRACK_KEY = "track"
