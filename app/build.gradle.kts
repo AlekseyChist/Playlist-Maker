@@ -40,6 +40,9 @@ android {
 
 dependencies {
 
+    implementation (libs.androidx.lifecycle.viewmodel)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.glide)
@@ -49,7 +52,6 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.viewmodel.android)
-    implementation(libs.androidx.lifecycle.viewmodel.desktop)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -2,6 +2,7 @@ package com.example.playlistmaker.creator
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import com.example.playlistmaker.search.data.mapper.TrackMapper
 import com.example.playlistmaker.search.data.network.RetrofitClient
 import com.example.playlistmaker.search.data.network.iTunesApi
@@ -18,6 +19,9 @@ import com.example.playlistmaker.search.domain.usecase.SearchHistoryUseCase
 import com.example.playlistmaker.search.domain.usecase.SearchHistoryUseCaseImpl
 import com.example.playlistmaker.search.domain.usecase.SearchTracksUseCase
 import com.example.playlistmaker.search.domain.usecase.SearchTracksUseCaseImpl
+import com.example.playlistmaker.sharing.domain.usecase.SharingUseCase
+import com.example.playlistmaker.sharing.domain.usecase.SharingUseCaseImpl
+
 
 object Creator {
     private var appContext: Context? = null
@@ -73,5 +77,13 @@ object Creator {
     // Mapper provider
     private fun provideTrackMapper(): TrackMapper {
         return TrackMapper()
+    }
+
+    fun provideSharingUseCase(): SharingUseCase {
+        return SharingUseCaseImpl(requireNotNull(appContext))
+    }
+
+    fun provideMediaPlayer(): MediaPlayer {
+        return MediaPlayer()
     }
 }
