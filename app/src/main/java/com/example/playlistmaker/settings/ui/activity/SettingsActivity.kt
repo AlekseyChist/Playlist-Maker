@@ -1,23 +1,19 @@
 package com.example.playlistmaker.settings.ui.activity
 
-import android.content.Intent
-import android.net.Uri
+
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     private val viewModel: SettingsViewModel by lazy {
-        SettingsViewModel(
-            Creator.provideThemeSettingsUseCase(),
-            Creator.provideSharingUseCase()
-        )
+        Creator.provideSettingsViewModel()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

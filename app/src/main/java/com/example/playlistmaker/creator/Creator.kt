@@ -3,6 +3,7 @@ package com.example.playlistmaker.creator
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
+import com.example.playlistmaker.player.ui.viewmodel.AudioPlayerViewModel
 import com.example.playlistmaker.search.data.mapper.TrackMapper
 import com.example.playlistmaker.search.data.network.RetrofitClient
 import com.example.playlistmaker.search.data.network.iTunesApi
@@ -19,6 +20,10 @@ import com.example.playlistmaker.search.domain.usecase.SearchHistoryUseCase
 import com.example.playlistmaker.search.domain.usecase.SearchHistoryUseCaseImpl
 import com.example.playlistmaker.search.domain.usecase.SearchTracksUseCase
 import com.example.playlistmaker.search.domain.usecase.SearchTracksUseCaseImpl
+import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
+import com.example.playlistmaker.settings.data.theme.AppThemeManager
+import com.example.playlistmaker.settings.domain.theme.ThemeManager
+import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import com.example.playlistmaker.sharing.domain.usecase.SharingUseCase
 import com.example.playlistmaker.sharing.domain.usecase.SharingUseCaseImpl
 
@@ -34,7 +39,31 @@ object Creator {
         requireNotNull(appContext).getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     }
 
-    // Use Case providers
+    // ViewModels
+    fun provideSearchViewModel(): SearchViewModel {
+        return SearchViewModel(
+            provideSearchTracksUseCase(),
+            provideSearchHistoryUseCase()
+        )
+    }
+
+    private fun provideThemeManager(): ThemeManager {
+        return AppThemeManager()
+    }
+
+    fun provideSettingsViewModel(): SettingsViewModel {
+        return SettingsViewModel(
+            provideThemeSettingsUseCase(),
+            provideSharingUseCase(),
+            provideThemeManager()
+        )
+    }
+
+    fun provideAudioPlayerViewModel(): AudioPlayerViewModel {
+        return AudioPlayerViewModel(provideMediaPlayer())
+    }
+
+    // Use Cases
     fun provideSearchTracksUseCase(): SearchTracksUseCase {
         return SearchTracksUseCaseImpl(provideTrackRepository())
     }
@@ -47,7 +76,11 @@ object Creator {
         return ThemeSettingsUseCaseImpl(provideSettingsRepository())
     }
 
-    // Repository providers
+    fun provideSharingUseCase(): SharingUseCase {
+        return SharingUseCaseImpl(requireNotNull(appContext))
+    }
+
+    // Repositories
     private fun provideTrackRepository(): TrackRepository {
         return TrackRepositoryImpl(
             provideiTunesApi(),
@@ -60,7 +93,7 @@ object Creator {
         return SettingsRepositoryImpl(provideSettingsStorage())
     }
 
-    // Storage providers
+    // Storage
     private fun provideSearchHistoryStorage(): SearchHistoryStorage {
         return SearchHistoryStorage(sharedPreferences)
     }
@@ -69,20 +102,17 @@ object Creator {
         return SettingsStorageImpl(sharedPreferences)
     }
 
-    // API provider
+    // API
     private fun provideiTunesApi(): iTunesApi {
         return RetrofitClient.iTunesApi
     }
 
-    // Mapper provider
+    // Mapper
     private fun provideTrackMapper(): TrackMapper {
         return TrackMapper()
     }
 
-    fun provideSharingUseCase(): SharingUseCase {
-        return SharingUseCaseImpl(requireNotNull(appContext))
-    }
-
+    // MediaPlayer
     fun provideMediaPlayer(): MediaPlayer {
         return MediaPlayer()
     }

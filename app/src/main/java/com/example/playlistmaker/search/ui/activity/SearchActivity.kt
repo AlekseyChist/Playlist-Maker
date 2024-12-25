@@ -26,10 +26,7 @@ import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
 
 class SearchActivity : AppCompatActivity() {
     private val searchViewModel: SearchViewModel by lazy {
-        SearchViewModel(
-            Creator.provideSearchTracksUseCase(),
-            Creator.provideSearchHistoryUseCase()
-        )
+        Creator.provideSearchViewModel()
     }
 
     private lateinit var searchEditText: EditText

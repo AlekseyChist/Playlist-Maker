@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.settings.domain.theme.ThemeManager
 import com.example.playlistmaker.settings.domain.usecase.ThemeSettingsUseCase
 import com.example.playlistmaker.sharing.domain.usecase.SharingUseCase
 
 class SettingsViewModel(
     private val themeSettingsUseCase: ThemeSettingsUseCase,
-    private val sharingUseCase: SharingUseCase
+    private val sharingUseCase: SharingUseCase,
+    private val themeManager: ThemeManager
 ) : ViewModel() {
 
     private val _darkThemeEnabled = MutableLiveData<Boolean>()
@@ -22,14 +24,7 @@ class SettingsViewModel(
     fun switchTheme(enabled: Boolean) {
         themeSettingsUseCase.setDarkThemeEnabled(enabled)
         _darkThemeEnabled.value = enabled
-        applyTheme(enabled)
-    }
-
-    private fun applyTheme(isDarkTheme: Boolean) {
-        AppCompatDelegate.setDefaultNightMode(
-            if (isDarkTheme) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
+        themeManager.setNightMode(enabled)
     }
 
     fun shareApp() {

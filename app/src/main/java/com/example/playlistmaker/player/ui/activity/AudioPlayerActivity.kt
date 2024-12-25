@@ -8,18 +8,23 @@ import android.os.Looper
 import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.player.ui.state.AudioPlayerState
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.player.ui.viewmodel.AudioPlayerViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
-
+    private val viewModel: AudioPlayerViewModel by lazy {
+        Creator.provideAudioPlayerViewModel()
+    }
 
     private lateinit var track: Track
     private lateinit var backButton: ImageView
@@ -36,14 +41,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var genreTextView: TextView
     private lateinit var countryTextView: TextView
 
-    private var mediaPlayer: MediaPlayer? = null
-    private val handler = Handler(Looper.getMainLooper())
-    var isPlaying = false
-
-    private val audioPlayerViewModel: AudioPlayerViewModel by lazy {
-        AudioPlayerViewModel(MediaPlayer())
-    }
-
     private val timeFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +52,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         initViews()
         setupUI()
         setupListeners()
-        setupMediaPlayer()
+        observeViewModel()
+
+        viewModel.preparePlayer(track.previewUrl)
     }
 
     private fun initViews() {
@@ -90,19 +89,16 @@ class AudioPlayerActivity : AppCompatActivity() {
             .into(albumCover)
     }
 
-    private fun dpToPx(dp: Int): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp.toFloat(),
-            Resources.getSystem().displayMetrics
-        ).toInt()
-    }
-
     private fun setupListeners() {
         backButton.setOnClickListener { finish() }
 
         playButton.setOnClickListener {
-            if (isPlaying) pauseTrack() else playTrack()
+            when (viewModel.state.value) {
+                is AudioPlayerState.Playing -> viewModel.pause()
+                is AudioPlayerState.Prepared,
+                is AudioPlayerState.Paused -> viewModel.play()
+                else -> { /* do nothing */ }
+            }
         }
 
         addToPlaylistButton.setOnClickListener {
@@ -114,62 +110,46 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupMediaPlayer() {
-        mediaPlayer = MediaPlayer().apply {
-            setDataSource(track.previewUrl)
-            prepareAsync()
-            setOnPreparedListener { playButton.isEnabled = true }
-            setOnCompletionListener {
-                resetPlayerUI()
+    private fun observeViewModel() {
+        viewModel.state.observe(this) { state ->
+            when (state) {
+                is AudioPlayerState.Loading -> {
+                    playButton.isEnabled = false
+                }
+                is AudioPlayerState.Prepared -> {
+                    playButton.isEnabled = true
+                    playButton.setImageResource(R.drawable.play_button)
+                    currentTimeTextView.text = formatTime(0)
+                }
+                is AudioPlayerState.Playing -> {
+                    playButton.setImageResource(R.drawable.pause_button)
+                    currentTimeTextView.text = formatTime(state.currentPosition.toLong())
+                }
+                is AudioPlayerState.Paused -> {
+                    playButton.setImageResource(R.drawable.play_button)
+                }
+                is AudioPlayerState.Error -> {
+                    playButton.isEnabled = false
+                    Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
-    }
-
-    private fun playTrack() {
-        mediaPlayer?.start()
-        isPlaying = true
-        playButton.setImageResource(R.drawable.pause_button)
-        startTimer()
-    }
-
-    private fun pauseTrack() {
-        mediaPlayer?.pause()
-        isPlaying = false
-        playButton.setImageResource(R.drawable.play_button)
-        handler.removeCallbacksAndMessages(null)
-    }
-
-    private fun startTimer() {
-        handler.post(object : Runnable {
-            override fun run() {
-                mediaPlayer?.currentPosition?.let { position ->
-                    currentTimeTextView.text = formatTime(position.toLong())
-                }
-                handler.postDelayed(this, 1000)
-            }
-        })
     }
 
     private fun formatTime(timeMillis: Long): String {
         return timeFormat.format(timeMillis)
     }
 
-    private fun resetPlayerUI() {
-        isPlaying = false
-        playButton.setImageResource(R.drawable.play_button)
-        currentTimeTextView.text = formatTime(0)
-        handler.removeCallbacksAndMessages(null)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mediaPlayer?.release()
-        mediaPlayer = null
-        handler.removeCallbacksAndMessages(null)
+    private fun dpToPx(dp: Int): Int {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            Resources.getSystem().displayMetrics
+        ).toInt()
     }
 
     override fun onPause() {
         super.onPause()
-        pauseTrack()
+        viewModel.pause()
     }
 }
