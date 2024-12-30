@@ -9,6 +9,7 @@ class App : Application() {
         super.onCreate()
         Creator.init(this)
         applyTheme()
+
     }
 
     private fun applyTheme() {

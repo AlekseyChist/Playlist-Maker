@@ -51,13 +51,33 @@ object Creator {
         )
     }
 
-    // UseCases
+    fun provideSettingsViewModel(): SettingsViewModel {
+        return SettingsViewModel(
+            themeSettingsUseCase = provideThemeSettingsUseCase(),
+            sharingUseCase = provideSharingUseCase(),
+            themeManager = provideThemeManager()
+        )
+    }
+
+    fun provideAudioPlayerViewModel(): AudioPlayerViewModel {
+        return AudioPlayerViewModel(provideAudioPlayerUseCase())
+    }
+
+    // Use Cases
     private fun provideSearchTracksUseCase(): SearchTracksUseCase {
         return SearchTracksUseCaseImpl(provideTrackRepository())
     }
 
     private fun provideSearchHistoryUseCase(): SearchHistoryUseCase {
         return SearchHistoryUseCaseImpl(provideTrackRepository())
+    }
+
+    fun provideThemeSettingsUseCase(): ThemeSettingsUseCase {
+        return ThemeSettingsUseCaseImpl(provideSettingsRepository())
+    }
+
+    fun provideSharingUseCase(): SharingUseCase {
+        return SharingUseCaseImpl(requireNotNull(appContext))
     }
 
     private fun provideAudioPlayerUseCase(): AudioPlayerUseCase {
@@ -73,6 +93,10 @@ object Creator {
         )
     }
 
+    private fun provideSettingsRepository(): SettingsRepository {
+        return SettingsRepositoryImpl(provideSettingsStorage())
+    }
+
     private fun provideAudioPlayerRepository(): AudioPlayerRepository {
         return AudioPlayerRepositoryImpl(MediaPlayer())
     }
@@ -82,17 +106,22 @@ object Creator {
         return SearchHistoryStorage(sharedPreferences)
     }
 
+    private fun provideSettingsStorage(): SettingsStorage {
+        return SettingsStorageImpl(sharedPreferences)
+    }
+
     // API
     private fun provideiTunesApi(): iTunesApi {
         return RetrofitClient.iTunesApi
     }
 
-    // Mappers
+    // Mapper
     private fun provideTrackMapper(): TrackMapper {
         return TrackMapper()
     }
 
-    fun provideAudioPlayerViewModel(): AudioPlayerViewModel {
-        return AudioPlayerViewModel(provideAudioPlayerUseCase())
+    // Theme
+    private fun provideThemeManager(): ThemeManager {
+        return AppThemeManager()
     }
 }

@@ -41,6 +41,7 @@
             android:background="@drawable/rounded_edit_text_background"
             android:hint="@string/search"
             android:textColorHint="@color/hintcolor"
+            android:textCursorDrawable="@color/blue"
             android:textColor="@color/black"
             android:inputType="text"
             android:maxLines="1"
