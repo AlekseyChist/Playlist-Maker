@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
@@ -25,8 +26,9 @@ import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
 
 
 class SearchActivity : AppCompatActivity() {
-    private val searchViewModel: SearchViewModel by lazy {
-        Creator.provideSearchViewModel()
+    private val viewModel: SearchViewModel by lazy {
+        ViewModelProvider(this, Creator.provideSearchViewModelFactory())
+            .get(SearchViewModel::class.java)
     }
 
     private lateinit var searchEditText: EditText
@@ -79,7 +81,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = if (s?.isNotEmpty() == true) View.VISIBLE else View.GONE
-                searchViewModel.search(s?.toString() ?: "")
+                viewModel.search(s?.toString() ?: "")
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -87,7 +89,7 @@ class SearchActivity : AppCompatActivity() {
 
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchViewModel.search(searchEditText.text.toString())
+                viewModel.search(searchEditText.text.toString())
                 true
             } else {
                 false
@@ -98,7 +100,7 @@ class SearchActivity : AppCompatActivity() {
             searchEditText.text.clear()
             clearButton.visibility = View.GONE
             hideKeyboard()
-            searchViewModel.showHistory()
+            viewModel.showHistory()
         }
 
         backButton.setOnClickListener {
@@ -106,11 +108,11 @@ class SearchActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener {
-            searchViewModel.search(searchEditText.text.toString())
+            viewModel.search(searchEditText.text.toString())
         }
 
         clearHistoryButton.setOnClickListener {
-            searchViewModel.clearHistory()
+            viewModel.clearHistory()
         }
 
         searchEditText.setOnFocusChangeListener { _, hasFocus ->
@@ -122,14 +124,14 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupRecyclerViews() {
         trackAdapter = TrackAdapter(emptyList()) { track ->
-            searchViewModel.addToHistory(track)
+            viewModel.addToHistory(track)
             navigateToAudioPlayer(track)
         }
         recyclerView.adapter = trackAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         historyAdapter = TrackAdapter(emptyList()) { track ->
-            searchViewModel.addToHistory(track)
+            viewModel.addToHistory(track)
             navigateToAudioPlayer(track)
         }
         historyRecyclerView.adapter = historyAdapter
@@ -137,7 +139,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        searchViewModel.state.observe(this) { state ->
+        viewModel.state.observe(this) { state ->
             when (state) {
                 is SearchState.Loading -> showLoading()
                 is SearchState.Content -> showContent(state.tracks)
@@ -192,13 +194,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun updateHistoryVisibility() {
-        val historyTracks = searchViewModel.getHistory()
+        val historyTracks = viewModel.getHistory()
         val showHistory = searchEditText.text.isEmpty() &&
                 historyTracks.isNotEmpty() &&
                 searchEditText.hasFocus()
 
         if (showHistory) {
-            searchViewModel.showHistory()
+            viewModel.showHistory()
         }
     }
 

@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Constants
@@ -23,7 +24,8 @@ import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
     private val viewModel: AudioPlayerViewModel by lazy {
-        Creator.provideAudioPlayerViewModel()
+        ViewModelProvider(this, Creator.provideAudioPlayerViewModelFactory())
+            .get(AudioPlayerViewModel::class.java)
     }
 
     private lateinit var track: Track

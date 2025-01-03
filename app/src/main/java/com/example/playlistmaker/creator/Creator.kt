@@ -3,11 +3,13 @@ package com.example.playlistmaker.creator
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.player.data.repository.AudioPlayerRepositoryImpl
 import com.example.playlistmaker.player.domain.repository.AudioPlayerRepository
 import com.example.playlistmaker.player.domain.usecase.AudioPlayerUseCase
 import com.example.playlistmaker.player.domain.usecase.AudioPlayerUseCaseImpl
 import com.example.playlistmaker.player.ui.viewmodel.AudioPlayerViewModel
+import com.example.playlistmaker.player.ui.viewmodel.AudioPlayerViewModelFactory
 import com.example.playlistmaker.search.data.mapper.TrackMapper
 import com.example.playlistmaker.search.data.network.RetrofitClient
 import com.example.playlistmaker.search.data.network.iTunesApi
@@ -25,9 +27,13 @@ import com.example.playlistmaker.search.domain.usecase.SearchHistoryUseCaseImpl
 import com.example.playlistmaker.search.domain.usecase.SearchTracksUseCase
 import com.example.playlistmaker.search.domain.usecase.SearchTracksUseCaseImpl
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
+import com.example.playlistmaker.search.ui.viewmodel.SearchViewModelFactory
 import com.example.playlistmaker.settings.data.theme.AppThemeManager
 import com.example.playlistmaker.settings.domain.theme.ThemeManager
 import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
+import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModelFactory
+import com.example.playlistmaker.sharing.data.AndroidNavigationInteractor
+import com.example.playlistmaker.sharing.domain.usecase.NavigationInteractor
 import com.example.playlistmaker.sharing.domain.usecase.SharingUseCase
 import com.example.playlistmaker.sharing.domain.usecase.SharingUseCaseImpl
 
@@ -76,8 +82,12 @@ object Creator {
         return ThemeSettingsUseCaseImpl(provideSettingsRepository())
     }
 
+    private fun provideNavigationInteractor(): NavigationInteractor {
+        return AndroidNavigationInteractor(requireNotNull(appContext))
+    }
+
     fun provideSharingUseCase(): SharingUseCase {
-        return SharingUseCaseImpl(requireNotNull(appContext))
+        return SharingUseCaseImpl(provideNavigationInteractor())
     }
 
     private fun provideAudioPlayerUseCase(): AudioPlayerUseCase {
@@ -123,5 +133,26 @@ object Creator {
     // Theme
     private fun provideThemeManager(): ThemeManager {
         return AppThemeManager()
+    }
+
+    fun provideSettingsViewModelFactory(): ViewModelProvider.Factory {
+        return SettingsViewModelFactory(
+            provideThemeSettingsUseCase(),
+            provideSharingUseCase(),
+            provideThemeManager()
+        )
+    }
+
+    fun provideSearchViewModelFactory(): ViewModelProvider.Factory {
+        return SearchViewModelFactory(
+            provideSearchTracksUseCase(),
+            provideSearchHistoryUseCase()
+        )
+    }
+
+    fun provideAudioPlayerViewModelFactory(): ViewModelProvider.Factory {
+        return AudioPlayerViewModelFactory(
+            provideAudioPlayerUseCase()
+        )
     }
 }

@@ -13,7 +13,8 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     private val viewModel: SettingsViewModel by lazy {
-        Creator.provideSettingsViewModel()
+        ViewModelProvider(this, Creator.provideSettingsViewModelFactory())
+            .get(SettingsViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
