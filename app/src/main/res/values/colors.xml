@@ -20,5 +20,6 @@
     <color name="clear_history_button_background">#1A1B22</color>
     <color name="clear_history_button_text">#FFFFFF</color>
     <color name="Blue">#3772E7</color>
+    <color name="yp_black">#1A1B22</color>
 
 </resources>

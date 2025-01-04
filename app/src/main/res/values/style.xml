@@ -32,4 +32,10 @@
         <item name="iconTint">@color/my_on_secondary</item>
     </style>
 
+    <style name="SwitchTheme">
+        <item name="colorControlActivated">@color/blue</item>
+        <item name="colorSwitchThumbNormal">@color/white</item>
+        <item name="android:colorForeground">@color/iconcolor</item>
+    </style>
+
 </resources>
