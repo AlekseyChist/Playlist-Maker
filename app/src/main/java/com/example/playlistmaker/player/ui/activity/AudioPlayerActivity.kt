@@ -10,23 +10,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.ui.state.AudioPlayerState
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.player.ui.viewmodel.AudioPlayerViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class AudioPlayerActivity : AppCompatActivity() {
-    private val viewModel: AudioPlayerViewModel by lazy {
-        ViewModelProvider(this, Creator.provideAudioPlayerViewModelFactory())
-            .get(AudioPlayerViewModel::class.java)
-    }
+    private val viewModel: AudioPlayerViewModel by viewModel()
 
     private lateinit var track: Track
     private lateinit var backButton: ImageView
