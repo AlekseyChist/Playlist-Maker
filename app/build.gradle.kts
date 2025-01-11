@@ -42,7 +42,7 @@ dependencies {
 
     implementation (libs.androidx.lifecycle.viewmodel)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
-
+    implementation (libs.insert.koin.koin.android)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.glide)
