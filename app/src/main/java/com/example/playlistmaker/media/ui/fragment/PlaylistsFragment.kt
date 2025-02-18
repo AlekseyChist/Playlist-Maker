@@ -10,6 +10,11 @@ import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
+    companion object {
+        fun newInstance(): PlaylistsFragment {
+            return PlaylistsFragment()
+        }
+    }
 
     private val viewModel: PlaylistsViewModel by viewModel()
 

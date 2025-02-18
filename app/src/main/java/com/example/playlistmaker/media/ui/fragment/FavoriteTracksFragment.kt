@@ -10,6 +10,11 @@ import com.example.playlistmaker.media.ui.viewmodel.FavoriteTracksViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteTracksFragment : Fragment() {
+    companion object {
+        fun newInstance(): FavoriteTracksFragment {
+            return FavoriteTracksFragment()
+        }
+    }
 
     private val viewModel: FavoriteTracksViewModel by viewModel()
 
