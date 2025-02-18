@@ -7,34 +7,35 @@
         android:id="@+id/newPlaylistButton"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
         android:background="@drawable/rounded_button"
-        android:text="@string/new_playlist"
-        android:textColor="@color/clear_history_button_text"
-        android:textAllCaps="false"
         android:paddingStart="@dimen/padding16"
         android:paddingEnd="@dimen/padding16"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/padding16"/>
+        android:text="@string/new_playlist"
+        android:textAllCaps="false"
+        android:textColor="@color/clear_history_button_text" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_marginTop="106dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/nothing_found"/>
+            android:src="@drawable/nothing_found" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/no_playlist"
-            android:textSize="@dimen/_19sp"
+            android:textAlignment="center"
             android:textColor="@color/my_on_secondary"
-            android:layout_marginTop="@dimen/padding16"
-            android:textAlignment="center"/>
+            android:textSize="@dimen/_19sp" />
 
     </LinearLayout>
 
