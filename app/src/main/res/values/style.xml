@@ -72,6 +72,23 @@
         <item name="backgroundTint">@color/black</item>
     </style>
 
+    <style name="CustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:fontFamily">@font/ys_text_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">16.41dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAlignment">center</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">@color/clear_history_button_background</item>
+    </style>
+
+    <style name="CustomTabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabTextAppearance">@style/CustomTabTextAppearance</item>
+        <item name="tabIndicatorColor">@color/clear_history_button_background</item>
+        <item name="tabSelectedTextColor">@color/clear_history_button_background</item>
+        <item name="tabTextColor">@color/clear_history_button_background</item>
+    </style>
+
 
 
 </resources>
