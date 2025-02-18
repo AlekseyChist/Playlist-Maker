@@ -40,9 +40,13 @@ android {
 
 dependencies {
 
-    implementation (libs.androidx.lifecycle.viewmodel)
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
-    implementation (libs.insert.koin.koin.android)
+    implementation("io.insert-koin:koin-android:3.4.0")
+    implementation("io.insert-koin:koin-android-compat:3.4.0")
+    implementation("io.insert-koin:koin-androidx-workmanager:3.4.0")
+    implementation("io.insert-koin:koin-androidx-navigation:3.4.0")
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.insert.koin.koin.android)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.glide)
