@@ -16,29 +16,31 @@
 
             <ImageView
                 android:id="@+id/backButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="@dimen/padding4"
                 android:src="@drawable/back_button_vector" />
 
             <TextView
                 style="@style/MediatekaTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding16"
                 android:fontFamily="@font/ys_text_medium"
                 android:text="@string/MediaLibrary"
                 android:textColor="@color/clear_history_button_background"
-                android:textSize="22sp" />
+                android:textSize="@dimen/text_size_22" />
         </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
+        style="@style/CustomTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/clear_history_button_text"
-        style="@style/CustomTabLayout" />
+        android:backgroundTint="@color/clear_history_button_text" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
