@@ -8,6 +8,7 @@ import com.example.playlistmaker.di.searchModule
 import com.example.playlistmaker.di.settingsModule
 import com.example.playlistmaker.di.sharedModule
 import com.example.playlistmaker.di.sharingModule
+import com.example.playlistmaker.media.di.mediaModule
 import com.example.playlistmaker.settings.domain.usecase.ThemeSettingsUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.KoinComponent
@@ -26,7 +27,8 @@ class App : Application(), KoinComponent {
                 searchModule,
                 playerModule,
                 settingsModule,
-                sharingModule
+                sharingModule,
+                mediaModule
             )
         }
 
