@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?attr/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,12 +12,13 @@
         android:orientation="horizontal"
         android:padding="@dimen/padding16">
 
+        <!-- Заголовок "Поиск" -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/search"
             android:textSize="@dimen/text_size_22"
-            android:textColor="@color/clear_history_button_background"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginStart="@dimen/padding16"
             android:fontFamily="@font/ys_text_medium"/>
     </LinearLayout>
@@ -26,21 +28,23 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/padding16">
 
+        <!-- Редактирование текста -->
         <EditText
             android:id="@+id/search_edit_text"
             android:layout_width="match_parent"
             android:layout_height="@dimen/padding_36dp"
             android:background="@drawable/rounded_edit_text_background"
             android:hint="@string/search"
+            android:textColor="?attr/colorOnSurface"
             android:textColorHint="@color/hintcolor"
             android:textCursorDrawable="@color/blue"
-            android:textColor="@color/black"
             android:inputType="text"
             android:maxLines="1"
             android:paddingStart="@dimen/padding_36dp"
             android:paddingEnd="@dimen/padding_36dp"
             android:textSize="@dimen/text14sp" />
 
+        <!-- Иконка поиска -->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,14 +53,15 @@
             android:src="@drawable/search_button"
             app:tint="@color/iconcolor" />
 
+        <!-- Кнопка очистки текста -->
         <ImageView
             android:id="@+id/clear_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="@dimen/padding_8dp"
-            app:tint="@color/iconcolor"
             android:padding="@dimen/padding_8dp"
+            app:tint="@color/iconcolor"
             android:src="@drawable/cancel_button" />
     </FrameLayout>
 
@@ -65,6 +70,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <!-- История поиска -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -73,8 +79,8 @@
                 android:id="@+id/historyLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/historyTitle"
@@ -83,7 +89,7 @@
                     android:text="@string/search_history"
                     android:layout_gravity="center"
                     android:textSize="@dimen/text_size_22"
-                    android:textColor="@color/clear_history_button_background"
+                    android:textColor="?attr/colorOnSurface"
                     android:layout_margin="@dimen/padding16"
                     android:fontFamily="@font/ys_text_medium"/>
 
@@ -96,18 +102,18 @@
                     android:id="@+id/clearHistoryButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/padding16"
                     android:background="@drawable/clear_button"
+                    android:text="@string/clear_history"
+                    android:textAllCaps="false"
                     android:textColor="@color/clear_history_button_text"
                     android:paddingStart="@dimen/padding16"
-                    android:paddingEnd="@dimen/padding16"
-                    android:textAllCaps="false"
-                    android:text="@string/clear_history"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/padding16"/>
-
+                    android:paddingEnd="@dimen/padding16"/>
             </LinearLayout>
         </ScrollView>
 
+        <!-- Список результатов -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
@@ -115,12 +121,13 @@
             android:layout_marginTop="@dimen/padding16"
             android:visibility="gone"/>
 
+        <!-- Плейсхолдер "Ничего не найдено" -->
         <LinearLayout
             android:id="@+id/placeholderLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:visibility="gone">
 
             <ImageView
@@ -134,8 +141,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing_found"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/_19sp"
-                android:textColor="@color/my_on_secondary"
                 android:layout_marginTop="@dimen/padding16"
                 android:textAlignment="center" />
 
@@ -143,16 +150,17 @@
                 android:id="@+id/refreshButton"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
+                android:layout_marginTop="@dimen/padding16"
                 android:background="@drawable/rounded_button"
                 android:text="@string/refresh"
-                android:textColor="@color/clear_history_button_text"
                 android:textAllCaps="false"
+                android:textColor="@color/clear_history_button_text"
                 android:paddingStart="@dimen/padding16"
                 android:paddingEnd="@dimen/padding16"
-                android:layout_marginTop="@dimen/padding16"
                 android:visibility="visible" />
         </LinearLayout>
 
+        <!-- Прогресс-бар -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
