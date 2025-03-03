@@ -14,7 +14,9 @@ class AndroidNavigationInteractor(
             putExtra(Intent.EXTRA_TEXT, text)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        context.startActivity(Intent.createChooser(intent, null))
+        context.startActivity(Intent.createChooser(intent, null).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        })
     }
 
     override fun openLink(url: String) {
@@ -24,6 +26,7 @@ class AndroidNavigationInteractor(
         }
         context.startActivity(intent)
     }
+
 
     override fun sendEmail(email: String, subject: String, body: String) {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
