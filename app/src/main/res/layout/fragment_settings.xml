@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/colorSurface">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextViewSettings"
+        android:theme="@style/SwitchTheme"
+        android:paddingStart="@dimen/padding4"
+        android:paddingTop="@dimen/padding_10dp"
+        android:paddingBottom="@dimen/padding_42dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="14dp"
+            android:fontFamily="@font/ys_text_regular"
+            android:text="@string/Settings"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="22sp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/themeSwitcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/ys_text_light"
+        android:iconTint="?attr/colorOnSurface"
+        android:paddingStart="@dimen/padding16"
+        android:paddingTop="@dimen/padding_settings"
+        android:paddingEnd="@dimen/padding16"
+        android:paddingBottom="@dimen/padding_settings"
+        android:text="@string/Dark_theme"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="@dimen/text_size_settings"
+        android:theme="@style/SwitchTheme" />
+
+
+    <TextView
+        android:id="@+id/share_the_app"
+        style="@style/TextViewSettings"
+        android:drawableEnd="@drawable/share_button"
+        android:text="@string/Share_the_app" />
+
+    <TextView
+        android:id="@+id/write_to_the_support"
+        style="@style/TextViewSettings"
+        android:drawableEnd="@drawable/support_logo"
+        android:text="@string/write_to_the_support" />
+
+    <TextView
+        android:id="@+id/user_agreement"
+        style="@style/TextViewSettings"
+        android:drawableEnd="@drawable/user_agreement"
+        android:text="@string/User_agreement" />
+
+</LinearLayout>

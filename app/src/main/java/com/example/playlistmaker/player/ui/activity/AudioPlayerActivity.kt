@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
@@ -53,7 +54,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         setupListeners()
         observeViewModel()
 
-        viewModel.preparePlayer(track.previewUrl)
+        try {
+            viewModel.preparePlayer(track.previewUrl)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Не удалось подготовить трек: ${e.message}", Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "Error preparing player", e)
+        }
     }
 
     private fun initViews() {
@@ -92,11 +98,16 @@ class AudioPlayerActivity : AppCompatActivity() {
         backButton.setOnClickListener { finish() }
 
         playButton.setOnClickListener {
-            when (viewModel.state.value) {
-                is AudioPlayerState.Playing -> viewModel.pause()
-                is AudioPlayerState.Prepared,
-                is AudioPlayerState.Paused -> viewModel.play()
-                else -> { /* do nothing */ }
+            try {
+                when (viewModel.state.value) {
+                    is AudioPlayerState.Playing -> viewModel.pause()
+                    is AudioPlayerState.Prepared,
+                    is AudioPlayerState.Paused -> viewModel.play()
+                    else -> { /* do nothing */ }
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, "Ошибка воспроизведения: ${e.message}", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Error with playback control", e)
             }
         }
 
@@ -147,8 +158,16 @@ class AudioPlayerActivity : AppCompatActivity() {
         ).toInt()
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.pause()
+    override fun onStop() {
+        super.onStop()
+        try {
+            viewModel.pause()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error pausing player in onStop", e)
+        }
+    }
+
+    companion object {
+        private const val TAG = "AudioPlayerActivity"
     }
 }

@@ -11,11 +11,11 @@ import org.koin.dsl.module
 
 val playerModule = module {
     // Data Layer
-    single { MediaPlayer() }
-    single<AudioPlayerRepository> { AudioPlayerRepositoryImpl(get()) }
+    factory { MediaPlayer() }
+    factory<AudioPlayerRepository> { AudioPlayerRepositoryImpl(get()) }
 
     // Domain Layer
-    single<AudioPlayerUseCase> { AudioPlayerUseCaseImpl(get()) }
+    factory<AudioPlayerUseCase> { AudioPlayerUseCaseImpl(get()) }
 
     // UI Layer
     viewModel { AudioPlayerViewModel(get()) }
