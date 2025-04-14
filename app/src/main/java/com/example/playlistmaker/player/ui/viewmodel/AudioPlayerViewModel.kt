@@ -1,14 +1,20 @@
 package com.example.playlistmaker.player.ui.viewmodel
 
+import android.content.ContentValues.TAG
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore.Audio
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.usecase.AudioPlayerUseCase
 import com.example.playlistmaker.player.ui.state.AudioPlayerState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
     private val audioPlayerUseCase: AudioPlayerUseCase
@@ -17,8 +23,7 @@ class AudioPlayerViewModel(
     private val _state = MutableLiveData<AudioPlayerState>()
     val state: LiveData<AudioPlayerState> = _state
 
-    private val handler = Handler(Looper.getMainLooper())
-    private var playbackRunnable: Runnable? = null
+    private var playbackJob: Job? = null
 
     init {
         _state.value = AudioPlayerState.Loading
@@ -30,14 +35,13 @@ class AudioPlayerViewModel(
             // Подготавливаем плеер
             audioPlayerUseCase.preparePlayer(url)
 
-            // Поскольку у нас нет возможности получить колбэк о готовности,
-            // используем разумную задержку.
-            // В реальной ситуации лучше было бы добавить в интерфейс механизм колбэков.
-            handler.postDelayed({
+            // Задержка через корутину вместо Handler
+            viewModelScope.launch {
+                delay(PREPARE_DELAY)
                 if (_state.value is AudioPlayerState.Loading) {
                     _state.value = AudioPlayerState.Prepared
                 }
-            }, PREPARE_DELAY)
+            }
         } catch (e: Exception) {
             _state.value = AudioPlayerState.Error(e.message ?: "Unknown error")
             Log.e(TAG, "Error preparing player", e)
@@ -67,28 +71,21 @@ class AudioPlayerViewModel(
     }
 
     private fun startPlaybackTimer() {
-        playbackRunnable?.let { handler.removeCallbacks(it) }
-
-        playbackRunnable = object : Runnable {
-            override fun run() {
-                try {
-                    if (audioPlayerUseCase.isPlaying()) {
-                        _state.value = AudioPlayerState.Playing(audioPlayerUseCase.getCurrentPosition())
-                        handler.postDelayed(this, PLAYBACK_UPDATE_DELAY)
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error in playback timer", e)
-                    stopPlaybackTimer()
-                }
-            }
+        // Отменяем предыдущую корутину, если она есть
+        playbackJob?.cancel()
+        // Запускаем новую корутину для обновления прогресса
+        playbackJob = viewModelScope.launch {
+            while (audioPlayerUseCase.isPlaying())  {
+                delay(PLAYBACK_UPDATE_DELAY)
+                _state.value = AudioPlayerState.Playing(audioPlayerUseCase.getCurrentPosition())
         }
 
-        handler.post(playbackRunnable!!)
+        }
     }
 
     private fun stopPlaybackTimer() {
-        playbackRunnable?.let { handler.removeCallbacks(it) }
-        playbackRunnable = null
+        playbackJob?.cancel()
+        playbackJob = null
     }
 
     override fun onCleared() {

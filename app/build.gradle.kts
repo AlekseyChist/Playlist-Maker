@@ -44,8 +44,9 @@ android {
 
 dependencies {
 
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.navigation.fragment.ktx)
-    implementation (libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     implementation("io.insert-koin:koin-android:3.5.3")
     implementation("io.insert-koin:koin-android-compat:3.4.0")
     implementation("io.insert-koin:koin-androidx-workmanager:3.4.0")
