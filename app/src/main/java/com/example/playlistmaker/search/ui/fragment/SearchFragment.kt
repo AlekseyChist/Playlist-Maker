@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.Constants
@@ -18,6 +19,8 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.adapter.TrackAdapter
 import com.example.playlistmaker.search.ui.state.SearchState
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -29,6 +32,9 @@ class SearchFragment : Fragment() {
 
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
+
+    private var isClickAllowed = true
+    private val CLICK_DEBOUNCE_DELAY = 1000L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -180,6 +186,21 @@ class SearchFragment : Fragment() {
     private fun hideKeyboard() {
         val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
+    }
+
+
+
+    // Функция для защиты от множественных нажатий
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
+        }
+        return current
     }
 
     private fun navigateToAudioPlayer(track: Track) {
