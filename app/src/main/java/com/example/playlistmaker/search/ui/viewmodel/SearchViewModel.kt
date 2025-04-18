@@ -1,18 +1,17 @@
 package com.example.playlistmaker.search.ui.viewmodel
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.search.domain.listener.TracksConsumer
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.usecase.SearchHistoryUseCase
 import com.example.playlistmaker.search.domain.usecase.SearchTracksUseCase
 import com.example.playlistmaker.search.ui.state.SearchState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -47,20 +46,17 @@ class SearchViewModel(
 
         searchJob = viewModelScope.launch {
             delay(SEARCH_DEBOUNCE_DELAY)
-            _state.value = SearchState.Loading
 
-            searchTracksUseCase.execute(query, object : TracksConsumer {
-                override fun consume(tracks: List<Track>) {
+            searchTracksUseCase.execute(query)
+                .onStart { _state.value = SearchState.Loading }
+                .catch { error -> _state.value = SearchState.Error(error.message ?: "Unknown error") }
+                .collect { tracks ->
                     _state.value = if (tracks.isEmpty()) {
                         SearchState.Empty
                     } else {
                         SearchState.Content(tracks)
                     }
                 }
-                override fun onError(e: Exception) {
-                    _state.value = SearchState.Error(e.message ?: "Unknown error")
-                }
-            })
         }
     }
 
@@ -81,10 +77,4 @@ class SearchViewModel(
         searchHistoryUseCase.clearHistory()
         showHistory()
     }
-
-    //override fun onCleared() {
-      //  super.onCleared()
-        //handler.removeCallbacksAndMessages(null)
-    //}
-
 }

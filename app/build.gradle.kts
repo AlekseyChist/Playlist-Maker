@@ -45,6 +45,7 @@ android {
 dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation("io.insert-koin:koin-android:3.5.3")

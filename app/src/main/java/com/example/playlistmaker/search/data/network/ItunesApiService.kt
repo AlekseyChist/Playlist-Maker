@@ -2,7 +2,6 @@ package com.example.playlistmaker.search.data.network
 
 import com.example.playlistmaker.search.data.dto.SearchResponseDto
 import com.example.playlistmaker.search.domain.model.Track
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -15,10 +14,10 @@ data class SearchResponse(
 
 interface iTunesApi {
     @GET("/search")
-    fun search(
+    suspend fun search(
         @Query("term") term: String,
         @Query("entity") entity: String = "song"
-    ): Call<SearchResponseDto>
+    ): SearchResponseDto
 }
 
 object RetrofitClient {
@@ -29,9 +28,9 @@ object RetrofitClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val iTunesApi = retrofit.create(com.example.playlistmaker.search.data.network.iTunesApi::class.java)
+    val iTunesApi = retrofit.create(iTunesApi::class.java)
 
-    fun searchTracks(term: String): Call<SearchResponseDto> {
+    suspend fun searchTracks(term: String): SearchResponseDto {
         return iTunesApi.search(term)
     }
 }
