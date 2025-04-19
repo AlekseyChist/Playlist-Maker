@@ -1,11 +1,6 @@
 package com.example.playlistmaker.player.ui.viewmodel
 
-import android.content.ContentValues.TAG
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
-import android.provider.MediaStore.Audio
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,7 +30,13 @@ class AudioPlayerViewModel(
             // Подготавливаем плеер
             audioPlayerUseCase.preparePlayer(url)
 
-            // Задержка через корутину вместо Handler
+            // Устанавливаем слушатель завершения воспроизведения
+            audioPlayerUseCase.setOnCompletionListener {
+                stopPlaybackTimer()
+                _state.value = AudioPlayerState.Prepared
+            }
+
+            // Задержка для загрузки плеера
             viewModelScope.launch {
                 delay(PREPARE_DELAY)
                 if (_state.value is AudioPlayerState.Loading) {
@@ -44,7 +45,6 @@ class AudioPlayerViewModel(
             }
         } catch (e: Exception) {
             _state.value = AudioPlayerState.Error(e.message ?: "Unknown error")
-            Log.e(TAG, "Error preparing player", e)
         }
     }
 
@@ -55,7 +55,6 @@ class AudioPlayerViewModel(
             startPlaybackTimer()
         } catch (e: Exception) {
             _state.value = AudioPlayerState.Error(e.message ?: "Play error")
-            Log.e(TAG, "Error playing", e)
         }
     }
 
@@ -66,20 +65,19 @@ class AudioPlayerViewModel(
             stopPlaybackTimer()
         } catch (e: Exception) {
             // Только логируем ошибку, не меняем состояние UI
-            Log.e(TAG, "Error pausing", e)
         }
     }
 
     private fun startPlaybackTimer() {
         // Отменяем предыдущую корутину, если она есть
         playbackJob?.cancel()
+
         // Запускаем новую корутину для обновления прогресса
         playbackJob = viewModelScope.launch {
-            while (audioPlayerUseCase.isPlaying())  {
+            while (audioPlayerUseCase.isPlaying()) {
                 delay(PLAYBACK_UPDATE_DELAY)
                 _state.value = AudioPlayerState.Playing(audioPlayerUseCase.getCurrentPosition())
-        }
-
+            }
         }
     }
 
@@ -94,12 +92,11 @@ class AudioPlayerViewModel(
         try {
             audioPlayerUseCase.release()
         } catch (e: Exception) {
-            Log.e(TAG, "Error releasing player", e)
+            // Логирование ошибки, если нужно
         }
     }
 
     companion object {
-        private const val TAG = "AudioPlayerViewModel"
         private const val PLAYBACK_UPDATE_DELAY = 300L
         private const val PREPARE_DELAY = 1000L
     }
