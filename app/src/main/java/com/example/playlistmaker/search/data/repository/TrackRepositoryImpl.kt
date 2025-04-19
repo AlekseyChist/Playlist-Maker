@@ -7,6 +7,7 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.repository.TrackRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlin.coroutines.cancellation.CancellationException
 
 class TrackRepositoryImpl(
     private val api: iTunesApi,
@@ -24,7 +25,11 @@ class TrackRepositoryImpl(
             val response = api.search(query, "song")
             val tracks = response.results.map { mapper.mapDtoToDomain(it) }
             emit(tracks)
+        } catch (e: CancellationException) {
+            // Не перехватываем CancellationException, а передаем его выше
+            throw e
         } catch (e: Exception) {
+            // Остальные исключения перехватываем и обрабатываем
             throw e
         }
     }
