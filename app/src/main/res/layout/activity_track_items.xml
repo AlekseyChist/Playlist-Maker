@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_61dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/yp_backgound">
+
 
     <ImageView
         android:id="@+id/trackImage"
