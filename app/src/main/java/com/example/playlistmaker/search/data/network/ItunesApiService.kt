@@ -16,8 +16,12 @@ interface iTunesApi {
     @GET("/search")
     suspend fun search(
         @Query("term") term: String,
-        @Query("entity") entity: String = "song"
+        @Query("entity") entity: String = ENTITY_SONG
     ): SearchResponseDto
+
+    companion object {
+        const val ENTITY_SONG = "song"
+    }
 }
 
 object RetrofitClient {

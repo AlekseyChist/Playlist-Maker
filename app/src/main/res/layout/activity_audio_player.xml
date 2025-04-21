@@ -10,7 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/yp_backgound">
+        android:backgroundTint="@color/my_on_primary"
+        android:background="?attr/colorPrimary">
 
     <ImageView
         android:id="@+id/backButton"
