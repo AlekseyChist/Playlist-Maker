@@ -62,6 +62,9 @@ class SearchViewModel(
 
     fun showHistory() {
         val history = searchHistoryUseCase.getHistory()
+        if (history.isEmpty()) {
+            return
+        }
         _state.value = SearchState.History(history)
     }
 
@@ -75,6 +78,6 @@ class SearchViewModel(
 
     fun clearHistory() {
         searchHistoryUseCase.clearHistory()
-        showHistory()
+        _state.value = SearchState.History(emptyList())
     }
 }

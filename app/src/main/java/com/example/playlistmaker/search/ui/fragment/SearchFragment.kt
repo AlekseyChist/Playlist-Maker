@@ -165,6 +165,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun showHistory(tracks: List<Track>) {
+        if (tracks.isEmpty()) {
+            binding.historyLayout.visibility = View.GONE
+            return
+        }
         historyAdapter.updateTracks(tracks)
         binding.historyLayout.visibility = View.VISIBLE
         binding.recyclerView.visibility = View.GONE
@@ -174,6 +178,11 @@ class SearchFragment : Fragment() {
 
     private fun updateHistoryVisibility() {
         val historyTracks = viewModel.getHistory()
+
+        if (historyTracks.isEmpty()) {
+            binding.historyLayout.visibility = View.GONE
+            return
+        }
         val showHistory = binding.searchEditText.text.isEmpty() &&
                 historyTracks.isNotEmpty() &&
                 binding.searchEditText.hasFocus()
