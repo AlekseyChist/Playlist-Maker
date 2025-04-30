@@ -11,7 +11,7 @@
     <color name="blue">#3772E7</color>
     <color name="settings_text_color">#FFFFFF</color>
     <color name="black">#1A1B22</color>
-    <color name="iconcolor">#FFFFFF</color>
+    <color name="iconcolor">#1A1B22</color>
     <color name="search_edited_text">#FFFFFF</color>
     <color name="placeholder_color">#FFFFFF</color>
     <color name="error_symbol_color">#FFFFFF</color>
@@ -20,7 +20,7 @@
     <color name="switch_thumb_color">#3772E7</color>
     <color name="switch_track_color">#1A1B22</color>
     <color name="yp_black">#1A1B22</color>
-    <color name="hintcolor">#AEAFB4</color>
+    <color name="hintcolor">#1A1B22</color>
     <color name="yp_backgound">#1A1B22</color>
     <color name="bottom_nav_background">@color/yp_black</color>
     <color name="bottom_nav_item_color">@color/white</color>
