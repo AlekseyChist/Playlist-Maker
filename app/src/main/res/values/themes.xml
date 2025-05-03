@@ -7,9 +7,12 @@
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/my_secondary</item>
         <item name="colorOnSecondary">@color/black</item>
-        <item name="android:windowBackground">@color/white</item>
-
-        <!-- Add other light theme customizations here -->
+        <item name="android:windowBackground">@color/yp_background</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
     <style name="Theme.PlayListMaker" parent="Base.Theme.PlayListMaker" />

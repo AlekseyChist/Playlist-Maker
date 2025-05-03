@@ -9,6 +9,7 @@ interface AudioPlayerUseCase {
     fun release()
     fun getCurrentPosition(): Int
     fun isPlaying(): Boolean
+    fun setOnCompletionListener(listener: () -> Unit)
 }
 
 class AudioPlayerUseCaseImpl(
@@ -20,4 +21,5 @@ class AudioPlayerUseCaseImpl(
     override fun release() = repository.release()
     override fun getCurrentPosition() = repository.getCurrentPosition()
     override fun isPlaying() = repository.isPlaying()
+    override fun setOnCompletionListener(listener: () -> Unit) = repository.setOnCompletionListener(listener)
 }

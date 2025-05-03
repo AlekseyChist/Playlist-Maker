@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Dark theme colors -->
-    <color name="my_primary">#121212</color>
-    <color name="my_primary_variant">#000000</color>
+    <color name="my_primary">#1A1B22</color>
+    <color name="my_primary_variant">#1A1B22</color>
     <color name="my_secondary">#BB86FC</color>
-    <color name="my_on_primary">#000000</color>
+    <color name="my_on_primary">#FFFFFF</color>
     <color name="my_on_secondary">#FFFFFF</color>
     <color name="my_for_cancel_button">#1A1B22</color>
     <color name="white">#FFFFFF</color>
     <color name="blue">#3772E7</color>
-    <color name="settings_text_color">#1A1B22</color>
+    <color name="settings_text_color">#FFFFFF</color>
     <color name="black">#1A1B22</color>
     <color name="iconcolor">#1A1B22</color>
     <color name="search_edited_text">#FFFFFF</color>
-    <color name="placeholder_color">#000000</color>
+    <color name="placeholder_color">#FFFFFF</color>
     <color name="error_symbol_color">#FFFFFF</color>
     <color name="clear_history_button_background">#FFFFFF</color>
     <color name="clear_history_button_text">#1A1B22</color>
     <color name="switch_thumb_color">#3772E7</color>
     <color name="switch_track_color">#1A1B22</color>
     <color name="yp_black">#1A1B22</color>
+    <color name="hintcolor">#1A1B22</color>
+    <color name="yp_backgound">#1A1B22</color>
+    <color name="bottom_nav_background">@color/yp_black</color>
+    <color name="bottom_nav_item_color">@color/white</color>
+    <color name="divider_color">#3B3E4B</color>
+    <color name="yp_background">@color/yp_black</color>
 
 </resources>

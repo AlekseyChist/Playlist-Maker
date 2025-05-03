@@ -1,15 +1,18 @@
 package com.example.playlistmaker.search.ui.viewmodel
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.search.domain.listener.TracksConsumer
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.usecase.SearchHistoryUseCase
 import com.example.playlistmaker.search.domain.usecase.SearchTracksUseCase
 import com.example.playlistmaker.search.ui.state.SearchState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchTracksUseCase: SearchTracksUseCase,
@@ -19,8 +22,12 @@ class SearchViewModel(
     private val _state = MutableLiveData<SearchState>()
     val state: LiveData<SearchState> = _state
 
-    private val handler = Handler(Looper.getMainLooper())
-    private var searchRunnable: Runnable? = null
+    private var latestSearchText: String? = null
+    private var searchJob: Job? = null
+
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+    }
 
     fun search(query: String) {
         if (query.isBlank()) {
@@ -28,30 +35,36 @@ class SearchViewModel(
             return
         }
 
-        // Отменяем предыдущий поиск если он был
-        searchRunnable?.let { handler.removeCallbacks(it) }
+        if (latestSearchText == query) {
+            return
+        }
 
-        searchRunnable = Runnable {
-            _state.value = SearchState.Loading
-            searchTracksUseCase.execute(query, object : TracksConsumer {
-                override fun consume(tracks: List<Track>) {
+        latestSearchText = query
+
+        // Отменяем предыдущий поиск если он был
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+
+            searchTracksUseCase.execute(query)
+                .onStart { _state.value = SearchState.Loading }
+                .catch { error -> _state.value = SearchState.Error(error.message ?: "Unknown error") }
+                .collect { tracks ->
                     _state.value = if (tracks.isEmpty()) {
                         SearchState.Empty
                     } else {
                         SearchState.Content(tracks)
                     }
                 }
-
-                override fun onError(e: Exception) {
-                    _state.value = SearchState.Error(e.message ?: "Unknown error")
-                }
-            })
         }
-        handler.postDelayed(searchRunnable!!, SEARCH_DEBOUNCE_DELAY)
     }
 
     fun showHistory() {
         val history = searchHistoryUseCase.getHistory()
+        if (history.isEmpty()) {
+            return
+        }
         _state.value = SearchState.History(history)
     }
 
@@ -65,15 +78,6 @@ class SearchViewModel(
 
     fun clearHistory() {
         searchHistoryUseCase.clearHistory()
-        showHistory()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacksAndMessages(null)
-    }
-
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        _state.value = SearchState.History(emptyList())
     }
 }

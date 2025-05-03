@@ -7,4 +7,5 @@ interface AudioPlayerRepository {
     fun release()
     fun getCurrentPosition(): Int
     fun isPlaying(): Boolean
+    fun setOnCompletionListener(listener: () -> Unit)
 }
