@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class FavoriteTrackEntity(
     @PrimaryKey
     val trackId: Long,
-    val tackName: String,
+    val trackName: String,
     val artistName: String,
     val trackTimeMillis: Long,
     val artworkUrl100: String,
