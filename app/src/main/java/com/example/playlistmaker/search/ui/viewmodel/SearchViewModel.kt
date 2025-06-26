@@ -61,15 +61,17 @@ class SearchViewModel(
     }
 
     fun showHistory() {
-        val history = searchHistoryUseCase.getHistory()
-        if (history.isEmpty()) {
-            return
+        viewModelScope.launch {
+            val history = searchHistoryUseCase.getHistory()
+            if (history.isEmpty()) {
+                return@launch
+            }
+            _state.value = SearchState.History(history)
         }
-        _state.value = SearchState.History(history)
     }
 
     fun getHistory(): List<Track> {
-        return searchHistoryUseCase.getHistory()
+        return emptyList()
     }
 
     fun addToHistory(track: Track) {

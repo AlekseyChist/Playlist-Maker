@@ -7,6 +7,6 @@ import retrofit2.http.Query
 interface TrackRepository {
     fun searchTracks(query: String): Flow<List<Track>>
     fun addTrackToHistory(track: Track)
-    fun getSearchHistory(): List<Track>
+    suspend fun getSearchHistory(): List<Track>
     fun clearSearchHistory()
 }

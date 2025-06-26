@@ -19,7 +19,7 @@ class TrackDbConverter {
             previewUrl = track.previewUrl
         )
     }
->
+
     fun mapEntityToTrack(entity: FavoriteTrackEntity): Track {
         return Track(
             trackId = entity.trackId,

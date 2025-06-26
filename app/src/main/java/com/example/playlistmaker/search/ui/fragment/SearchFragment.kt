@@ -177,17 +177,9 @@ class SearchFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun updateHistoryVisibility() {
-        val historyTracks = viewModel.getHistory()
-
-        if (historyTracks.isEmpty()) {
-            binding.historyLayout.visibility = View.GONE
-            return
-        }
-        val showHistory = binding.searchEditText.text.isEmpty() &&
-                historyTracks.isNotEmpty() &&
-                binding.searchEditText.hasFocus()
-
-        if (showHistory) {
+        // Убираем прямой вызов getHistory(), вместо этого используем showHistory()
+        // который обновит состояние через LiveData
+        if (binding.searchEditText.text.isEmpty() && binding.searchEditText.hasFocus()) {
             viewModel.showHistory()
         }
     }
