@@ -18,12 +18,13 @@ class FavoriteTracksRepositoryImpl(
     }
 
     override suspend fun removeTrackFromFavorites(track: Track) {
-        val entity = trackDbConverter.mapTrackToEntity(track)
-        database.favoriteTracksDao().deleteTrack(entity)
+        // Передаем только trackId, а не весь entity
+        database.favoriteTracksDao().deleteTrack(track.trackId)
     }
 
     override fun getFavoriteTracks(): Flow<List<Track>> {
-        return database.favoriteTracksDao().getAllFavoriteTracksFlow()
+        // Используем правильное название метода из DAO
+        return database.favoriteTracksDao().getAllFavoriteTracks()
             .map { entities ->
                 entities.map { entity ->
                     trackDbConverter.mapEntityToTrack(entity)

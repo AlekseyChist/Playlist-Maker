@@ -70,10 +70,6 @@ class SearchViewModel(
         }
     }
 
-    fun getHistory(): List<Track> {
-        return emptyList()
-    }
-
     fun addToHistory(track: Track) {
         searchHistoryUseCase.addTrack(track)
     }
