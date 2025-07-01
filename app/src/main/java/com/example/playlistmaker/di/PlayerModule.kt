@@ -18,5 +18,10 @@ val playerModule = module {
     factory<AudioPlayerUseCase> { AudioPlayerUseCaseImpl(get()) }
 
     // UI Layer
-    viewModel { AudioPlayerViewModel(get()) }
+    viewModel {
+        AudioPlayerViewModel(
+            audioPlayerUseCase = get(),
+            favoriteTracksInteractor = get()
+        )
+    }
 }

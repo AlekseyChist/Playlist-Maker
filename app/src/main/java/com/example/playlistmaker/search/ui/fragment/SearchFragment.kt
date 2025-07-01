@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.ui.fragment
 
+import android.app.Fragment
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -9,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
@@ -23,7 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchFragment : Fragment() {
+class SearchFragment : androidx.fragment.app.Fragment() {
 
     private val viewModel: SearchViewModel by viewModel()
 
@@ -177,17 +177,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun updateHistoryVisibility() {
-        val historyTracks = viewModel.getHistory()
-
-        if (historyTracks.isEmpty()) {
-            binding.historyLayout.visibility = View.GONE
-            return
-        }
-        val showHistory = binding.searchEditText.text.isEmpty() &&
-                historyTracks.isNotEmpty() &&
-                binding.searchEditText.hasFocus()
-
-        if (showHistory) {
+        // Убираем прямой вызов getHistory(), вместо этого используем showHistory()
+        // который обновит состояние через LiveData
+        if (binding.searchEditText.text.isEmpty() && binding.searchEditText.hasFocus()) {
             viewModel.showHistory()
         }
     }

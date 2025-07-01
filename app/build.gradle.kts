@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-}
+    id("com.google.devtools.ksp") version "1.9.10-1.0.13"}
 
 
 
@@ -44,11 +44,14 @@ android {
 
 dependencies {
 
-    implementation(libs.kotlinx.coroutines.android)
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation (libs.logging.interceptor)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation("io.insert-koin:koin-android:3.5.3")
+    implementation(libs.koin.android.v353)
     implementation("io.insert-koin:koin-android-compat:3.4.0")
     implementation("io.insert-koin:koin-androidx-workmanager:3.4.0")
     implementation("io.insert-koin:koin-androidx-navigation:3.4.0")

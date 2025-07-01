@@ -54,6 +54,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         setupListeners()
         observeViewModel()
 
+        // Передаем трек в ViewModel
+        viewModel.setTrack(track)
+
         try {
             viewModel.preparePlayer(track.previewUrl)
         } catch (e: Exception) {
@@ -116,7 +119,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         likeButton.setOnClickListener {
-            // TODO: Implement like functionality
+            viewModel.onFavoriteClicked()
         }
     }
 
@@ -143,6 +146,19 @@ class AudioPlayerActivity : AppCompatActivity() {
                     Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        // Подписываемся на изменения состояния избранного
+        viewModel.isFavorite.observe(this) { isFavorite ->
+            updateFavoriteButton(isFavorite)
+        }
+    }
+
+    private fun updateFavoriteButton(isFavorite: Boolean) {
+        if (isFavorite) {
+            likeButton.setImageResource(R.drawable.button_like_pressed)
+        } else {
+            likeButton.setImageResource(R.drawable.button_like_default)
         }
     }
 

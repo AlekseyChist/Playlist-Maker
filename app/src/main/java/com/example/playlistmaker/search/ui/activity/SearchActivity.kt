@@ -188,12 +188,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun updateHistoryVisibility() {
-        val historyTracks = viewModel.getHistory()
-        val showHistory = searchEditText.text.isEmpty() &&
-                historyTracks.isNotEmpty() &&
-                searchEditText.hasFocus()
 
-        if (showHistory) {
+        val shouldShowHistory = searchEditText.text.isEmpty() && searchEditText.hasFocus()
+
+        if (shouldShowHistory) {
+            // showHistory() асинхронно загрузит историю и обновит состояние
+            // Если история пуста, состояние не изменится
             viewModel.showHistory()
         }
     }

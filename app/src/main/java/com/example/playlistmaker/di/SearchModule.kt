@@ -22,7 +22,8 @@ val searchModule = module {
         TrackRepositoryImpl(
             api = get(),
             searchHistoryStorage = get(),
-            mapper = get()
+            mapper = get(),
+            database = get()
         )
     }
 

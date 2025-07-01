@@ -5,7 +5,7 @@ import com.example.playlistmaker.search.domain.repository.TrackRepository
 
 interface SearchHistoryUseCase {
     fun addTrack(track: Track)
-    fun getHistory(): List<Track>
+    suspend fun getHistory(): List<Track>
     fun clearHistory()
 }
 
@@ -16,7 +16,7 @@ class SearchHistoryUseCaseImpl(
         repository.addTrackToHistory(track)
     }
 
-    override fun getHistory(): List<Track> {
+    override suspend fun getHistory(): List<Track> {
         return repository.getSearchHistory()
     }
 

@@ -1,27 +1,62 @@
 package com.example.playlistmaker.player.ui.viewmodel
 
-import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.media.domain.usecase.FavoriteTracksInteractor
 import com.example.playlistmaker.player.domain.usecase.AudioPlayerUseCase
 import com.example.playlistmaker.player.ui.state.AudioPlayerState
+import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
-    private val audioPlayerUseCase: AudioPlayerUseCase
+    private val audioPlayerUseCase: AudioPlayerUseCase,
+    private val favoriteTracksInteractor: FavoriteTracksInteractor
 ) : ViewModel() {
 
     private val _state = MutableLiveData<AudioPlayerState>()
     val state: LiveData<AudioPlayerState> = _state
 
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite: LiveData<Boolean> = _isFavorite
+
     private var playbackJob: Job? = null
+    private var currentTrack: Track? = null
 
     init {
         _state.value = AudioPlayerState.Loading
+    }
+
+    fun setTrack(track: Track) {
+        currentTrack = track
+        checkIfTrackIsFavorite(track.trackId)
+    }
+
+    private fun checkIfTrackIsFavorite(trackId: Long) {
+        viewModelScope.launch {
+            val isFav = favoriteTracksInteractor.isTrackFavorite(trackId)
+            _isFavorite.value = isFav
+            currentTrack?.isFavorite = isFav
+        }
+    }
+
+    fun onFavoriteClicked() {
+        currentTrack?.let { track ->
+            viewModelScope.launch {
+                if (track.isFavorite) {
+                    favoriteTracksInteractor.removeTrackFromFavorites(track)
+                    track.isFavorite = false
+                    _isFavorite.value = false
+                } else {
+                    favoriteTracksInteractor.addTrackToFavorites(track)
+                    track.isFavorite = true
+                    _isFavorite.value = true
+                }
+            }
+        }
     }
 
     fun preparePlayer(url: String) {
