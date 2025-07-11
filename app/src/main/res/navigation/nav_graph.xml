@@ -15,7 +15,18 @@
         android:id="@+id/mediaLibraryFragment"
         android:name="com.example.playlistmaker.media.ui.fragment.MediaLibraryFragment"
         android:label="Медиатека"
-        tools:layout="@layout/fragment_media_library" />
+        tools:layout="@layout/fragment_media_library">
+
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.fragment.CreatePlaylistFragment"
+        android:label="Новый плейлист"
+        tools:layout="@layout/fragment_create_playlist" />
 
     <fragment
         android:id="@+id/settingsFragment"

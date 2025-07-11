@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/yp_background">
@@ -18,7 +19,23 @@
         android:textAllCaps="false"
         android:textColor="@color/clear_history_button_text" />
 
+    <!-- RecyclerView для отображения плейлистов -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playlistsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="72dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        tools:listitem="@layout/item_playlist"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:spanCount="2" />
+
+    <!-- LinearLayout для пустого состояния -->
     <LinearLayout
+        android:id="@+id/emptyStateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="106dp"
@@ -27,18 +44,20 @@
         android:background="@color/yp_background">
 
         <ImageView
+            android:id="@+id/emptyStateImage"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@drawable/nothing_found" />
 
         <TextView
+            android:id="@+id/emptyStateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/no_playlist"
             android:textAlignment="center"
             android:textColor="?attr/colorOnSurface"
-        android:textSize="@dimen/_19sp" />
+            android:textSize="@dimen/_19sp" />
     </LinearLayout>
 
 </FrameLayout>
