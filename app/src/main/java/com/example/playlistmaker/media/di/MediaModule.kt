@@ -16,14 +16,6 @@ import org.koin.dsl.module
 
 val mediaModule = module {
 
-    // Database
-    single {
-        Room.databaseBuilder(
-            androidContext(),
-            AppDatabase::class.java,
-            "playlist_maker_database"
-        ).build()
-    }
 
     // Converter
     single { TrackDbConverter() }
