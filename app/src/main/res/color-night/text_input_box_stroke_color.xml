@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Состояние при фокусе -->
+    <item android:color="@color/switch_thumb_color" android:state_focused="true"/>
+    <!-- Состояние при наведении (hover) -->
+    <item android:color="@color/switch_thumb_color" android:state_hovered="true"/>
+    <!-- Состояние по умолчанию -->
+    <item android:color="@color/yp_white"/>
+</selector>

@@ -1,6 +1,7 @@
 // app/src/main/java/com/example/playlistmaker/media/ui/adapter/PlaylistAdapter.kt
 package com.example.playlistmaker.media.ui.adapter
 
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -37,18 +38,26 @@ class PlaylistAdapter(
 
         fun bind(playlist: Playlist) {
             binding.playlistName.text = playlist.name
-            binding.tracksCount.text = "${playlist.trackCount} треков" // Временно без plurals
+            binding.tracksCount.text = "${playlist.trackCount} треков"
 
             // Загрузка обложки
             if (!playlist.coverPath.isNullOrEmpty()) {
-                val coverFile =
-                    File(binding.root.context.getExternalFilesDir(null), playlist.coverPath)
-                Glide.with(binding.root)
-                    .load(coverFile)
-                    .placeholder(R.drawable.placeholder_image) // Используем существующий
-                    .error(R.drawable.placeholder_image) // На случай ошибки
-                    .transform(CenterCrop(), RoundedCorners(8))
-                    .into(binding.playlistCover)
+                val coverFile = File(
+                    binding.root.context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    playlist.coverPath
+                )
+
+                if (coverFile.exists()) {
+                    Glide.with(binding.root)
+                        .load(coverFile)
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.placeholder_image)
+                        .centerCrop()
+                        .transform(RoundedCorners(8))
+                        .into(binding.playlistCover)
+                } else {
+                    binding.playlistCover.setImageResource(R.drawable.placeholder_image)
+                }
             } else {
                 binding.playlistCover.setImageResource(R.drawable.placeholder_image)
             }
@@ -58,14 +67,15 @@ class PlaylistAdapter(
             }
         }
     }
+}
 
-    class PlaylistDiffCallback : DiffUtil.ItemCallback<Playlist>() {
-        override fun areItemsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
-            return oldItem.id == newItem.id
-        }
+// DiffCallback должен быть отдельным классом вне PlaylistAdapter
+class PlaylistDiffCallback : DiffUtil.ItemCallback<Playlist>() {
+    override fun areItemsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
+        return oldItem.id == newItem.id
+    }
 
-        override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
-            return oldItem == newItem
-        }
+    override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
+        return oldItem == newItem
     }
 }

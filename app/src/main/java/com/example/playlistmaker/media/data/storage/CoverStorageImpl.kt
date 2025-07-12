@@ -1,3 +1,4 @@
+// app/src/main/java/com/example/playlistmaker/media/data/storage/CoverStorageImpl.kt
 package com.example.playlistmaker.media.data.storage
 
 import android.content.Context
@@ -35,10 +36,11 @@ class CoverStorageImpl(
             }
         }
 
-        return@withContext fileName
+        // Возвращаем относительный путь
+        return@withContext "playlist_covers/$fileName"
     }
 
     override fun getCoverPath(fileName: String): String {
-        return File(storageDir, fileName).absolutePath
+        return File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName).absolutePath
     }
 }

@@ -42,14 +42,13 @@ class CreatePlaylistViewModel(
 
         viewModelScope.launch {
             try {
-                playlistInteractor.createPlaylist(
+                val playlistId = playlistInteractor.createPlaylist(
                     name = playlistName,
                     description = playlistDescription,
-                    coverUri = playlistCoverUri
+                    coverUri = playlistCoverUri // Убедитесь, что Uri передается
                 )
                 _playlistCreated.value = playlistName
             } catch (e: Exception) {
-                // Обработка ошибки
                 e.printStackTrace()
             }
         }

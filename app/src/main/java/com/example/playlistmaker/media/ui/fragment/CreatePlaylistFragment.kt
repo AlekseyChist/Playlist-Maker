@@ -128,10 +128,11 @@ class CreatePlaylistFragment : Fragment() {
     }
 
     private fun displayCover(uri: Uri) {
-        binding.coverImageView.setPadding(0, 0, 0, 0) // Убираем padding при загрузке изображения
+        binding.addImageIcon.visibility = View.GONE
         Glide.with(this)
             .load(uri)
-            .transform(CenterCrop(), RoundedCorners(resources.getDimensionPixelSize(R.dimen.corner_radius)))
+            .centerCrop()
+            .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.corner_radius)))
             .into(binding.coverImageView)
     }
 
