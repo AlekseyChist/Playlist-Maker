@@ -17,7 +17,7 @@ val databaseModule = module {
             AppDatabase::class.java,
             "playlist_maker_database"
         )
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
     }
 
@@ -25,7 +25,7 @@ val databaseModule = module {
     single { PlaylistDbConverter() }
 }
 
-// Миграция
+// Миграции
 private val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("""
@@ -36,6 +36,26 @@ private val MIGRATION_1_2 = object : Migration(1, 2) {
                 coverPath TEXT,
                 trackIds TEXT NOT NULL,
                 trackCount INTEGER NOT NULL DEFAULT 0
+            )
+        """)
+    }
+}
+
+private val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("""
+            CREATE TABLE IF NOT EXISTS playlist_tracks (
+                trackId INTEGER PRIMARY KEY NOT NULL,
+                trackName TEXT NOT NULL,
+                artistName TEXT NOT NULL,
+                trackTimeMillis INTEGER NOT NULL,
+                artworkUrl100 TEXT NOT NULL,
+                collectionName TEXT NOT NULL,
+                releaseDate TEXT NOT NULL,
+                primaryGenreName TEXT NOT NULL,
+                country TEXT NOT NULL,
+                previewUrl TEXT NOT NULL,
+                addedTimestamp INTEGER NOT NULL
             )
         """)
     }
