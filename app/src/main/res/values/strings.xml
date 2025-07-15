@@ -44,4 +44,5 @@
     <string name="create_button">Создать</string>
     <string name="description_text">Описание</string>
     <string name="name_text">Название*</string>
+    <string name="add_to_palylist">Добавить в плейлист</string>
 </resources>

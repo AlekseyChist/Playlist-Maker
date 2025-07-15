@@ -28,7 +28,7 @@ val mediaModule = module {
     single { TrackDbConverter() }
     single { PlaylistDbConverter() }
 
-    // Repository
+// Repository
     single<FavoriteTracksRepository> {
         FavoriteTracksRepositoryImpl(
             database = get(),
@@ -39,7 +39,8 @@ val mediaModule = module {
     single<PlaylistRepository> {
         PlaylistRepositoryImpl(
             database = get(),
-            playlistDbConverter = get()
+            playlistDbConverter = get(),
+            trackDbConverter = get()
         )
     }
 
