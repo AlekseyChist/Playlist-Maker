@@ -36,8 +36,8 @@ class CoverStorageImpl(
             }
         }
 
-        // Возвращаем относительный путь
-        return@withContext "playlist_covers/$fileName"
+        // Возвращаем только имя файла, без пути
+        return@withContext fileName
     }
 
     override fun getCoverPath(fileName: String): String {

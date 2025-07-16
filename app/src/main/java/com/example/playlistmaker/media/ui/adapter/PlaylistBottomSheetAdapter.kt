@@ -1,5 +1,6 @@
 package com.example.playlistmaker.media.ui.adapter
 
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -41,15 +42,21 @@ class PlaylistBottomSheetAdapter(
             // Загрузка обложки
             if (!playlist.coverPath.isNullOrEmpty()) {
                 val coverFile = File(
-                    binding.root.context.getExternalFilesDir(null),
+                    binding.root.context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                     "playlist_covers/${playlist.coverPath}"
                 )
-                Glide.with(binding.root)
-                    .load(coverFile)
-                    .placeholder(R.drawable.placeholder_image)
-                    .error(R.drawable.placeholder_image)
-                    .transform(CenterCrop(), RoundedCorners(8))
-                    .into(binding.playlistCover)
+
+                if (coverFile.exists()) {
+                    Glide.with(binding.root)
+                        .load(coverFile)
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.placeholder_image)
+                        .transform(CenterCrop(), RoundedCorners(8))
+                        .into(binding.playlistCover)
+                } else {
+                    // Если файл не найден, показываем заглушку
+                    binding.playlistCover.setImageResource(R.drawable.placeholder_image)
+                }
             } else {
                 binding.playlistCover.setImageResource(R.drawable.placeholder_image)
             }

@@ -44,7 +44,7 @@ class PlaylistAdapter(
             if (!playlist.coverPath.isNullOrEmpty()) {
                 val coverFile = File(
                     binding.root.context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                    playlist.coverPath
+                    "playlist_covers/${playlist.coverPath}"
                 )
 
                 if (coverFile.exists()) {
