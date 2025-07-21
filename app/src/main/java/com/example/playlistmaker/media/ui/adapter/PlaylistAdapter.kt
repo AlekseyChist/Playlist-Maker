@@ -53,7 +53,6 @@ class PlaylistAdapter(
                         .placeholder(R.drawable.placeholder_image)
                         .error(R.drawable.placeholder_image)
                         .centerCrop()
-                        .transform(RoundedCorners(8))
                         .into(binding.playlistCover)
                 } else {
                     binding.playlistCover.setImageResource(R.drawable.placeholder_image)

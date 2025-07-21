@@ -107,6 +107,10 @@
         <item name="itemTextColor">@color/bottom_navigation_selector</item>
     </style>
 
+    <style name="ShapeAppearanceOverlay.App.CornerSize8" parent="">
+        <item name="cornerSize">8dp</item>
+    </style>
+
 
 
 </resources>
