@@ -4,17 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.usecase.FavoriteTracksInteractor
+import com.example.playlistmaker.media.domain.usecase.PlaylistInteractor
 import com.example.playlistmaker.player.domain.usecase.AudioPlayerUseCase
 import com.example.playlistmaker.player.ui.state.AudioPlayerState
 import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class AudioPlayerViewModel(
     private val audioPlayerUseCase: AudioPlayerUseCase,
-    private val favoriteTracksInteractor: FavoriteTracksInteractor
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
     private val _state = MutableLiveData<AudioPlayerState>()
@@ -22,6 +26,12 @@ class AudioPlayerViewModel(
 
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean> = _isFavorite
+
+    private val _playlists = MutableLiveData<List<Playlist>>()
+    val playlists: LiveData<List<Playlist>> = _playlists
+
+    private val _playlistAddStatus = MutableLiveData<PlaylistAddStatus>()
+    val playlistAddStatus: LiveData<PlaylistAddStatus> = _playlistAddStatus
 
     private var playbackJob: Job? = null
     private var currentTrack: Track? = null
@@ -33,6 +43,31 @@ class AudioPlayerViewModel(
     fun setTrack(track: Track) {
         currentTrack = track
         checkIfTrackIsFavorite(track.trackId)
+    }
+
+    fun loadPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getAllPlaylists()
+                .first()
+                .also { _playlists.value = it }
+        }
+    }
+
+    fun addTrackToPlaylist(playlist: Playlist) {
+        currentTrack?.let { track ->
+            viewModelScope.launch {
+                // Проверяем, есть ли трек уже в плейлисте
+                if (playlist.trackIds.contains(track.trackId)) {
+                    _playlistAddStatus.value = PlaylistAddStatus.AlreadyExists(playlist.name)
+                } else {
+                    // Добавляем трек в плейлист
+                    playlistInteractor.addTrackToPlaylist(track, playlist)
+                    _playlistAddStatus.value = PlaylistAddStatus.Success(playlist.name)
+                    // Обновляем список плейлистов
+                    loadPlaylists()
+                }
+            }
+        }
     }
 
     private fun checkIfTrackIsFavorite(trackId: Long) {
@@ -135,4 +170,9 @@ class AudioPlayerViewModel(
         private const val PLAYBACK_UPDATE_DELAY = 300L
         private const val PREPARE_DELAY = 1000L
     }
+}
+
+sealed class PlaylistAddStatus {
+    data class Success(val playlistName: String) : PlaylistAddStatus()
+    data class AlreadyExists(val playlistName: String) : PlaylistAddStatus()
 }
