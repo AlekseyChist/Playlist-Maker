@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/playlistmaker/media/ui/fragment/PlaylistsFragment.kt
 package com.example.playlistmaker.media.ui.fragment
 
 import android.os.Bundle
@@ -42,12 +41,22 @@ class PlaylistsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        // Обновляем список плейлистов при возврате на экран
         viewModel.loadPlaylists()
     }
 
     private fun setupRecyclerView() {
         playlistAdapter = PlaylistAdapter { playlist ->
-            // TODO: Навигация на экран плейлиста
+            // Создаем Bundle с ID плейлиста
+            val bundle = Bundle().apply {
+                putLong("playlist_id", playlist.id)
+            }
+
+            // Навигация к экрану детального просмотра плейлиста
+            findNavController().navigate(
+                R.id.action_mediaLibraryFragment_to_playlistDetailFragment,
+                bundle
+            )
         }
 
         binding.playlistsRecyclerView.apply {

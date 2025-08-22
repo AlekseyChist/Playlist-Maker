@@ -16,6 +16,7 @@ import com.example.playlistmaker.media.domain.usecase.PlaylistInteractor
 import com.example.playlistmaker.media.domain.usecase.PlaylistInteractorImpl
 import com.example.playlistmaker.media.ui.viewmodel.CreatePlaylistViewModel
 import com.example.playlistmaker.media.ui.viewmodel.FavoriteTracksViewModel
+import com.example.playlistmaker.media.ui.viewmodel.PlaylistDetailViewModel
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -59,8 +60,9 @@ val mediaModule = module {
         )
     }
 
-    // ViewModels
+// ViewModels
     viewModel { FavoriteTracksViewModel(interactor = get()) }
     viewModel { PlaylistsViewModel(playlistInteractor = get()) } // Передаем зависимость
     viewModel { CreatePlaylistViewModel(playlistInteractor = get()) }
+    viewModel { PlaylistDetailViewModel(playlistInteractor = get()) }
 }

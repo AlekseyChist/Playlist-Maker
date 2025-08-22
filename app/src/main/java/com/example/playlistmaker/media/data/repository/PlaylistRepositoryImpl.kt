@@ -3,7 +3,6 @@ package com.example.playlistmaker.media.data.repository
 import com.example.playlistmaker.media.data.db.AppDatabase
 import com.example.playlistmaker.media.data.db.converter.PlaylistDbConverter
 import com.example.playlistmaker.media.data.db.converter.TrackDbConverter
-import com.example.playlistmaker.media.data.db.entity.PlaylistTrackEntity
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.repository.PlaylistRepository
 import com.example.playlistmaker.search.domain.model.Track
@@ -47,19 +46,8 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
-        // Добавляем трек в таблицу playlist_tracks
-        val trackEntity = PlaylistTrackEntity(
-            trackId = track.trackId,
-            trackName = track.trackName,
-            artistName = track.artistName,
-            trackTimeMillis = track.trackTimeMillis,
-            artworkUrl100 = track.artworkUrl100,
-            collectionName = track.collectionName,
-            releaseDate = track.releaseDate,
-            primaryGenreName = track.primaryGenreName,
-            country = track.country,
-            previewUrl = track.previewUrl
-        )
+        // Используем правильный метод конвертера
+        val trackEntity = trackDbConverter.mapTrackToPlaylistEntity(track)
         database.playlistTracksDao().insertTrack(trackEntity)
 
         // Обновляем плейлист
@@ -79,5 +67,14 @@ class PlaylistRepositoryImpl(
             trackCount = updatedTrackIds.size
         )
         updatePlaylist(updatedPlaylist)
+    }
+
+    override suspend fun getPlaylistTracks(trackIds: List<Long>): List<Track> {
+        if (trackIds.isEmpty()) return emptyList()
+
+        val trackEntities = database.playlistTracksDao().getTracksByIds(trackIds)
+        return trackEntities.map { entity ->
+            trackDbConverter.mapPlaylistEntityToTrack(entity)
+        }
     }
 }
