@@ -6,6 +6,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.example.playlistmaker.media.ui.viewmodel.PlaylistDetailViewModel
 import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.adapter.TrackAdapter
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
@@ -31,6 +33,8 @@ class PlaylistDetailFragment : Fragment() {
     private val viewModel: PlaylistDetailViewModel by viewModel()
 
     private lateinit var trackAdapter: TrackAdapter
+    private lateinit var tracksBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var optionsBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,18 +48,50 @@ class PlaylistDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupBottomSheets()
         setupRecyclerView()
         setupListeners()
         observeViewModel()
 
         // Получаем ID плейлиста из аргументов
         val playlistId = arguments?.getLong(ARG_PLAYLIST_ID) ?: run {
-            // Если нет аргументов, возвращаемся назад
             findNavController().popBackStack()
             return
         }
 
         viewModel.loadPlaylist(playlistId)
+    }
+
+    private fun setupBottomSheets() {
+        // Bottom Sheet для треков
+        tracksBottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_COLLAPSED
+            isHideable = false
+        }
+
+        // Bottom Sheet для опций
+        optionsBottomSheetBehavior = BottomSheetBehavior.from(binding.optionsBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+            isHideable = true
+        }
+
+        // Обработка состояний Bottom Sheet
+        optionsBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+                    else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = slideOffset
+            }
+        })
     }
 
     private fun setupRecyclerView() {
@@ -75,65 +111,58 @@ class PlaylistDetailFragment : Fragment() {
         }
 
         binding.shareButton.setOnClickListener {
-            // TODO: Реализация поделиться (будет позже)
-            android.util.Log.d("PlaylistDetail", "Share button clicked")
+            // TODO: Реализация поделиться
         }
 
         binding.menuButton.setOnClickListener {
-            // TODO: Реализация меню (будет позже)
-            android.util.Log.d("PlaylistDetail", "Menu button clicked")
+            optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
-    }
 
-    private fun navigateToAudioPlayer(track: Track) {
-        // Навигация к аудиоплееру через Intent (пока Activity)
-        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
-        intent.putExtra(Constants.TRACK_KEY, track)
-        startActivity(intent)
+        // Клик по overlay
+        binding.overlay.setOnClickListener {
+            optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        // Опции в Bottom Sheet
+        binding.optionsShareButton.setOnClickListener {
+            optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            // TODO: Реализация поделиться
+        }
+
+        binding.editInfoButton.setOnClickListener {
+            optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            // TODO: Реализация редактирования
+        }
+
+        binding.deletePlaylistButton.setOnClickListener {
+            optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            // TODO: Реализация удаления
+        }
     }
 
     private fun observeViewModel() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is PlaylistDetailState.Loading -> {
-                    showLoading()
+                    // Показать загрузку
                 }
                 is PlaylistDetailState.Content -> {
-                    hideLoading()
                     showContent(state)
                 }
                 is PlaylistDetailState.Error -> {
-                    hideLoading()
-                    showError()
+                    findNavController().popBackStack()
                 }
             }
         }
     }
 
-    private fun showLoading() {
-        // Можно показать прогресс бар
-        // Пока просто скрываем контент
-        binding.playlistName.visibility = View.GONE
-        binding.playlistInfo.visibility = View.GONE
-    }
-
-    private fun hideLoading() {
-        binding.playlistName.visibility = View.VISIBLE
-        binding.playlistInfo.visibility = View.VISIBLE
-    }
-
-    private fun showError() {
-        // Показываем ошибку и возвращаемся назад
-        findNavController().popBackStack()
-    }
-
     private fun showContent(content: PlaylistDetailState.Content) {
         val playlist = content.playlist
 
-        // Заполняем UI данными плейлиста
+        // Основная информация
         binding.playlistName.text = playlist.name
 
-        // Показываем/скрываем описание
+        // Описание
         if (!playlist.description.isNullOrEmpty()) {
             binding.playlistDescription.text = playlist.description
             binding.playlistDescription.visibility = View.VISIBLE
@@ -141,27 +170,38 @@ class PlaylistDetailFragment : Fragment() {
             binding.playlistDescription.visibility = View.GONE
         }
 
-        // Информация о продолжительности и количестве треков
+        // Продолжительность и количество треков (объединенная информация)
         val tracksCountText = viewModel.formatTracksCount(playlist.trackCount)
-        binding.playlistInfo.text = "${content.totalDuration} • $tracksCountText"
+        binding.playlistInfo.text = "${content.totalDuration} · $tracksCountText"
 
         // Загружаем обложку
         loadPlaylistCover(playlist.coverPath)
 
-        // Обновляем список треков
+        // Информация в options bottom sheet
+        binding.optionsPlaylistName.text = playlist.name
+        binding.optionsPlaylistSize.text = viewModel.formatTracksCount(playlist.trackCount)
+        loadOptionsPlaylistCover(playlist.coverPath)
+
+        // Список треков
         trackAdapter.updateTracks(content.tracks)
 
-        // Показываем/скрываем заголовок треков
-        if (content.tracks.isNotEmpty()) {
-            binding.tracksTitle.visibility = View.VISIBLE
-            binding.tracksRecyclerView.visibility = View.VISIBLE
+        // Показать/скрыть сообщение "нет треков"
+        if (content.tracks.isEmpty()) {
+            binding.noTracksText.visibility = View.VISIBLE
         } else {
-            binding.tracksTitle.visibility = View.GONE
-            binding.tracksRecyclerView.visibility = View.GONE
+            binding.noTracksText.visibility = View.GONE
         }
     }
 
     private fun loadPlaylistCover(coverPath: String?) {
+        loadCoverToImageView(coverPath, binding.playlistCover)
+    }
+
+    private fun loadOptionsPlaylistCover(coverPath: String?) {
+        loadCoverToImageView(coverPath, binding.optionsPlaylistCover)
+    }
+
+    private fun loadCoverToImageView(coverPath: String?, imageView: android.widget.ImageView) {
         if (!coverPath.isNullOrEmpty()) {
             val coverFile = File(
                 requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
@@ -173,20 +213,20 @@ class PlaylistDetailFragment : Fragment() {
                     .load(coverFile)
                     .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.placeholder_image)
-                    .transform(CenterCrop(), RoundedCorners(dpToPx(8)))
-                    .into(binding.playlistCover)
+                    .transform(CenterCrop(), RoundedCorners(8))
+                    .into(imageView)
             } else {
-                // Файл не найден, показываем заглушку
-                binding.playlistCover.setImageResource(R.drawable.placeholder_image)
+                imageView.setImageResource(R.drawable.placeholder_image)
             }
         } else {
-            // Нет пути к обложке, показываем заглушку
-            binding.playlistCover.setImageResource(R.drawable.placeholder_image)
+            imageView.setImageResource(R.drawable.placeholder_image)
         }
     }
 
-    private fun dpToPx(dp: Int): Int {
-        return (dp * resources.displayMetrics.density).toInt()
+    private fun navigateToAudioPlayer(track: Track) {
+        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
+        intent.putExtra(Constants.TRACK_KEY, track)
+        startActivity(intent)
     }
 
     override fun onDestroyView() {
@@ -197,9 +237,6 @@ class PlaylistDetailFragment : Fragment() {
     companion object {
         private const val ARG_PLAYLIST_ID = "playlist_id"
 
-        /**
-         * Создает новый экземпляр фрагмента с переданным ID плейлиста
-         */
         fun newInstance(playlistId: Long): PlaylistDetailFragment {
             return PlaylistDetailFragment().apply {
                 arguments = Bundle().apply {
