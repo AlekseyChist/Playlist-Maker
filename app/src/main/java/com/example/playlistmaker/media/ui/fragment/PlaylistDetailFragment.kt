@@ -16,12 +16,13 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistDetailBinding
+import com.example.playlistmaker.media.ui.adapter.PlaylistTrackAdapter
 import com.example.playlistmaker.media.ui.state.PlaylistDetailState
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistDetailViewModel
 import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.model.Track
-import com.example.playlistmaker.search.ui.adapter.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
@@ -32,7 +33,7 @@ class PlaylistDetailFragment : Fragment() {
 
     private val viewModel: PlaylistDetailViewModel by viewModel()
 
-    private lateinit var trackAdapter: TrackAdapter
+    private lateinit var playlistTrackAdapter: PlaylistTrackAdapter
     private lateinit var tracksBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
     private lateinit var optionsBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
@@ -95,14 +96,29 @@ class PlaylistDetailFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        trackAdapter = TrackAdapter(emptyList()) { track ->
-            navigateToAudioPlayer(track)
-        }
+        playlistTrackAdapter = PlaylistTrackAdapter(
+            tracks = emptyList(),
+            onItemClick = { track -> navigateToAudioPlayer(track) },
+            onItemLongClick = { track -> showDeleteTrackDialog(track) }
+        )
 
         binding.tracksRecyclerView.apply {
-            adapter = trackAdapter
+            adapter = playlistTrackAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+    }
+
+    private fun showDeleteTrackDialog(track: Track) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("Хотите удалить трек?")
+            .setNegativeButton("НЕТ") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("ДА") { dialog, _ ->
+                viewModel.removeTrackFromPlaylist(track)
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun setupListeners() {
@@ -183,13 +199,19 @@ class PlaylistDetailFragment : Fragment() {
         loadOptionsPlaylistCover(playlist.coverPath)
 
         // Список треков
-        trackAdapter.updateTracks(content.tracks)
+        playlistTrackAdapter.updateTracks(content.tracks)
 
         // Показать/скрыть сообщение "нет треков"
         if (content.tracks.isEmpty()) {
             binding.noTracksText.visibility = View.VISIBLE
+            // Скрываем Bottom Sheet если нет треков
+            tracksBottomSheetBehavior.isHideable = true
+            tracksBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         } else {
             binding.noTracksText.visibility = View.GONE
+            // Показываем Bottom Sheet если есть треки
+            tracksBottomSheetBehavior.isHideable = false
+            tracksBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 

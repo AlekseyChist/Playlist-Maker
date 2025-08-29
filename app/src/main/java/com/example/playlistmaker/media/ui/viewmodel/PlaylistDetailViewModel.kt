@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.media.domain.usecase.PlaylistInteractor
 import com.example.playlistmaker.media.ui.state.PlaylistDetailState
+import com.example.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class PlaylistDetailViewModel(
     private val playlistInteractor: PlaylistInteractor
@@ -17,7 +16,10 @@ class PlaylistDetailViewModel(
     private val _state = MutableLiveData<PlaylistDetailState>()
     val state: LiveData<PlaylistDetailState> = _state
 
+    private var currentPlaylistId: Long = 0
+
     fun loadPlaylist(playlistId: Long) {
+        currentPlaylistId = playlistId
         _state.value = PlaylistDetailState.Loading
 
         viewModelScope.launch {
@@ -43,7 +45,19 @@ class PlaylistDetailViewModel(
         }
     }
 
-    private fun calculateTotalDuration(tracks: List<com.example.playlistmaker.search.domain.model.Track>): String {
+    fun removeTrackFromPlaylist(track: Track) {
+        viewModelScope.launch {
+            try {
+                playlistInteractor.removeTrackFromPlaylist(currentPlaylistId, track.trackId)
+                // Перезагружаем плейлист после удаления
+                loadPlaylist(currentPlaylistId)
+            } catch (e: Exception) {
+                // Обработка ошибки
+            }
+        }
+    }
+
+    private fun calculateTotalDuration(tracks: List<Track>): String {
         val totalMillis = tracks.sumOf { it.trackTimeMillis }
         val totalMinutes = totalMillis / 60000
         return "$totalMinutes минут"

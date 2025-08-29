@@ -12,7 +12,10 @@ interface PlaylistInteractor {
     fun getAllPlaylists(): Flow<List<Playlist>>
     suspend fun getPlaylistById(playlistId: Long): Playlist?
     suspend fun addTrackToPlaylist(track: Track, playlist: Playlist)
+    suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long)
     suspend fun getPlaylistTracks(trackIds: List<Long>): List<Track>
+
+
 }
 
 class PlaylistInteractorImpl(
@@ -52,5 +55,9 @@ class PlaylistInteractorImpl(
 
     override suspend fun getPlaylistTracks(trackIds: List<Long>): List<Track> {
         return playlistRepository.getPlaylistTracks(trackIds)
+    }
+
+    override suspend fun removeTrackFromPlaylist(playlistId: Long, trackId: Long) {
+        playlistRepository.removeTrackFromPlaylist(playlistId, trackId)
     }
 }

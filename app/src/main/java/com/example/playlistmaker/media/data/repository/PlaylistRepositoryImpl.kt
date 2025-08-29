@@ -67,6 +67,16 @@ class PlaylistRepositoryImpl(
             trackCount = updatedTrackIds.size
         )
         updatePlaylist(updatedPlaylist)
+
+        // Проверяем, используется ли трек в других плейлистах
+        cleanupUnusedTrack(trackId)
+    }
+
+    private suspend fun cleanupUnusedTrack(trackId: Long) {
+        val playlistCount = database.playlistTracksDao().countPlaylistsContainingTrack(trackId)
+        if (playlistCount == 0) {
+            database.playlistTracksDao().deleteTrack(trackId)
+        }
     }
 
     override suspend fun getPlaylistTracks(trackIds: List<Long>): List<Track> {
