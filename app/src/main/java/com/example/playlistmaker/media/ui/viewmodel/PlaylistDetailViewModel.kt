@@ -16,6 +16,15 @@ class PlaylistDetailViewModel(
     private val _state = MutableLiveData<PlaylistDetailState>()
     val state: LiveData<PlaylistDetailState> = _state
 
+    private val _shareText = MutableLiveData<String>()
+    val shareText: LiveData<String> = _shareText
+
+    private val _showEmptyPlaylistMessage = MutableLiveData<Boolean>()
+    val showEmptyPlaylistMessage: LiveData<Boolean> = _showEmptyPlaylistMessage
+
+    private val _playlistDeleted = MutableLiveData<Boolean>()
+    val playlistDeleted: LiveData<Boolean> = _playlistDeleted
+
     private var currentPlaylistId: Long = 0
 
     fun loadPlaylist(playlistId: Long) {
@@ -49,8 +58,33 @@ class PlaylistDetailViewModel(
         viewModelScope.launch {
             try {
                 playlistInteractor.removeTrackFromPlaylist(currentPlaylistId, track.trackId)
-                // Перезагружаем плейлист после удаления
                 loadPlaylist(currentPlaylistId)
+            } catch (e: Exception) {
+                // Обработка ошибки
+            }
+        }
+    }
+
+    fun sharePlaylist() {
+        val currentState = _state.value
+        if (currentState is PlaylistDetailState.Content) {
+            if (currentState.tracks.isEmpty()) {
+                _showEmptyPlaylistMessage.value = true
+            } else {
+                val shareText = playlistInteractor.generateShareText(
+                    currentState.playlist,
+                    currentState.tracks
+                )
+                _shareText.value = shareText
+            }
+        }
+    }
+
+    fun deletePlaylist() {
+        viewModelScope.launch {
+            try {
+                playlistInteractor.deletePlaylist(currentPlaylistId)
+                _playlistDeleted.value = true
             } catch (e: Exception) {
                 // Обработка ошибки
             }
