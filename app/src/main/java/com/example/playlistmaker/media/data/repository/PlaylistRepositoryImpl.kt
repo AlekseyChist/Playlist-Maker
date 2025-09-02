@@ -6,6 +6,7 @@ import com.example.playlistmaker.media.data.db.converter.TrackDbConverter
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.repository.PlaylistRepository
 import com.example.playlistmaker.search.domain.model.Track
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -14,6 +15,8 @@ class PlaylistRepositoryImpl(
     private val playlistDbConverter: PlaylistDbConverter,
     private val trackDbConverter: TrackDbConverter
 ) : PlaylistRepository {
+
+    private val gson = Gson()
 
     override suspend fun createPlaylist(playlist: Playlist): Long {
         val entity = playlistDbConverter.mapPlaylistToEntity(playlist)
@@ -28,6 +31,19 @@ class PlaylistRepositoryImpl(
     override suspend fun deletePlaylist(playlist: Playlist) {
         val entity = playlistDbConverter.mapPlaylistToEntity(playlist)
         database.playlistDao().deletePlaylist(entity)
+    }
+
+    override suspend fun deletePlaylistById(playlistId: Long) {
+        // Получаем плейлист перед удалением для очистки треков
+        val playlist = getPlaylistById(playlistId)
+
+        // Удаляем сам плейлист
+        database.playlistDao().deletePlaylistById(playlistId)
+
+        // Очищаем неиспользуемые треки
+        playlist?.trackIds?.forEach { trackId ->
+            cleanupUnusedTrack(trackId)
+        }
     }
 
     override fun getAllPlaylists(): Flow<List<Playlist>> {
@@ -46,11 +62,9 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
-        // Используем правильный метод конвертера
         val trackEntity = trackDbConverter.mapTrackToPlaylistEntity(track)
         database.playlistTracksDao().insertTrack(trackEntity)
 
-        // Обновляем плейлист
         val updatedTrackIds = playlist.trackIds + track.trackId
         val updatedPlaylist = playlist.copy(
             trackIds = updatedTrackIds,
@@ -68,7 +82,6 @@ class PlaylistRepositoryImpl(
         )
         updatePlaylist(updatedPlaylist)
 
-        // Проверяем, используется ли трек в других плейлистах
         cleanupUnusedTrack(trackId)
     }
 
