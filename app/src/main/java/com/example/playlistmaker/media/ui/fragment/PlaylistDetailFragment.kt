@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,8 +22,10 @@ import com.example.playlistmaker.media.ui.state.PlaylistDetailState
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistDetailViewModel
 import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.sharing.domain.usecase.SharingInteractor
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
@@ -32,6 +35,7 @@ class PlaylistDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: PlaylistDetailViewModel by viewModel()
+    private val sharingInteractor: SharingInteractor by inject()
 
     private lateinit var playlistTrackAdapter: PlaylistTrackAdapter
     private lateinit var tracksBottomSheetBehavior: BottomSheetBehavior<LinearLayout>
@@ -54,7 +58,6 @@ class PlaylistDetailFragment : Fragment() {
         setupListeners()
         observeViewModel()
 
-        // Получаем ID плейлиста из аргументов
         val playlistId = arguments?.getLong(ARG_PLAYLIST_ID) ?: run {
             findNavController().popBackStack()
             return
@@ -76,7 +79,6 @@ class PlaylistDetailFragment : Fragment() {
             isHideable = true
         }
 
-        // Обработка состояний Bottom Sheet
         optionsBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
@@ -121,20 +123,33 @@ class PlaylistDetailFragment : Fragment() {
             .show()
     }
 
+    private fun showDeletePlaylistDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Удалить плейлист")
+            .setMessage("Хотите удалить плейлист?")
+            .setNegativeButton("Нет") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("Да") { dialog, _ ->
+                viewModel.deletePlaylist()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
     private fun setupListeners() {
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
 
         binding.shareButton.setOnClickListener {
-            // TODO: Реализация поделиться
+            viewModel.sharePlaylist()
         }
 
         binding.menuButton.setOnClickListener {
             optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        // Клик по overlay
         binding.overlay.setOnClickListener {
             optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
@@ -142,7 +157,7 @@ class PlaylistDetailFragment : Fragment() {
         // Опции в Bottom Sheet
         binding.optionsShareButton.setOnClickListener {
             optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            // TODO: Реализация поделиться
+            viewModel.sharePlaylist()
         }
 
         binding.editInfoButton.setOnClickListener {
@@ -152,7 +167,7 @@ class PlaylistDetailFragment : Fragment() {
 
         binding.deletePlaylistButton.setOnClickListener {
             optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            // TODO: Реализация удаления
+            showDeletePlaylistDialog()
         }
     }
 
@@ -168,6 +183,26 @@ class PlaylistDetailFragment : Fragment() {
                 is PlaylistDetailState.Error -> {
                     findNavController().popBackStack()
                 }
+            }
+        }
+
+        viewModel.shareText.observe(viewLifecycleOwner) { shareText ->
+            sharingInteractor.sharePlaylist(shareText)
+        }
+
+        viewModel.showEmptyPlaylistMessage.observe(viewLifecycleOwner) { shouldShow ->
+            if (shouldShow) {
+                Toast.makeText(
+                    requireContext(),
+                    "В этом плейлисте нет списка треков, которым можно поделиться",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+        viewModel.playlistDeleted.observe(viewLifecycleOwner) { isDeleted ->
+            if (isDeleted) {
+                findNavController().popBackStack()
             }
         }
     }
@@ -186,7 +221,7 @@ class PlaylistDetailFragment : Fragment() {
             binding.playlistDescription.visibility = View.GONE
         }
 
-        // Продолжительность и количество треков (объединенная информация)
+        // Продолжительность и количество треков
         val tracksCountText = viewModel.formatTracksCount(playlist.trackCount)
         binding.playlistInfo.text = "${content.totalDuration} · $tracksCountText"
 
@@ -204,12 +239,10 @@ class PlaylistDetailFragment : Fragment() {
         // Показать/скрыть сообщение "нет треков"
         if (content.tracks.isEmpty()) {
             binding.noTracksText.visibility = View.VISIBLE
-            // Скрываем Bottom Sheet если нет треков
             tracksBottomSheetBehavior.isHideable = true
             tracksBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         } else {
             binding.noTracksText.visibility = View.GONE
-            // Показываем Bottom Sheet если есть треки
             tracksBottomSheetBehavior.isHideable = false
             tracksBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
