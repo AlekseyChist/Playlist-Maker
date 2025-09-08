@@ -23,6 +23,7 @@ class PlaylistInteractorImpl(
     private val coverStorage: CoverStorage
 ) : PlaylistInteractor {
 
+
     override suspend fun createPlaylist(name: String, description: String?, coverUri: Uri?): Long {
         val coverPath = coverUri?.let { uri ->
             coverStorage.saveCover(uri)
@@ -64,6 +65,7 @@ class PlaylistInteractorImpl(
     override suspend fun deletePlaylist(playlistId: Long) {
         playlistRepository.deletePlaylistById(playlistId)
     }
+
 
     override fun generateShareText(playlist: Playlist, tracks: List<Track>): String {
         val stringBuilder = StringBuilder()

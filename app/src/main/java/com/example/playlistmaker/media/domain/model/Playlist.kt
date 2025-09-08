@@ -1,5 +1,7 @@
 package com.example.playlistmaker.media.domain.model
 
+import java.io.Serializable
+
 data class Playlist(
     val id: Long = 0,
     val name: String,
@@ -7,4 +9,4 @@ data class Playlist(
     val coverPath: String? = null,
     val trackIds: List<Long> = emptyList(),
     val trackCount: Int = 0
-)
+) : Serializable

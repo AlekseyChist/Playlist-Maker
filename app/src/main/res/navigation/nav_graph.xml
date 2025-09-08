@@ -62,7 +62,20 @@
         <action
             android:id="@+id/action_playlistDetailFragment_to_audioPlayerActivity"
             app:destination="@id/audioPlayerActivity" />
+
+        <!-- ДОБАВЛЕНО: Действие для перехода к редактированию плейлиста -->
+        <action
+            android:id="@+id/action_playlistDetailFragment_to_editPlaylistFragment"
+            app:destination="@id/editPlaylistFragment" />
+
     </fragment>
+
+    <!-- ДОБАВЛЕНО: Фрагмент редактирования плейлиста -->
+    <fragment
+        android:id="@+id/editPlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.fragment.EditPlaylistFragment"
+        android:label="Редактировать плейлист"
+        tools:layout="@layout/fragment_create_playlist" />
 
     <!-- Фрагмент настроек -->
     <fragment

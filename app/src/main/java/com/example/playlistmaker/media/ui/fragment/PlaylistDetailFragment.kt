@@ -81,18 +81,22 @@ class PlaylistDetailFragment : Fragment() {
 
         optionsBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.overlay.visibility = View.GONE
-                    }
-                    else -> {
-                        binding.overlay.visibility = View.VISIBLE
+                // Проверяем, что binding не null
+                _binding?.let { binding ->
+                    when (newState) {
+                        BottomSheetBehavior.STATE_HIDDEN -> {
+                            binding.overlay.visibility = View.GONE
+                        }
+                        else -> {
+                            binding.overlay.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                binding.overlay.alpha = slideOffset
+                // Проверяем, что binding не null
+                _binding?.overlay?.alpha = (slideOffset + 1f) / 2f
             }
         })
     }
@@ -162,7 +166,18 @@ class PlaylistDetailFragment : Fragment() {
 
         binding.editInfoButton.setOnClickListener {
             optionsBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            // TODO: Реализация редактирования
+
+            // Получаем текущий плейлист из состояния
+            val currentState = viewModel.state.value
+            if (currentState is PlaylistDetailState.Content) {
+                val bundle = Bundle().apply {
+                    putSerializable("playlist", currentState.playlist)
+                }
+                findNavController().navigate(
+                    R.id.action_playlistDetailFragment_to_editPlaylistFragment,
+                    bundle
+                )
+            }
         }
 
         binding.deletePlaylistButton.setOnClickListener {
@@ -286,6 +301,15 @@ class PlaylistDetailFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        // Очищаем callbacks перед уничтожением binding
+        if (::optionsBottomSheetBehavior.isInitialized) {
+            optionsBottomSheetBehavior.removeBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {}
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            })
+        }
+
         _binding = null
     }
 
