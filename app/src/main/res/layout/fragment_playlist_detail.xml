@@ -96,21 +96,21 @@
             app:layout_constraintStart_toEndOf="@id/leftMainGuideline"
             android:layout_marginTop="16dp"
             android:src="@drawable/share_button"
-            android:tint="@color/yp_black"
             android:paddingHorizontal="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/yp_black" />
 
         <!-- Кнопка опций -->
         <ImageView
             android:id="@+id/menuButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/shareButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:layout_constraintStart_toEndOf="@id/shareButton"
+            app:layout_constraintBottom_toBottomOf="@id/shareButton"
             android:layout_marginStart="16dp"
             android:src="@drawable/menu_dots"
-            android:tint="@color/yp_black"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/yp_black" />
 
         <!-- Текст "нет треков" (когда плейлист пустой) -->
         <TextView
