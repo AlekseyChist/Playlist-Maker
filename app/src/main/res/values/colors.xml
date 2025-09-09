@@ -31,9 +31,7 @@
     <color name="sheet_text_primary">@color/yp_black</color>
     <color name="sheet_text_secondary">@color/yp_text_grey</color>
     <color name="yp_white">@color/white</color>
-
-
-
+    <color name="_99000000">#99000000</color>
 
 
 </resources>

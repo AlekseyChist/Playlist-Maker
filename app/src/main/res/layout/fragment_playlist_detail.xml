@@ -30,12 +30,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/back_button_vector"
-            android:paddingVertical="16dp"
-            android:paddingHorizontal="16dp"
+            android:paddingVertical="@dimen/_16dp"
+            android:paddingHorizontal="@dimen/_16dp"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/_4dp"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="@dimen/_4dp"
             app:tint="@color/yp_black" />
 
         <!-- Guideline для отступов -->
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="16dp"/>
+            app:layout_constraintGuide_begin="@dimen/_16dp"/>
 
         <!-- Название плейлиста -->
         <TextView
@@ -53,11 +53,11 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/playlistCover"
             app:layout_constraintStart_toEndOf="@id/leftMainGuideline"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/_24dp"
             android:textSize="24sp"
             android:fontFamily="@font/ys_text_medium"
             android:textColor="@color/yp_black"
-            tools:text="Best songs 2021"/>
+            tools:text="@string/best_songs_2021"/>
 
         <!-- Описание плейлиста -->
         <TextView
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/playlistName"
             app:layout_constraintStart_toEndOf="@id/leftMainGuideline"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/_8dp"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="13sp"
             android:textColor="@color/yp_black"
@@ -81,33 +81,33 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/playlistDescription"
             app:layout_constraintStart_toEndOf="@id/leftMainGuideline"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/_8dp"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="13sp"
             android:textColor="@color/yp_black"
-            tools:text="300 минут · 98 треков"/>
+            tools:text="@string/_300_min_98_tracks"/>
 
         <!-- Кнопка поделиться -->
         <ImageView
             android:id="@+id/shareButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/_24dp"
+            android:layout_height="@dimen/_24dp"
             app:layout_constraintTop_toBottomOf="@id/playlistInfo"
             app:layout_constraintStart_toEndOf="@id/leftMainGuideline"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/_16dp"
             android:src="@drawable/share_button"
-            android:paddingHorizontal="4dp"
+            android:paddingHorizontal="@dimen/_4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="@color/yp_black" />
 
         <!-- Кнопка опций -->
         <ImageView
             android:id="@+id/menuButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/_24dp"
+            android:layout_height="@dimen/_24dp"
             app:layout_constraintStart_toEndOf="@id/shareButton"
             app:layout_constraintBottom_toBottomOf="@id/shareButton"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/_16dp"
             android:src="@drawable/menu_dots"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="@color/yp_black" />
@@ -121,7 +121,7 @@
             app:layout_constraintTop_toBottomOf="@id/shareButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/_24dp"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="13sp"
             android:textColor="@color/yp_black"
@@ -137,15 +137,15 @@
         android:orientation="vertical"
         android:background="@drawable/bottom_sheet_bg"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="266dp"
+        app:behavior_peekHeight="@dimen/_266dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <!-- Drag handle -->
         <View
-            android:layout_width="50dp"
-            android:layout_height="4dp"
+            android:layout_width="@dimen/_50dp"
+            android:layout_height="@dimen/_4dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/_8dp"
             android:background="@color/e0e0e0" />
 
         <!-- Список треков -->
@@ -153,7 +153,7 @@
             android:id="@+id/tracksRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="12dp"
+            android:paddingTop="@dimen/_12dp"
             android:clipToPadding="false"
             tools:listitem="@layout/item_track"/>
 
@@ -164,7 +164,7 @@
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#99000000"
+        android:background="@color/_99000000"
         android:visibility="gone"/>
 
     <!-- Bottom Sheet для опций -->
@@ -175,23 +175,23 @@
         android:orientation="vertical"
         android:background="@drawable/bottom_sheet_bg"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="266dp"
+        app:behavior_peekHeight="@dimen/_266dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <!-- Drag handle -->
         <View
-            android:layout_width="50dp"
-            android:layout_height="4dp"
+            android:layout_width="@dimen/_50dp"
+            android:layout_height="@dimen/_4dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/_8dp"
             android:background="@color/e0e0e0" />
 
         <!-- Информация о плейлисте в опциях -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="8dp">
+            android:layout_height="@dimen/_60dp"
+            android:layout_marginTop="@dimen/_12dp"
+            android:layout_marginBottom="@dimen/_8dp">
 
             <ImageView
                 android:id="@+id/optionsPlaylistCover"
@@ -201,8 +201,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="12dp"
-                android:layout_marginVertical="8dp"
+                android:layout_marginStart="@dimen/_12dp"
+                android:layout_marginVertical="@dimen/_8dp"
                 android:scaleType="centerCrop"
                 tools:src="@drawable/placeholder_image"/>
 
@@ -213,7 +213,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/optionsPlaylistCover"
-                android:layout_marginStart="8dp">
+                android:layout_marginStart="@dimen/_8dp">
 
                 <!-- Заголовок в карточке опций -->
                 <TextView
@@ -235,7 +235,7 @@
                     android:textSize="11sp"
                     android:textColor="@color/sheet_text_secondary"
                     android:maxLines="1"
-                    tools:text="98 треков" />
+                    tools:text="@string/tracks_template_nbr" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -243,10 +243,10 @@
         <TextView
             android:id="@+id/optionsShareButton"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/_60dp"
             android:text="@string/Share_the_app"
             android:gravity="center_vertical"
-            android:paddingStart="16dp"
+            android:paddingStart="@dimen/padding16"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="16sp"
             android:textColor="@color/sheet_text_primary"
@@ -256,10 +256,10 @@
         <TextView
             android:id="@+id/editInfoButton"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/_60dp"
             android:text="@string/edit_info"
             android:gravity="center_vertical"
-            android:paddingStart="16dp"
+            android:paddingStart="@dimen/padding16"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="16sp"
             android:textColor="@color/sheet_text_primary"
@@ -269,10 +269,10 @@
         <TextView
             android:id="@+id/deletePlaylistButton"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/_60dp"
             android:text="@string/delete_playlist"
             android:gravity="center_vertical"
-            android:paddingStart="16dp"
+            android:paddingStart="@dimen/padding16"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="16sp"
             android:textColor="@color/sheet_text_primary"

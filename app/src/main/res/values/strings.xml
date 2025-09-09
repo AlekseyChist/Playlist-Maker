@@ -49,4 +49,7 @@
     <string name="playlist_empty">В плейлисте нет треков</string>
     <string name="edit_info">Редактировать информацию</string>
     <string name="delete_playlist">Удалить плейлист</string>
+    <string name="tracks_template_nbr">98 треков</string>
+    <string name="best_songs_2021">Best songs 2021</string>
+    <string name="_300_min_98_tracks">300 минут · 98 треков</string>
 </resources>
