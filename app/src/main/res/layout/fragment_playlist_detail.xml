@@ -30,13 +30,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/back_button_vector"
-            android:tint="@color/yp_black"
             android:paddingVertical="16dp"
             android:paddingHorizontal="16dp"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="4dp"/>
+            android:layout_marginStart="4dp"
+            app:tint="@color/yp_black" />
 
         <!-- Guideline для отступов -->
         <androidx.constraintlayout.widget.Guideline
@@ -215,23 +215,25 @@
                 app:layout_constraintStart_toEndOf="@id/optionsPlaylistCover"
                 android:layout_marginStart="8dp">
 
+                <!-- Заголовок в карточке опций -->
                 <TextView
                     android:id="@+id/optionsPlaylistName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ys_text_regular"
                     android:textSize="16sp"
-                    android:textColor="@color/yp_black"
+                    android:textColor="@color/sheet_text_primary"
                     android:maxLines="1"
                     tools:text="Best songs 2021"/>
 
+                <!-- Подзаголовок (кол-во треков) -->
                 <TextView
                     android:id="@+id/optionsPlaylistSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/ys_text_regular"
                     android:textSize="11sp"
-                    android:textColor="@color/yp_text_grey"
+                    android:textColor="@color/sheet_text_secondary"
                     android:maxLines="1"
                     tools:text="98 треков" />
             </LinearLayout>
@@ -247,7 +249,7 @@
             android:paddingStart="16dp"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="16sp"
-            android:textColor="@color/yp_black"
+            android:textColor="@color/sheet_text_primary"
             android:background="?attr/selectableItemBackground"/>
 
         <!-- Редактировать информацию -->
@@ -255,12 +257,12 @@
             android:id="@+id/editInfoButton"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="Редактировать информацию"
+            android:text="@string/edit_info"
             android:gravity="center_vertical"
             android:paddingStart="16dp"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="16sp"
-            android:textColor="@color/yp_black"
+            android:textColor="@color/sheet_text_primary"
             android:background="?attr/selectableItemBackground"/>
 
         <!-- Удалить плейлист -->
@@ -268,12 +270,12 @@
             android:id="@+id/deletePlaylistButton"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="Удалить плейлист"
+            android:text="@string/delete_playlist"
             android:gravity="center_vertical"
             android:paddingStart="16dp"
             android:fontFamily="@font/ys_text_regular"
             android:textSize="16sp"
-            android:textColor="@color/yp_black"
+            android:textColor="@color/sheet_text_primary"
             android:background="?attr/selectableItemBackground"/>
     </LinearLayout>
 

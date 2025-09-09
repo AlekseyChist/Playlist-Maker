@@ -28,6 +28,9 @@
     <color name="yp_background">@color/white</color>
     <color name="yp_text_grey">#AEAFB4</color>
     <color name="yp_light_gray">#E6E8EB</color>
+    <color name="sheet_text_primary">@color/yp_black</color>
+    <color name="sheet_text_secondary">@color/yp_text_grey</color>
+    <color name="yp_white">@color/white</color>
 
 
 

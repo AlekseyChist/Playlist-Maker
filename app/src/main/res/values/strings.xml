@@ -47,4 +47,6 @@
     <string name="add_to_palylist">Добавить в плейлист</string>
     <string name="playlist_tracks">Треки</string>
     <string name="playlist_empty">В плейлисте нет треков</string>
+    <string name="edit_info">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
 </resources>
