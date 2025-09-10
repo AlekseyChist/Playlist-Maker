@@ -11,6 +11,7 @@
     <string name="Settings">Настройки</string>
     <string name="Dark_theme">Темная тема</string>
     <string name="Share_the_app">Поделиться приложением</string>
+    <string name="Share">Поделиться</string>
     <string name="write_to_the_support">Написать в поддержку</string>
     <string name="User_agreement">Пользовательское соглашение</string>
     <string name="app_share_message">https://practicum.yandex.ru/catalog/programming/?from=main_header-programming_button</string>
@@ -52,4 +53,11 @@
     <string name="tracks_template_nbr">98 треков</string>
     <string name="best_songs_2021">Best songs 2021</string>
     <string name="_300_min_98_tracks">300 минут · 98 треков</string>
+
+    <plurals name="tracks_count">
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
 </resources>

@@ -16,6 +16,7 @@ interface PlaylistInteractor {
     suspend fun getPlaylistTracks(trackIds: List<Long>): List<Track>
     suspend fun deletePlaylist(playlistId: Long) // Новый метод
     fun generateShareText(playlist: Playlist, tracks: List<Track>): String // Новый метод
+    suspend fun saveCover(uri: Uri): String
 }
 
 class PlaylistInteractorImpl(
@@ -23,6 +24,9 @@ class PlaylistInteractorImpl(
     private val coverStorage: CoverStorage
 ) : PlaylistInteractor {
 
+    override suspend fun saveCover(uri: Uri): String {
+        return coverStorage.saveCover(uri)
+    }
 
     override suspend fun createPlaylist(name: String, description: String?, coverUri: Uri?): Long {
         val coverPath = coverUri?.let { uri ->

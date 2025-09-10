@@ -108,7 +108,7 @@
             app:layout_constraintStart_toEndOf="@id/shareButton"
             app:layout_constraintBottom_toBottomOf="@id/shareButton"
             android:layout_marginStart="@dimen/_16dp"
-            android:src="@drawable/menu_dots"
+            android:src="@drawable/menu_dot_24"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:tint="@color/yp_black" />
 
@@ -244,7 +244,7 @@
             android:id="@+id/optionsShareButton"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_60dp"
-            android:text="@string/Share_the_app"
+            android:text="@string/Share"
             android:gravity="center_vertical"
             android:paddingStart="@dimen/padding16"
             android:fontFamily="@font/ys_text_regular"

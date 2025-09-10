@@ -1,9 +1,11 @@
 package com.example.playlistmaker.media.ui.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.R
 import com.example.playlistmaker.media.domain.usecase.PlaylistInteractor
 import com.example.playlistmaker.media.ui.state.PlaylistDetailState
 import com.example.playlistmaker.search.domain.model.Track
@@ -97,11 +99,7 @@ class PlaylistDetailViewModel(
         return "$totalMinutes минут"
     }
 
-    fun formatTracksCount(count: Int): String {
-        return when {
-            count % 10 == 1 && count % 100 != 11 -> "$count трек"
-            count % 10 in 2..4 && count % 100 !in 12..14 -> "$count трека"
-            else -> "$count треков"
-        }
+    fun formatTracksCount(count: Int, context: Context): String {
+        return context.resources.getQuantityString(R.plurals.tracks_count, count, count)
     }
 }

@@ -43,15 +43,9 @@ class EditPlaylistViewModel(
 
         viewModelScope.launch {
             try {
-                // Если выбрана новая обложка, сохраняем её
+                // Если выбрана новая обложка, сохраняем только её файл
                 val finalCoverPath = if (hasNewCover && playlistCoverUri != null) {
-                    playlistInteractor.createPlaylist(
-                        name = "temp",
-                        description = null,
-                        coverUri = playlistCoverUri
-                    )
-                    // Возвращаем существующий путь, так как обложка уже сохранена
-                    originalCoverPath
+                    playlistInteractor.saveCover(playlistCoverUri!!) // Нужно добавить этот метод
                 } else {
                     originalCoverPath
                 }

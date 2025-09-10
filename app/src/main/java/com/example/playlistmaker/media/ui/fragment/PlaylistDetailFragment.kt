@@ -222,6 +222,15 @@ class PlaylistDetailFragment : Fragment() {
         }
     }
 
+    private fun sortTracksByAdditionOrder(tracks: List<Track>, trackIds: List<Long>): List<Track> {
+        // Создаем мапу для быстрого доступа к трекам по ID
+        val tracksMap = tracks.associateBy { it.trackId }
+
+        // Сортируем по порядку в плейлисте, последние добавленные сверху
+        return trackIds.reversed() // ← Реверсируем, чтобы последние были сверху
+            .mapNotNull { trackId -> tracksMap[trackId] } // Получаем треки в нужном порядке
+    }
+
     private fun showContent(content: PlaylistDetailState.Content) {
         val playlist = content.playlist
 
@@ -248,8 +257,11 @@ class PlaylistDetailFragment : Fragment() {
         binding.optionsPlaylistSize.text = viewModel.formatTracksCount(playlist.trackCount)
         loadOptionsPlaylistCover(playlist.coverPath)
 
-        // Список треков
-        playlistTrackAdapter.updateTracks(content.tracks)
+
+        val sortedTracks = sortTracksByAdditionOrder(content.tracks, playlist.trackIds)
+
+        // Список треков (используем отсортированный список)
+        playlistTrackAdapter.updateTracks(sortedTracks)
 
         // Показать/скрыть сообщение "нет треков"
         if (content.tracks.isEmpty()) {
