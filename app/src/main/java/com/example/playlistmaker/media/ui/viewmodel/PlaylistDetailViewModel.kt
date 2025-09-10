@@ -98,8 +98,4 @@ class PlaylistDetailViewModel(
         val totalMinutes = totalMillis / 60000
         return "$totalMinutes минут"
     }
-
-    fun formatTracksCount(count: Int, context: Context): String {
-        return context.resources.getQuantityString(R.plurals.tracks_count, count, count)
-    }
 }

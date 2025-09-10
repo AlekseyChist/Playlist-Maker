@@ -23,6 +23,7 @@ import com.example.playlistmaker.media.ui.viewmodel.PlaylistDetailViewModel
 import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.sharing.domain.usecase.SharingInteractor
+import com.example.playlistmaker.utils.formatTracksCount
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
@@ -246,7 +247,7 @@ class PlaylistDetailFragment : Fragment() {
         }
 
         // Продолжительность и количество треков
-        val tracksCountText = viewModel.formatTracksCount(playlist.trackCount)
+        val tracksCountText = requireContext().formatTracksCount(playlist.trackCount)
         binding.playlistInfo.text = "${content.totalDuration} · $tracksCountText"
 
         // Загружаем обложку
@@ -254,7 +255,7 @@ class PlaylistDetailFragment : Fragment() {
 
         // Информация в options bottom sheet
         binding.optionsPlaylistName.text = playlist.name
-        binding.optionsPlaylistSize.text = viewModel.formatTracksCount(playlist.trackCount)
+        binding.optionsPlaylistSize.text = requireContext().formatTracksCount(playlist.trackCount)
         loadOptionsPlaylistCover(playlist.coverPath)
 
 
