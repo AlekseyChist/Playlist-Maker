@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.root
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -20,5 +21,21 @@ class RootActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         binding.bottomNavigation.setupWithNavController(navController)
+
+        // Скрываем bottom navigation на определенных экранах
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.playlistDetailFragment,
+                R.id.createPlaylistFragment,
+                R.id.editPlaylistFragment-> {
+                    binding.bottomNavigation.visibility = View.GONE
+                    binding.navigationDivider.visibility = View.GONE
+                }
+                else -> {
+                    binding.bottomNavigation.visibility = View.VISIBLE
+                    binding.navigationDivider.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 }

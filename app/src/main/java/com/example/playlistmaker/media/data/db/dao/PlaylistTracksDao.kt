@@ -20,4 +20,8 @@ interface PlaylistTracksDao {
 
     @Query("SELECT * FROM playlist_tracks")
     suspend fun getAllTracks(): List<PlaylistTrackEntity>
+
+    // Новый метод для проверки использования трека в плейлистах
+    @Query("SELECT COUNT(*) FROM playlists WHERE trackIds LIKE '%' || :trackId || '%'")
+    suspend fun countPlaylistsContainingTrack(trackId: Long): Int
 }

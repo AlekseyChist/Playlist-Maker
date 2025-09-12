@@ -36,4 +36,10 @@
     <dimen name="corner_radius">8dp</dimen>
     <dimen name="_13sp">13sp</dimen>
     <dimen name="_16dp">16dp</dimen>
+    <dimen name="_266dp">266dp</dimen>
+    <dimen name="_50dp">50dp</dimen>
+    <dimen name="_4dp">4dp</dimen>
+    <dimen name="_12dp">12dp</dimen>
+    <dimen name="_60dp">60dp</dimen>
+    <dimen name="_24dp">24dp</dimen>
 </resources>

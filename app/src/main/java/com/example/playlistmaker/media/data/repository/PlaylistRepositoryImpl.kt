@@ -3,10 +3,10 @@ package com.example.playlistmaker.media.data.repository
 import com.example.playlistmaker.media.data.db.AppDatabase
 import com.example.playlistmaker.media.data.db.converter.PlaylistDbConverter
 import com.example.playlistmaker.media.data.db.converter.TrackDbConverter
-import com.example.playlistmaker.media.data.db.entity.PlaylistTrackEntity
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.repository.PlaylistRepository
 import com.example.playlistmaker.search.domain.model.Track
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -15,6 +15,8 @@ class PlaylistRepositoryImpl(
     private val playlistDbConverter: PlaylistDbConverter,
     private val trackDbConverter: TrackDbConverter
 ) : PlaylistRepository {
+
+    private val gson = Gson()
 
     override suspend fun createPlaylist(playlist: Playlist): Long {
         val entity = playlistDbConverter.mapPlaylistToEntity(playlist)
@@ -29,6 +31,19 @@ class PlaylistRepositoryImpl(
     override suspend fun deletePlaylist(playlist: Playlist) {
         val entity = playlistDbConverter.mapPlaylistToEntity(playlist)
         database.playlistDao().deletePlaylist(entity)
+    }
+
+    override suspend fun deletePlaylistById(playlistId: Long) {
+        // Получаем плейлист перед удалением для очистки треков
+        val playlist = getPlaylistById(playlistId)
+
+        // Удаляем сам плейлист
+        database.playlistDao().deletePlaylistById(playlistId)
+
+        // Очищаем неиспользуемые треки
+        playlist?.trackIds?.forEach { trackId ->
+            cleanupUnusedTrack(trackId)
+        }
     }
 
     override fun getAllPlaylists(): Flow<List<Playlist>> {
@@ -47,22 +62,9 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
-        // Добавляем трек в таблицу playlist_tracks
-        val trackEntity = PlaylistTrackEntity(
-            trackId = track.trackId,
-            trackName = track.trackName,
-            artistName = track.artistName,
-            trackTimeMillis = track.trackTimeMillis,
-            artworkUrl100 = track.artworkUrl100,
-            collectionName = track.collectionName,
-            releaseDate = track.releaseDate,
-            primaryGenreName = track.primaryGenreName,
-            country = track.country,
-            previewUrl = track.previewUrl
-        )
+        val trackEntity = trackDbConverter.mapTrackToPlaylistEntity(track)
         database.playlistTracksDao().insertTrack(trackEntity)
 
-        // Обновляем плейлист
         val updatedTrackIds = playlist.trackIds + track.trackId
         val updatedPlaylist = playlist.copy(
             trackIds = updatedTrackIds,
@@ -79,5 +81,23 @@ class PlaylistRepositoryImpl(
             trackCount = updatedTrackIds.size
         )
         updatePlaylist(updatedPlaylist)
+
+        cleanupUnusedTrack(trackId)
+    }
+
+    private suspend fun cleanupUnusedTrack(trackId: Long) {
+        val playlistCount = database.playlistTracksDao().countPlaylistsContainingTrack(trackId)
+        if (playlistCount == 0) {
+            database.playlistTracksDao().deleteTrack(trackId)
+        }
+    }
+
+    override suspend fun getPlaylistTracks(trackIds: List<Long>): List<Track> {
+        if (trackIds.isEmpty()) return emptyList()
+
+        val trackEntities = database.playlistTracksDao().getTracksByIds(trackIds)
+        return trackEntities.map { entity ->
+            trackDbConverter.mapPlaylistEntityToTrack(entity)
+        }
     }
 }

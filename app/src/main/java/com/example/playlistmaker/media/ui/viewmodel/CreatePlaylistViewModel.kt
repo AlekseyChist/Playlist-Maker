@@ -5,39 +5,43 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.domain.usecase.PlaylistInteractor
 import kotlinx.coroutines.launch
 
-class CreatePlaylistViewModel(
-    private val playlistInteractor: PlaylistInteractor
+open class CreatePlaylistViewModel(
+    protected val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
-    private var playlistName: String = ""
-    private var playlistDescription: String? = null
-    private var playlistCoverUri: Uri? = null
+    protected var playlistName: String = ""
+    protected var playlistDescription: String? = null
+    protected var playlistCoverUri: Uri? = null
 
     private val _playlistCreated = MutableLiveData<String>()
     val playlistCreated: LiveData<String> = _playlistCreated
 
-    fun onNameChanged(name: String) {
+    // Делаем open для возможности переопределения
+    open fun onNameChanged(name: String) {
         playlistName = name
     }
 
-    fun onDescriptionChanged(description: String) {
+    // Делаем open для возможности переопределения
+    open fun onDescriptionChanged(description: String) {
         playlistDescription = description.ifBlank { null }
     }
 
-    fun onCoverSelected(uri: Uri) {
+    // Делаем open для возможности переопределения в EditPlaylistViewModel
+    open fun onCoverSelected(uri: Uri) {
         playlistCoverUri = uri
     }
 
-    fun hasUnsavedChanges(): Boolean {
+    open fun hasUnsavedChanges(): Boolean {
         return playlistName.isNotBlank() ||
                 !playlistDescription.isNullOrBlank() ||
                 playlistCoverUri != null
     }
 
-    fun createPlaylist() {
+    open fun createPlaylist() {
         if (playlistName.isBlank()) return
 
         viewModelScope.launch {
@@ -45,7 +49,7 @@ class CreatePlaylistViewModel(
                 val playlistId = playlistInteractor.createPlaylist(
                     name = playlistName,
                     description = playlistDescription,
-                    coverUri = playlistCoverUri // Убедитесь, что Uri передается
+                    coverUri = playlistCoverUri
                 )
                 _playlistCreated.value = playlistName
             } catch (e: Exception) {

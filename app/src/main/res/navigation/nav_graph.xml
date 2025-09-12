@@ -5,38 +5,90 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/mediaLibraryFragment">
 
+    <!-- Фрагмент поиска -->
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.playlistmaker.search.ui.fragment.SearchFragment"
-        android:label="Поиск"
-        tools:layout="@layout/fragment_search" />
+        android:label="@string/search"
+        tools:layout="@layout/fragment_search">
 
+        <action
+            android:id="@+id/action_searchFragment_to_audioPlayerActivity"
+            app:destination="@id/audioPlayerActivity" />
+    </fragment>
+
+    <!-- Фрагмент медиатеки -->
     <fragment
         android:id="@+id/mediaLibraryFragment"
         android:name="com.example.playlistmaker.media.ui.fragment.MediaLibraryFragment"
-        android:label="Медиатека"
+        android:label="@string/media"
         tools:layout="@layout/fragment_media_library">
 
+        <!-- Действие для перехода к созданию плейлиста -->
         <action
             android:id="@+id/action_mediaLibraryFragment_to_createPlaylistFragment"
             app:destination="@id/createPlaylistFragment" />
+
+        <!-- Действие для перехода к детальному просмотру плейлиста -->
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_playlistDetailFragment"
+            app:destination="@id/playlistDetailFragment" />
+
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_audioPlayerActivity"
+            app:destination="@id/audioPlayerActivity" />
     </fragment>
 
+    <!-- Фрагмент создания плейлиста -->
     <fragment
         android:id="@+id/createPlaylistFragment"
         android:name="com.example.playlistmaker.media.ui.fragment.CreatePlaylistFragment"
         android:label="Новый плейлист"
         tools:layout="@layout/fragment_create_playlist" />
 
+    <!-- Фрагмент детального просмотра плейлиста -->
+    <fragment
+        android:id="@+id/playlistDetailFragment"
+        android:name="com.example.playlistmaker.media.ui.fragment.PlaylistDetailFragment"
+        android:label="Плейлист"
+        tools:layout="@layout/fragment_playlist_detail">
+
+        <!-- Аргумент для ID плейлиста -->
+        <argument
+            android:name="playlist_id"
+            app:argType="long"
+            android:defaultValue="0L" />
+
+        <action
+            android:id="@+id/action_playlistDetailFragment_to_audioPlayerActivity"
+            app:destination="@id/audioPlayerActivity" />
+
+        <!-- ДОБАВЛЕНО: Действие для перехода к редактированию плейлиста -->
+        <action
+            android:id="@+id/action_playlistDetailFragment_to_editPlaylistFragment"
+            app:destination="@id/editPlaylistFragment" />
+
+    </fragment>
+
+    <!-- ДОБАВЛЕНО: Фрагмент редактирования плейлиста -->
+    <fragment
+        android:id="@+id/editPlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.fragment.EditPlaylistFragment"
+        android:label="Редактировать плейлист"
+        tools:layout="@layout/fragment_create_playlist" />
+
+    <!-- Фрагмент настроек -->
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.playlistmaker.settings.ui.fragment.SettingsFragment"
-        android:label="Настройки"
+        android:label="@string/Settings"
         tools:layout="@layout/fragment_settings" />
 
+    <!-- Activity аудиоплеера -->
     <activity
         android:id="@+id/audioPlayerActivity"
         android:name="com.example.playlistmaker.player.ui.activity.AudioPlayerActivity"
         android:label="Плеер"
         tools:layout="@layout/activity_audio_player" />
+
 </navigation>

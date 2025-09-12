@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.ui.adapter
+package com.example.playlistmaker.media.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +12,11 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.search.domain.model.Track
 import java.util.Locale
 
-class TrackAdapter(
+class PlaylistTrackAdapter(
     private var tracks: List<Track>,
-    private val onItemClick: (Track) -> Unit
-) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+    private val onItemClick: (Track) -> Unit,
+    private val onItemLongClick: (Track) -> Unit
+) : RecyclerView.Adapter<PlaylistTrackAdapter.TrackViewHolder>() {
 
     inner class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val trackNameTextView: TextView = itemView.findViewById(R.id.trackName)
@@ -37,6 +38,11 @@ class TrackAdapter(
 
             itemView.setOnClickListener {
                 onItemClick(track)
+            }
+
+            itemView.setOnLongClickListener {
+                onItemLongClick(track)
+                true
             }
         }
 

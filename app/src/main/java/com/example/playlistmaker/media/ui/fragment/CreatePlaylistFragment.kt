@@ -20,12 +20,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CreatePlaylistFragment : Fragment() {
+open class CreatePlaylistFragment : Fragment() {
 
-    private var _binding: FragmentCreatePlaylistBinding? = null
-    private val binding get() = _binding!!
+    protected var _binding: FragmentCreatePlaylistBinding? = null
+    protected val binding get() = _binding!!
 
-    private val viewModel: CreatePlaylistViewModel by viewModel()
+    protected open val viewModel: CreatePlaylistViewModel by viewModel()
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri?.let { selectedUri ->
@@ -52,47 +52,41 @@ class CreatePlaylistFragment : Fragment() {
         setupBackNavigation()
     }
 
-    private fun setupViews() {
-        // Начальное состояние кнопки "Создать"
+    protected open fun setupViews() {
         binding.createButton.isEnabled = false
     }
 
-    private fun setupListeners() {
-        // Слушатель для поля названия
+    protected open fun setupListeners() {
         binding.nameEditText.doOnTextChanged { text, _, _, _ ->
             viewModel.onNameChanged(text?.toString() ?: "")
             binding.createButton.isEnabled = !text.isNullOrBlank()
         }
 
-        // Слушатель для поля описания
         binding.descriptionEditText.doOnTextChanged { text, _, _, _ ->
             viewModel.onDescriptionChanged(text?.toString() ?: "")
         }
 
-        // Клик по области обложки
         binding.coverImageView.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        // Кнопка назад
         binding.backButton.setOnClickListener {
             handleBackNavigation()
         }
 
-        // Кнопка создать
         binding.createButton.setOnClickListener {
             viewModel.createPlaylist()
         }
     }
 
-    private fun observeViewModel() {
+    protected open fun observeViewModel() {
         viewModel.playlistCreated.observe(viewLifecycleOwner) { playlistName ->
             showSuccessMessage(playlistName)
             findNavController().popBackStack()
         }
     }
 
-    private fun setupBackNavigation() {
+    protected open fun setupBackNavigation() {
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -103,7 +97,7 @@ class CreatePlaylistFragment : Fragment() {
         )
     }
 
-    private fun handleBackNavigation() {
+    protected open fun handleBackNavigation() {
         if (viewModel.hasUnsavedChanges()) {
             showExitConfirmationDialog()
         } else {
@@ -111,7 +105,7 @@ class CreatePlaylistFragment : Fragment() {
         }
     }
 
-    private fun showExitConfirmationDialog() {
+    protected open fun showExitConfirmationDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Завершить создание плейлиста?")
             .setMessage("Все несохраненные данные будут потеряны")
@@ -124,7 +118,7 @@ class CreatePlaylistFragment : Fragment() {
             .show()
     }
 
-    private fun displayCover(uri: Uri) {
+    protected fun displayCover(uri: Uri) {
         binding.addImageIcon.visibility = View.GONE
         Glide.with(this)
             .load(uri)
@@ -133,11 +127,11 @@ class CreatePlaylistFragment : Fragment() {
             .into(binding.coverImageView)
     }
 
-    private fun dpToPx(dp: Int): Int {
+    protected fun dpToPx(dp: Int): Int {
         return (dp * resources.displayMetrics.density).toInt()
     }
 
-    private fun showSuccessMessage(playlistName: String) {
+    protected fun showSuccessMessage(playlistName: String) {
         Snackbar.make(
             binding.root,
             "Плейлист $playlistName создан",
