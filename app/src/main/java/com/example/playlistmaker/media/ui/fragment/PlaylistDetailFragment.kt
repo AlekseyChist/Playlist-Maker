@@ -67,6 +67,7 @@ class PlaylistDetailFragment : Fragment() {
         viewModel.loadPlaylist(playlistId)
     }
 
+
     private fun setupBottomSheets() {
         // Bottom Sheet для треков
         tracksBottomSheetBehavior = BottomSheetBehavior.from(binding.tracksBottomSheet).apply {
@@ -202,23 +203,30 @@ class PlaylistDetailFragment : Fragment() {
             }
         }
 
-        viewModel.shareText.observe(viewLifecycleOwner) { shareText ->
-            sharingInteractor.sharePlaylist(shareText)
-        }
-
-        viewModel.showEmptyPlaylistMessage.observe(viewLifecycleOwner) { shouldShow ->
-            if (shouldShow) {
-                Toast.makeText(
-                    requireContext(),
-                    "В этом плейлисте нет списка треков, которым можно поделиться",
-                    Toast.LENGTH_LONG
-                ).show()
+        viewModel.shareEvent.observe(viewLifecycleOwner) { event ->
+            // getContentIfNotHandled() вернет значение только один раз
+            event.getContentIfNotHandled()?.let { shareText ->
+                sharingInteractor.sharePlaylist(shareText)
             }
         }
 
-        viewModel.playlistDeleted.observe(viewLifecycleOwner) { isDeleted ->
-            if (isDeleted) {
-                findNavController().popBackStack()
+        viewModel.showEmptyPlaylistMessage.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let { shouldShow ->
+                if (shouldShow) {
+                    Toast.makeText(
+                        requireContext(),
+                        "В этом плейлисте нет списка треков, которым можно поделиться",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+
+        viewModel.playlistDeleted.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let { isDeleted ->
+                if (isDeleted) {
+                    findNavController().popBackStack()
+                }
             }
         }
     }

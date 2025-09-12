@@ -1,14 +1,15 @@
+// app/src/main/java/com/example/playlistmaker/media/ui/viewmodel/PlaylistDetailViewModel.kt
+
 package com.example.playlistmaker.media.ui.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.R
 import com.example.playlistmaker.media.domain.usecase.PlaylistInteractor
 import com.example.playlistmaker.media.ui.state.PlaylistDetailState
 import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.utils.Event
 import kotlinx.coroutines.launch
 
 class PlaylistDetailViewModel(
@@ -18,14 +19,15 @@ class PlaylistDetailViewModel(
     private val _state = MutableLiveData<PlaylistDetailState>()
     val state: LiveData<PlaylistDetailState> = _state
 
-    private val _shareText = MutableLiveData<String>()
-    val shareText: LiveData<String> = _shareText
+    // Меняем на Event wrapper для одноразовых событий
+    private val _shareEvent = MutableLiveData<Event<String>>()
+    val shareEvent: LiveData<Event<String>> = _shareEvent
 
-    private val _showEmptyPlaylistMessage = MutableLiveData<Boolean>()
-    val showEmptyPlaylistMessage: LiveData<Boolean> = _showEmptyPlaylistMessage
+    private val _showEmptyPlaylistMessage = MutableLiveData<Event<Boolean>>()
+    val showEmptyPlaylistMessage: LiveData<Event<Boolean>> = _showEmptyPlaylistMessage
 
-    private val _playlistDeleted = MutableLiveData<Boolean>()
-    val playlistDeleted: LiveData<Boolean> = _playlistDeleted
+    private val _playlistDeleted = MutableLiveData<Event<Boolean>>()
+    val playlistDeleted: LiveData<Event<Boolean>> = _playlistDeleted
 
     private var currentPlaylistId: Long = 0
 
@@ -60,7 +62,7 @@ class PlaylistDetailViewModel(
         viewModelScope.launch {
             try {
                 playlistInteractor.removeTrackFromPlaylist(currentPlaylistId, track.trackId)
-                loadPlaylist(currentPlaylistId)
+                loadPlaylist(currentPlaylistId) // Перезагружаем данные
             } catch (e: Exception) {
                 // Обработка ошибки
             }
@@ -71,13 +73,15 @@ class PlaylistDetailViewModel(
         val currentState = _state.value
         if (currentState is PlaylistDetailState.Content) {
             if (currentState.tracks.isEmpty()) {
-                _showEmptyPlaylistMessage.value = true
+                // Оборачиваем в Event
+                _showEmptyPlaylistMessage.value = Event(true)
             } else {
                 val shareText = playlistInteractor.generateShareText(
                     currentState.playlist,
                     currentState.tracks
                 )
-                _shareText.value = shareText
+                // Оборачиваем в Event
+                _shareEvent.value = Event(shareText)
             }
         }
     }
@@ -86,7 +90,8 @@ class PlaylistDetailViewModel(
         viewModelScope.launch {
             try {
                 playlistInteractor.deletePlaylist(currentPlaylistId)
-                _playlistDeleted.value = true
+                // Оборачиваем в Event
+                _playlistDeleted.value = Event(true)
             } catch (e: Exception) {
                 // Обработка ошибки
             }
