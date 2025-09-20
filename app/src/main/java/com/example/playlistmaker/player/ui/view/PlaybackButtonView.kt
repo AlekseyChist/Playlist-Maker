@@ -101,13 +101,11 @@ class PlaybackButtonView @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                // Обрабатываем начало касания
                 true
             }
             MotionEvent.ACTION_UP -> {
-                // При поднятии пальца переключаем состояние
                 if (isClickInsideBounds(event.x, event.y)) {
-                    toggleState()
+                    // Убираем toggleState() - состояние будет управляться извне
                     performClick()
                 }
                 true

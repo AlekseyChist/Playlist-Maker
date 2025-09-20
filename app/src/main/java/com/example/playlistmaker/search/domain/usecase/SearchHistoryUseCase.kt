@@ -4,15 +4,15 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.repository.TrackRepository
 
 interface SearchHistoryUseCase {
-    fun addTrack(track: Track)
+    suspend fun addTrack(track: Track) // Добавьте suspend
     suspend fun getHistory(): List<Track>
-    fun clearHistory()
+    suspend fun clearHistory()
 }
 
 class SearchHistoryUseCaseImpl(
     private val repository: TrackRepository
 ) : SearchHistoryUseCase {
-    override fun addTrack(track: Track) {
+    override suspend fun addTrack(track: Track) { // Добавьте suspend
         repository.addTrackToHistory(track)
     }
 
@@ -20,7 +20,7 @@ class SearchHistoryUseCaseImpl(
         return repository.getSearchHistory()
     }
 
-    override fun clearHistory() {
+    override suspend fun clearHistory() {
         repository.clearSearchHistory()
     }
 }

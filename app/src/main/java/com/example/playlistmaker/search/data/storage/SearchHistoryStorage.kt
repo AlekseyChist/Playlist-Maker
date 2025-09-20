@@ -4,13 +4,16 @@ import android.content.SharedPreferences
 import com.example.playlistmaker.search.data.dto.TrackDto
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import androidx.core.content.edit
 
 class SearchHistoryStorage(private val sharedPreferences: SharedPreferences) {
     private val gson = Gson()
     private val key = "search_history"
     private val maxHistorySize = 10
 
-    fun addTrack(track: TrackDto) {
+    suspend fun addTrack(track: TrackDto) = withContext(Dispatchers.IO) {
         val tracks = getTracks().toMutableList()
         tracks.removeAll { it.trackId == track.trackId }
         tracks.add(0, track)
@@ -20,21 +23,21 @@ class SearchHistoryStorage(private val sharedPreferences: SharedPreferences) {
         saveTracks(tracks)
     }
 
-    fun getTracks(): List<TrackDto> {
+    suspend fun getTracks(): List<TrackDto> = withContext(Dispatchers.IO) {
         val json = sharedPreferences.getString(key, null)
-        return if (json != null) {
+        if (json != null) {
             gson.fromJson(json, object : TypeToken<List<TrackDto>>() {}.type)
         } else {
             emptyList()
         }
     }
 
-    private fun saveTracks(tracks: List<TrackDto>) {
+    private suspend fun saveTracks(tracks: List<TrackDto>) = withContext(Dispatchers.IO) {
         val json = gson.toJson(tracks)
-        sharedPreferences.edit().putString(key, json).apply()
+        sharedPreferences.edit { putString(key, json) }
     }
 
-    fun clearHistory() {
-        sharedPreferences.edit().remove(key).apply()
+    suspend fun clearHistory() = withContext(Dispatchers.IO) {
+        sharedPreferences.edit { remove(key) }
     }
 }
