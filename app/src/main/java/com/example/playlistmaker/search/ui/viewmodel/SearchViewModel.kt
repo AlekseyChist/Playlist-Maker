@@ -49,7 +49,9 @@ class SearchViewModel(
 
             searchTracksUseCase.execute(query)
                 .onStart { _state.value = SearchState.Loading }
-                .catch { error -> _state.value = SearchState.Error(error.message ?: "Unknown error") }
+                .catch { error ->
+                    _state.value = SearchState.Error(error.message ?: "Unknown error")
+                }
                 .collect { tracks ->
                     _state.value = if (tracks.isEmpty()) {
                         SearchState.Empty
@@ -71,11 +73,15 @@ class SearchViewModel(
     }
 
     fun addToHistory(track: Track) {
-        searchHistoryUseCase.addTrack(track)
+        viewModelScope.launch {
+            searchHistoryUseCase.addTrack(track)
+        }
     }
 
     fun clearHistory() {
-        searchHistoryUseCase.clearHistory()
-        _state.value = SearchState.History(emptyList())
+        viewModelScope.launch {
+            searchHistoryUseCase.clearHistory() // suspend вызов
+            _state.value = SearchState.History(emptyList())
+        }
     }
 }

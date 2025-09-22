@@ -20,6 +20,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.media.ui.adapter.PlaylistBottomSheetAdapter
 import com.example.playlistmaker.media.ui.fragment.CreatePlaylistFragment
 import com.example.playlistmaker.player.ui.state.AudioPlayerState
+import com.example.playlistmaker.player.ui.view.PlaybackButtonView
 import com.example.playlistmaker.player.ui.viewmodel.AudioPlayerViewModel
 import com.example.playlistmaker.player.ui.viewmodel.PlaylistAddStatus
 import com.example.playlistmaker.search.domain.model.Track
@@ -38,7 +39,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var trackNameTextView: TextView
     private lateinit var artistNameTextView: TextView
     private lateinit var addToPlaylistButton: ImageView
-    private lateinit var playButton: ImageView
+    private lateinit var playButton: PlaybackButtonView
     private lateinit var likeButton: ImageView
     private lateinit var currentTimeTextView: TextView
     private lateinit var durationTextView: TextView
@@ -156,7 +157,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun setupListeners() {
         backButton.setOnClickListener { finish() }
 
-        playButton.setOnClickListener {
+        playButton.setOnButtonClickListener {
             try {
                 when (viewModel.state.value) {
                     is AudioPlayerState.Playing -> viewModel.pause()
@@ -206,15 +207,15 @@ class AudioPlayerActivity : AppCompatActivity() {
                 }
                 is AudioPlayerState.Prepared -> {
                     playButton.isEnabled = true
-                    playButton.setImageResource(R.drawable.play_button)
+                    playButton.setState(PlaybackButtonView.ButtonState.PLAY)
                     currentTimeTextView.text = formatTime(0)
                 }
                 is AudioPlayerState.Playing -> {
-                    playButton.setImageResource(R.drawable.pause_button)
+                    playButton.setState(PlaybackButtonView.ButtonState.PAUSE)
                     currentTimeTextView.text = formatTime(state.currentPosition.toLong())
                 }
                 is AudioPlayerState.Paused -> {
-                    playButton.setImageResource(R.drawable.play_button)
+                    playButton.setState(PlaybackButtonView.ButtonState.PLAY)
                 }
                 is AudioPlayerState.Error -> {
                     playButton.isEnabled = false
@@ -281,6 +282,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e(TAG, "Error pausing player in onStop", e)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Очищаем слушатель для предотвращения утечек памяти
+        playButton.removeOnButtonClickListener()
     }
 
     companion object {

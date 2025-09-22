@@ -6,8 +6,10 @@ import com.example.playlistmaker.search.data.network.iTunesApi
 import com.example.playlistmaker.search.data.storage.SearchHistoryStorage
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.domain.repository.TrackRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 class TrackRepositoryImpl(
@@ -43,7 +45,7 @@ class TrackRepositoryImpl(
         }
     }
 
-    override fun addTrackToHistory(track: Track) {
+    override suspend fun addTrackToHistory(track: Track) = withContext(Dispatchers.IO) {
         searchHistoryStorage.addTrack(mapper.mapDomainToDto(track))
     }
 
@@ -57,7 +59,7 @@ class TrackRepositoryImpl(
         }
     }
 
-    override fun clearSearchHistory() {
+    override suspend fun clearSearchHistory() {
         searchHistoryStorage.clearHistory()
     }
 }

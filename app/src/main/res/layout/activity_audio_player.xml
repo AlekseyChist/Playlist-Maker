@@ -74,11 +74,12 @@
                 app:layout_constraintTop_toBottomOf="@id/artistName"
                 app:layout_constraintStart_toStartOf="@id/albumCover"/>
 
-            <ImageView
+            <com.example.playlistmaker.player.ui.view.PlaybackButtonView
                 android:id="@+id/playButton"
                 android:layout_width="84dp"
                 android:layout_height="84dp"
-                android:src="@drawable/play_button"
+                app:playButtonDrawable="@drawable/play_button"
+                app:pauseButtonDrawable="@drawable/pause_button"
                 app:layout_constraintTop_toTopOf="@id/addToPlaylistButton"
                 app:layout_constraintBottom_toBottomOf="@id/addToPlaylistButton"
                 app:layout_constraintStart_toStartOf="parent"
