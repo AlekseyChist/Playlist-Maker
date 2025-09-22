@@ -1,16 +1,12 @@
 package com.example.playlistmaker.player.ui.view
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.example.playlistmaker.R
 
 class PlaybackButtonView @JvmOverloads constructor(
@@ -28,13 +24,9 @@ class PlaybackButtonView @JvmOverloads constructor(
     // Текущее состояние
     private var buttonState = ButtonState.PLAY
 
-    // Изображения для состояний
-    private var playBitmap: Bitmap? = null
-    private var pauseBitmap: Bitmap? = null
-
-    // Объекты для рисования
-    private val paint = Paint()
-    private val bitmapRect = RectF()
+    // Drawable для состояний
+    private var playDrawable: Drawable? = null
+    private var pauseDrawable: Drawable? = null
 
     // Слушатель нажатий
     private var onClickListener: (() -> Unit)? = null
@@ -51,13 +43,11 @@ class PlaybackButtonView @JvmOverloads constructor(
                 val pauseDrawableId = getResourceId(R.styleable.PlaybackButtonView_pauseButtonDrawable, 0)
 
                 if (playDrawableId != 0) {
-                    val playDrawable = ContextCompat.getDrawable(context, playDrawableId)
-                    playBitmap = playDrawable?.toBitmap()
+                    playDrawable = ContextCompat.getDrawable(context, playDrawableId)
                 }
 
                 if (pauseDrawableId != 0) {
-                    val pauseDrawable = ContextCompat.getDrawable(context, pauseDrawableId)
-                    pauseBitmap = pauseDrawable?.toBitmap()
+                    pauseDrawable = ContextCompat.getDrawable(context, pauseDrawableId)
                 }
             } finally {
                 recycle()
@@ -65,36 +55,29 @@ class PlaybackButtonView @JvmOverloads constructor(
         }
     }
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-
-        // Вычисляем координаты для отрисовки изображения
-        val centerX = w / 2f
-        val centerY = h / 2f
-
-        // Определяем размер изображения (используем минимальную сторону)
-        val size = minOf(w, h).toFloat()
-
-        bitmapRect.set(
-            centerX - size / 2,
-            centerY - size / 2,
-            centerX + size / 2,
-            centerY + size / 2
-        )
-    }
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // Выбираем изображение в зависимости от состояния
-        val bitmap = when (buttonState) {
-            ButtonState.PLAY -> playBitmap
-            ButtonState.PAUSE -> pauseBitmap
+        // Выбираем drawable в зависимости от состояния
+        val drawable = when (buttonState) {
+            ButtonState.PLAY -> playDrawable
+            ButtonState.PAUSE -> pauseDrawable
         }
 
-        // Рисуем изображение
-        bitmap?.let {
-            canvas.drawBitmap(it, null, bitmapRect, paint)
+        // Рисуем drawable
+        drawable?.let {
+            // Устанавливаем границы для drawable
+            val centerX = width / 2
+            val centerY = height / 2
+            val size = minOf(width, height)
+
+            it.setBounds(
+                centerX - size / 2,
+                centerY - size / 2,
+                centerX + size / 2,
+                centerY + size / 2
+            )
+            it.draw(canvas)
         }
     }
 
@@ -105,10 +88,11 @@ class PlaybackButtonView @JvmOverloads constructor(
             }
             MotionEvent.ACTION_UP -> {
                 if (isClickInsideBounds(event.x, event.y)) {
-                    // Убираем toggleState() - состояние будет управляться извне
                     performClick()
+                    true
+                } else {
+                    super.onTouchEvent(event)
                 }
-                true
             }
             else -> super.onTouchEvent(event)
         }
@@ -125,15 +109,6 @@ class PlaybackButtonView @JvmOverloads constructor(
         return x >= 0 && x <= width && y >= 0 && y <= height
     }
 
-    // Переключение состояния
-    private fun toggleState() {
-        buttonState = when (buttonState) {
-            ButtonState.PLAY -> ButtonState.PAUSE
-            ButtonState.PAUSE -> ButtonState.PLAY
-        }
-        invalidate() // Перерисовываем View
-    }
-
     // Публичный метод для установки состояния
     fun setState(state: ButtonState) {
         if (buttonState != state) {
@@ -148,5 +123,10 @@ class PlaybackButtonView @JvmOverloads constructor(
     // Установка слушателя нажатий
     fun setOnButtonClickListener(listener: () -> Unit) {
         this.onClickListener = listener
+    }
+
+    // Очистка слушателя нажатий - ДОБАВЛЕННАЯ ФУНКЦИЯ
+    fun removeOnButtonClickListener() {
+        this.onClickListener = null
     }
 }

@@ -284,6 +284,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        // Очищаем слушатель для предотвращения утечек памяти
+        playButton.removeOnButtonClickListener()
+    }
+
     companion object {
         private const val TAG = "AudioPlayerActivity"
     }
