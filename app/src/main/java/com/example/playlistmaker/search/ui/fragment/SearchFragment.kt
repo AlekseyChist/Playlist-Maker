@@ -1,7 +1,10 @@
 package com.example.playlistmaker.search.ui.fragment
 
-import android.app.Fragment
+
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.Constants
@@ -19,6 +23,7 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.adapter.TrackAdapter
 import com.example.playlistmaker.search.ui.state.SearchState
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
+import com.example.playlistmaker.utils.NetworkConnectionReceiver
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,6 +37,9 @@ class SearchFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
+
+    // BroadcastReceiver для отслеживания сети
+    private lateinit var networkConnectionReceiver: NetworkConnectionReceiver
 
     private var isClickAllowed = true
     private val CLICK_DEBOUNCE_DELAY = 1000L
@@ -48,10 +56,30 @@ class SearchFragment : androidx.fragment.app.Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Инициализируем BroadcastReceiver
+        networkConnectionReceiver = NetworkConnectionReceiver()
+
         initViews()
         setupListeners()
         setupRecyclerViews()
         observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Регистрируем BroadcastReceiver при возобновлении фрагмента
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        requireContext().registerReceiver(networkConnectionReceiver, filter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Отменяем регистрацию BroadcastReceiver при паузе фрагмента
+        try {
+            requireContext().unregisterReceiver(networkConnectionReceiver)
+        } catch (e: IllegalArgumentException) {
+            // Receiver уже был отменен или не был зарегистрирован
+        }
     }
 
     private fun initViews() {
@@ -177,8 +205,6 @@ class SearchFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun updateHistoryVisibility() {
-        // Убираем прямой вызов getHistory(), вместо этого используем showHistory()
-        // который обновит состояние через LiveData
         if (binding.searchEditText.text.isEmpty() && binding.searchEditText.hasFocus()) {
             viewModel.showHistory()
         }
@@ -189,9 +215,6 @@ class SearchFragment : androidx.fragment.app.Fragment() {
         inputMethodManager.hideSoftInputFromWindow(requireView().windowToken, 0)
     }
 
-
-
-    // Функция для защиты от множественных нажатий
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
@@ -205,7 +228,6 @@ class SearchFragment : androidx.fragment.app.Fragment() {
     }
 
     private fun navigateToAudioPlayer(track: Track) {
-        // Пока используем Intent, позже заменим на Navigation
         val intent = android.content.Intent(requireContext(), com.example.playlistmaker.player.ui.activity.AudioPlayerActivity::class.java)
         intent.putExtra(Constants.TRACK_KEY, track)
         startActivity(intent)

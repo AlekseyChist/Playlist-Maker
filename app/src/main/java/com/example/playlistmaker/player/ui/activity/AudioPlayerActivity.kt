@@ -1,6 +1,8 @@
 package com.example.playlistmaker.player.ui.activity
 
+import android.content.IntentFilter
 import android.content.res.Resources
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -24,14 +26,17 @@ import com.example.playlistmaker.player.ui.view.PlaybackButtonView
 import com.example.playlistmaker.player.ui.viewmodel.AudioPlayerViewModel
 import com.example.playlistmaker.player.ui.viewmodel.PlaylistAddStatus
 import com.example.playlistmaker.search.domain.model.Track
+import com.example.playlistmaker.utils.NetworkConnectionReceiver
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-
 class AudioPlayerActivity : AppCompatActivity() {
     private val viewModel: AudioPlayerViewModel by viewModel()
+
+    // BroadcastReceiver для отслеживания сети
+    private lateinit var networkConnectionReceiver: NetworkConnectionReceiver
 
     private lateinit var track: Track
     private lateinit var backButton: ImageView
@@ -61,6 +66,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audio_player)
 
+        // Инициализируем BroadcastReceiver
+        networkConnectionReceiver = NetworkConnectionReceiver()
+
         track = intent.getSerializableExtra(Constants.TRACK_KEY) as Track
 
         initViews()
@@ -77,6 +85,24 @@ class AudioPlayerActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Toast.makeText(this, "Не удалось подготовить трек: ${e.message}", Toast.LENGTH_SHORT).show()
             Log.e(TAG, "Error preparing player", e)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Регистрируем BroadcastReceiver при возобновлении активности
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkConnectionReceiver, filter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Отменяем регистрацию BroadcastReceiver при паузе активности
+        try {
+            unregisterReceiver(networkConnectionReceiver)
+        } catch (e: IllegalArgumentException) {
+            // Receiver уже был отменен или не был зарегистрирован
+            Log.e(TAG, "Error unregistering receiver", e)
         }
     }
 
