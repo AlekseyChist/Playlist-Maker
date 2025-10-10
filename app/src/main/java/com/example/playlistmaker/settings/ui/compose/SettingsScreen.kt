@@ -1,6 +1,7 @@
 package com.example.playlistmaker.settings.ui.compose
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -114,33 +115,38 @@ private fun SettingsItem(
     onClick: (() -> Unit)?,
     trailingContent: (@Composable () -> Unit)? = null
 ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onClick ?: {},
-        enabled = onClick != null
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 21.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.weight(1f)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(
+                        onClick = onClick,
+                        indication = null, // Убираем ripple, чтобы избежать конфликта
+                        interactionSource = remember { MutableInteractionSource() }
+                    )
+                } else {
+                    Modifier
+                }
             )
+            .padding(horizontal = 16.dp, vertical = 21.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f)
+        )
 
-            if (trailingContent != null) {
-                trailingContent()
-            } else if (icon != null) {
-                Icon(
-                    painter = painterResource(icon),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.outline,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+        if (trailingContent != null) {
+            trailingContent()
+        } else if (icon != null) {
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 }
