@@ -36,7 +36,7 @@ fun SearchScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Поле поиска
+                // Поле поиска с обработчиком onSearch
                 SearchTextField(
                     value = searchQuery,
                     onValueChange = { newValue ->
@@ -46,6 +46,10 @@ fun SearchScreen(
                     onClearClick = {
                         searchQuery = ""
                         viewModel.showHistory()
+                    },
+                    onSearch = { query ->
+                        // Обработка нажатия на поиск на клавиатуре
+                        viewModel.search(query)
                     },
                     modifier = Modifier.padding(16.dp)
                 )
@@ -90,6 +94,7 @@ fun SearchScreen(
     }
 }
 
+// Добавляем отсутствующую функцию SearchTopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchTopBar() {
@@ -97,7 +102,8 @@ private fun SearchTopBar() {
         title = {
             Text(
                 text = stringResource(R.string.search),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -106,6 +112,7 @@ private fun SearchTopBar() {
     )
 }
 
+// Остальные функции остаются без изменений
 @Composable
 private fun LoadingContent() {
     Box(
@@ -149,6 +156,7 @@ private fun SearchHistory(
             Text(
                 text = stringResource(R.string.search_history),
                 style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(16.dp)
             )
         }

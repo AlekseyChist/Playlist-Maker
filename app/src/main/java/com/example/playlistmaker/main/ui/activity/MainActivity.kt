@@ -6,31 +6,16 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.media.ui.activity.MediaActivity
-import com.example.playlistmaker.search.ui.activity.SearchActivity
 import com.example.playlistmaker.settings.ui.activity.SettingsActivity
+import com.example.playlistmaker.ui.root.RootActivity // Используем RootActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        val searchButton = findViewById<Button>(R.id.search_button)
-        val mediaButton = findViewById<Button>(R.id.media_button)
-        val settingsButton = findViewById<Button>(R.id.settings_button)
-
-        searchButton.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
-        }
-
-        mediaButton.setOnClickListener {
-            val intent = Intent(this, MediaActivity::class.java)
-            startActivity(intent)
-        }
-
-        settingsButton.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-        }
+        // Сразу переходим к RootActivity
+        val intent = Intent(this, RootActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

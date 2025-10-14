@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.ui.compose.SearchScreen
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -28,8 +28,8 @@ class SearchFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                // Получаем текущую тему
-                val darkTheme = settingsViewModel.darkThemeEnabled.value ?: false
+                // ИСПРАВЛЕНО: Используем observeAsState() для LiveData
+                val darkTheme by settingsViewModel.darkThemeEnabled.observeAsState(false)
 
                 SearchScreen(
                     viewModel = searchViewModel,

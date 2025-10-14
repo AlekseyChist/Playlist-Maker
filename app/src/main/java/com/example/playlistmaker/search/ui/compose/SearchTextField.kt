@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -19,11 +20,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.playlistmaker.R
 
+
 @Composable
 fun SearchTextField(
     value: String,
     onValueChange: (String) -> Unit,
     onClearClick: () -> Unit,
+    onSearch: (String) -> Unit = {}, // Добавляем новый параметр с дефолтным значением
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -69,6 +72,11 @@ fun SearchTextField(
                     ),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Search
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            onSearch(value) // Вызываем onSearch при нажатии на поиск
+                        }
                     ),
                     singleLine = true,
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),

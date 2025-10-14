@@ -2,13 +2,12 @@ package com.example.playlistmaker.search.ui.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.painterResource // Добавлен импорт
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.playlistmaker.R
@@ -29,7 +28,7 @@ fun EmptySearchPlaceholder(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Ничего не нашлось",
+            text = stringResource(R.string.nothing_found),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
@@ -56,17 +55,8 @@ fun ErrorPlaceholder(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Проблемы со связью",
+            text = stringResource(R.string.connection_error).substringBefore('\n'),
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Загрузка не удалась. Проверьте\nподключение к интернету",
-            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
@@ -74,7 +64,7 @@ fun ErrorPlaceholder(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(onClick = onRefreshClick) {
-            Text("Обновить")
+            Text(stringResource(R.string.refresh))
         }
     }
 }

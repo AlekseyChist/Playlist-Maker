@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,33 +27,49 @@ class SearchViewModel(
     private var searchJob: Job? = null
 
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val SEARCH_DEBOUNCE_DELAY = 300L
+        private const val TAG = "SearchViewModel"
+    }
+
+    init {
+        Log.d(TAG, "ViewModel initialized")
+        showHistory()
     }
 
     fun search(query: String) {
+        Log.d(TAG, "search() called with query: '$query'")
+
         if (query.isBlank()) {
+            Log.d(TAG, "Query is blank, showing history")
             showHistory()
             return
         }
 
         if (latestSearchText == query) {
+            Log.d(TAG, "Query is the same as last search, ignoring")
             return
         }
 
         latestSearchText = query
 
-        // Отменяем предыдущий поиск если он был
         searchJob?.cancel()
 
         searchJob = viewModelScope.launch {
+            Log.d(TAG, "Starting search after debounce delay")
             delay(SEARCH_DEBOUNCE_DELAY)
 
+            Log.d(TAG, "Executing search use case for: '$query'")
             searchTracksUseCase.execute(query)
-                .onStart { _state.value = SearchState.Loading }
+                .onStart {
+                    Log.d(TAG, "Search started - showing Loading state")
+                    _state.value = SearchState.Loading
+                }
                 .catch { error ->
+                    Log.e(TAG, "Search error: ${error.message}", error)
                     _state.value = SearchState.Error(error.message ?: "Unknown error")
                 }
                 .collect { tracks ->
+                    Log.d(TAG, "Search completed, found ${tracks.size} tracks")
                     _state.value = if (tracks.isEmpty()) {
                         SearchState.Empty
                     } else {
@@ -63,24 +80,25 @@ class SearchViewModel(
     }
 
     fun showHistory() {
+        Log.d(TAG, "showHistory() called")
         viewModelScope.launch {
             val history = searchHistoryUseCase.getHistory()
-            if (history.isEmpty()) {
-                return@launch
-            }
+            Log.d(TAG, "History loaded: ${history.size} tracks")
             _state.value = SearchState.History(history)
         }
     }
 
     fun addToHistory(track: Track) {
+        Log.d(TAG, "addToHistory() called for track: ${track.trackName}")
         viewModelScope.launch {
             searchHistoryUseCase.addTrack(track)
         }
     }
 
     fun clearHistory() {
+        Log.d(TAG, "clearHistory() called")
         viewModelScope.launch {
-            searchHistoryUseCase.clearHistory() // suspend вызов
+            searchHistoryUseCase.clearHistory()
             _state.value = SearchState.History(emptyList())
         }
     }
