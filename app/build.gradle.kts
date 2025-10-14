@@ -50,6 +50,12 @@ dependencies {
     implementation("androidx.compose.animation:animation")
     implementation("androidx.activity:activity-compose:1.9.3")
 
+    // Compose дополнительные библиотеки для медиатеки
+    implementation("androidx.compose.foundation:foundation:1.5.4")
+
+    // Coil для загрузки изображений в Compose
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.6")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
     implementation("androidx.compose.runtime:runtime-livedata")
