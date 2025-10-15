@@ -50,6 +50,8 @@ dependencies {
     implementation("androidx.compose.animation:animation")
     implementation("androidx.activity:activity-compose:1.9.3")
 
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+
     // Compose дополнительные библиотеки для медиатеки
     implementation("androidx.compose.foundation:foundation:1.5.4")
 

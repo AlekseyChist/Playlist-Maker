@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.playlistmaker.R
+import com.example.playlistmaker.compose.AppTopBar
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.FavoriteTracksViewModel
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
@@ -18,7 +19,7 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.ui.theme.PlaylistMakerTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MediaLibraryScreen(
     favoriteTracksViewModel: FavoriteTracksViewModel,
@@ -29,54 +30,25 @@ fun MediaLibraryScreen(
     darkTheme: Boolean
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
-    val coroutineScope = rememberCoroutineScope()
-
+    val scope = rememberCoroutineScope()
     val tabs = listOf(
         stringResource(R.string.favorite_tracks),
         stringResource(R.string.playlists)
     )
 
     PlaylistMakerTheme(darkTheme = darkTheme) {
-        Scaffold(
-            topBar = {
-                MediaLibraryTopBar()
-            }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                // Табы
-                TabRow(
-                    selectedTabIndex = pagerState.currentPage,
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    divider = {} // Убираем разделитель
-                ) {
+        Scaffold(topBar = { AppTopBar(false, text = stringResource(R.string.media)) {} }) { pv ->
+            Column(Modifier.fillMaxSize().padding(pv)) {
+                SecondaryTabRow(selectedTabIndex = pagerState.currentPage) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
                             selected = pagerState.currentPage == index,
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
-                            },
-                            text = {
-                                Text(
-                                    text = title,
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                            }
+                            onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                            text = { Text(title) }
                         )
                     }
                 }
-
-                // Контент вкладок
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize()
-                ) { page ->
+                HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
                     when (page) {
                         0 -> FavoriteTracksTab(
                             viewModel = favoriteTracksViewModel,
@@ -92,20 +64,4 @@ fun MediaLibraryScreen(
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun MediaLibraryTopBar() {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.media),
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
-    )
 }

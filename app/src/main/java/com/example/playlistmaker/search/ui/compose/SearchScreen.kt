@@ -11,10 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.playlistmaker.R
+import com.example.playlistmaker.compose.AppTopBar
+import com.example.playlistmaker.compose.Errors
+import com.example.playlistmaker.compose.PlaceholderError
 import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.search.ui.state.SearchState
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmaker.ui.theme.PlaylistMakerTheme
+import com.example.playlistmaker.ui.theme.customEditTextFieldsColors
 
 @Composable
 fun SearchScreen(
@@ -26,60 +30,37 @@ fun SearchScreen(
     var searchQuery by remember { mutableStateOf("") }
 
     PlaylistMakerTheme(darkTheme = darkTheme) {
-        Scaffold(
-            topBar = {
-                SearchTopBar()
-            }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                // Поле поиска с обработчиком onSearch
-                SearchTextField(
+        Scaffold(topBar = { AppTopBar(false, text = stringResource(R.string.search)) {} }) { pv ->
+            Column(Modifier.fillMaxSize().padding(pv), horizontalAlignment = Alignment.CenterHorizontally) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                     value = searchQuery,
-                    onValueChange = { newValue ->
-                        searchQuery = newValue
-                        viewModel.search(newValue)
+                    onValueChange = {
+                        searchQuery = it
+                        if (it.isEmpty()) viewModel.showHistory() else viewModel.search(it)
                     },
-                    onClearClick = {
-                        searchQuery = ""
-                        viewModel.showHistory()
-                    },
-                    onSearch = { query ->
-                        // Обработка нажатия на поиск на клавиатуре
-                        viewModel.search(query)
-                    },
-                    modifier = Modifier.padding(16.dp)
+                    singleLine = true,
+                    placeholder = { Text(stringResource(R.string.search)) },
+                    colors = customEditTextFieldsColors(),
                 )
 
-                // Контент в зависимости от состояния
-                when (val currentState = state) {
-                    is SearchState.Loading -> {
-                        LoadingContent()
-                    }
-                    is SearchState.Content -> {
-                        TracksList(
-                            tracks = currentState.tracks,
-                            onTrackClick = { track ->
-                                viewModel.addToHistory(track)
-                                onTrackClick(track)
-                            }
-                        )
-                    }
-                    is SearchState.Empty -> {
-                        EmptySearchPlaceholder()
-                    }
-                    is SearchState.Error -> {
-                        ErrorPlaceholder(
-                            onRefreshClick = { viewModel.search(searchQuery) }
-                        )
-                    }
+                when (val s = state) {
+                    is SearchState.Loading -> LoadingContent()
+                    is SearchState.Content -> TracksList(
+                        tracks = s.tracks,
+                        onTrackClick = { track ->
+                            viewModel.addToHistory(track)
+                            onTrackClick(track)
+                        }
+                    )
+                    is SearchState.Empty -> PlaceholderError(Errors.SearchNothingFound)
+                    is SearchState.Error -> PlaceholderError(Errors.SearchNoConnection)
                     is SearchState.History -> {
-                        if (currentState.tracks.isNotEmpty() && searchQuery.isEmpty()) {
+                        if (s.tracks.isNotEmpty() && searchQuery.isEmpty()) {
                             SearchHistory(
-                                tracks = currentState.tracks,
+                                tracks = s.tracks,
                                 onTrackClick = { track ->
                                     viewModel.addToHistory(track)
                                     onTrackClick(track)
