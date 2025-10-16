@@ -12,66 +12,57 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-/* ---------------- LIGHT THEME ---------------- */
+/* -------- LIGHT -------- */
 
 @Composable
 private fun lightScheme() = lightColorScheme(
-    // Основные цвета
-    primary            = Color(0xFF3772E7),       // синий
+    primary            = Color(0xFF3772E7),
     onPrimary          = Color.White,
 
-    // Контейнеры (тёмные кнопки на светлом фоне)
+    // тёмные кнопки на светлом фоне (пилюля «Очистить историю»)
     primaryContainer   = Color(0xFF1A1B22),
     onPrimaryContainer = Color.White,
 
-    // Фон приложения - БЕЛЫЙ
-    background         = Color(0xFFFFFFFF),       // 🔥 БЕЛЫЙ ФОН
-    onBackground       = Color(0xFF1A1B22),       // 🔥 ЧЁРНЫЙ ТЕКСТ
+    // фон/поверхности
+    background         = Color(0xFFFFFFFF),
+    onBackground       = Color(0xFF1A1B22),
+    surface            = Color(0xFFFFFFFF),
+    onSurface          = Color(0xFF1A1B22),
 
-    // Поверхности (карточки, диалоги) - БЕЛЫЕ
-    surface            = Color(0xFFFFFFFF),       // 🔥 БЕЛАЯ ПОВЕРХНОСТЬ
-    onSurface          = Color(0xFF1A1B22),       // 🔥 ЧЁРНЫЙ ТЕКСТ
+    // вторичные
+    surfaceVariant     = Color(0xFFE6E8EB), // карточки/поля
+    onSurfaceVariant   = Color(0xFFAEAFB4), // серый текст/иконки
 
-    // Варианты поверхностей
-    surfaceVariant     = Color(0xFFE6E8EB),       // светло-серый фон полей
-    onSurfaceVariant   = Color(0xFFAEAFB4),       // серый текст (вторичный)
-
-    // Дополнительные
-    outline            = Color(0xFFE6E8EB),       // разделители
-    error              = Color(0xFFF56B6C)        // красный
+    outline            = Color(0xFFE6E8EB),
+    error              = Color(0xFFF56B6C)
 )
 
-/* ---------------- DARK THEME ---------------- */
+/* -------- DARK -------- */
 
 @Composable
 private fun darkScheme() = darkColorScheme(
-    // Основные цвета
-    primary            = Color(0xFF3772E7),       // синий
+    primary            = Color(0xFF3772E7),
     onPrimary          = Color.White,
 
-    // Контейнеры (белое поле на тёмном фоне)
-    primaryContainer   = Color.White,
+    // белые контейнеры на тёмном фоне (поле поиска белое)
+    primaryContainer   = Color(0xFFFFFFFF),
     onPrimaryContainer = Color(0xFF1A1B22),
 
-    // Фон приложения - ТЁМНЫЙ
-    background         = Color(0xFF1A1B22),       // 🔥 ТЁМНЫЙ ФОН
-    onBackground       = Color.White,             // 🔥 БЕЛЫЙ ТЕКСТ
+    background         = Color(0xFF1A1B22),
+    onBackground       = Color(0xFFFFFFFF),
 
-    // Поверхности (карточки, диалоги) - ТЁМНЫЕ
-    surface            = Color(0xFF1A1B22),       // 🔥 ТЁМНАЯ ПОВЕРХНОСТЬ
-    onSurface          = Color.White,             // 🔥 БЕЛЫЙ ТЕКСТ
+    surface            = Color(0xFF1A1B22),
+    onSurface          = Color(0xFFFFFFFF),
 
-    // Варианты поверхностей
-    surfaceVariant     = Color(0xFF2D2E35),       // немного светлее фона
-    onSurfaceVariant   = Color(0xFFAEAFB4),       // серый текст (вторичный)
+    surfaceVariant     = Color(0xFF2D2E35),
+    onSurfaceVariant   = Color(0xFFAEAFB4),
 
-    // Дополнительные
-    outline            = Color(0xFF3D3E43),       // разделители
-    error              = Color(0xFFE84749),       // красный
+    outline            = Color(0xFF3D3E43),
+    error              = Color(0xFFE84749),
     onError            = Color.White
 )
 
-/* ---------------- MAIN THEME ---------------- */
+/* -------- THEME -------- */
 
 @Composable
 fun PlaylistMakerTheme(
@@ -79,26 +70,21 @@ fun PlaylistMakerTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    // Настройка цвета статус-бара
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = Color.Transparent.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view)
+                .isAppearanceLightStatusBars = !darkTheme
         }
     }
 
     val context = LocalContext.current
     val colors = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            if (darkTheme) dynamicDarkColorScheme(context)
-            else dynamicLightColorScheme(context)
-        }
-        else -> {
-            if (darkTheme) darkScheme()   // 🔥 Тёмная схема
-            else lightScheme()            // 🔥 Светлая схема
-        }
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        else -> if (darkTheme) darkScheme() else lightScheme()
     }
 
     MaterialTheme(
@@ -108,7 +94,7 @@ fun PlaylistMakerTheme(
     )
 }
 
-/* ---------------- HELPERS ---------------- */
+/* -------- HELPERS -------- */
 
 @Composable
 fun pmButtonColors(): ButtonColors = ButtonDefaults.buttonColors(
@@ -119,27 +105,37 @@ fun pmButtonColors(): ButtonColors = ButtonDefaults.buttonColors(
 )
 
 /**
- * Цвета TextField:
- *  - Light: фон поля #E6E8EB, текст #1A1B22
- *  - Dark:  фон поля белый,    текст #1A1B22
+ * Цвета TextField, именно для «поле поиска» из ТЗ:
+ *  - Light: фон #E6E8EB, плейсхолдер/иконки #AEAFB4, текст #1A1B22
+ *  - Dark:  фон #FFFFFF, плейсхолдер/иконки #1A1B22, текст #1A1B22
  */
 @Composable
-fun pmTextFieldColors(): TextFieldColors {
+fun pmSearchFieldColors(): TextFieldColors {
+    val isDark = isSystemInDarkTheme()
+    val container = if (isDark) Color(0xFFFFFFFF) else Color(0xFFE6E8EB)
+    val textColor = Color(0xFF1A1B22)
+    val hintOrIcon = if (isDark) Color(0xFF1A1B22) else Color(0xFFAEAFB4)
+
     return TextFieldDefaults.colors(
-        // Фон — используем primaryContainer (белый в дарке, серый в лайте)
-        focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-        unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        focusedContainerColor = container,
+        unfocusedContainerColor = container,
+        disabledContainerColor = container,
 
-        // Текст — используем onPrimaryContainer
-        focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+        focusedTextColor = textColor,
+        unfocusedTextColor = textColor,
+        disabledTextColor = textColor.copy(alpha = 0.5f),
 
-        // Курсор и индикаторы
         cursorColor = MaterialTheme.colorScheme.primary,
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
-        disabledIndicatorColor = Color.Transparent
+        disabledIndicatorColor = Color.Transparent,
+
+        // Эти два используются для Icon/placeholder, но мы всё равно красим их явно в экране
+        focusedLeadingIconColor = hintOrIcon,
+        unfocusedLeadingIconColor = hintOrIcon,
+        focusedTrailingIconColor = hintOrIcon,
+        unfocusedTrailingIconColor = hintOrIcon,
+        focusedPlaceholderColor = hintOrIcon,
+        unfocusedPlaceholderColor = hintOrIcon
     )
 }

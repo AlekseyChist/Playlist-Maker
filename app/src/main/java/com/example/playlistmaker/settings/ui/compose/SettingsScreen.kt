@@ -19,21 +19,17 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBackClick: () -> Unit
 ) {
-    // ✅ Для StateFlow используем collectAsState()
     val darkThemeEnabled by viewModel.darkThemeEnabled.collectAsState()
 
     PlaylistMakerTheme(darkTheme = darkThemeEnabled) {
         Scaffold(
-            topBar = {
-                SettingsTopBar(onBackClick = onBackClick)
-            }
+            topBar = { SettingsTopBar(onBackClick) }
         ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                // Переключатель темной темы
                 SettingsItem(
                     title = stringResource(R.string.Dark_theme),
                     icon = null,
@@ -45,18 +41,16 @@ fun SettingsScreen(
                     )
                 }
 
-                HorizontalDivider()
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
-                // Поделиться приложением
                 SettingsItem(
                     title = stringResource(R.string.Share_the_app),
                     icon = R.drawable.share_button,
                     onClick = { viewModel.shareApp() }
                 )
 
-                HorizontalDivider()
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
-                // Написать в поддержку
                 SettingsItem(
                     title = stringResource(R.string.write_to_the_support),
                     icon = R.drawable.support_logo,
@@ -69,9 +63,8 @@ fun SettingsScreen(
                     }
                 )
 
-                HorizontalDivider()
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
-                // Пользовательское соглашение
                 SettingsItem(
                     title = stringResource(R.string.User_agreement),
                     icon = R.drawable.user_agreement,
@@ -88,7 +81,7 @@ fun SettingsScreen(
 @Composable
 private fun SettingsTopBar(onBackClick: () -> Unit) {
     TopAppBar(
-        title = { Text(stringResource(R.string.Settings)) },
+        title = { Text(text = stringResource(R.string.Settings), style = MaterialTheme.typography.titleLarge) },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
@@ -96,7 +89,10 @@ private fun SettingsTopBar(onBackClick: () -> Unit) {
                     contentDescription = "Back"
                 )
             }
-        }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background
+        )
     )
 }
 
@@ -110,30 +106,27 @@ private fun SettingsItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(
-                if (onClick != null) {
-                    Modifier.clickable { onClick() }
-                } else {
-                    Modifier
-                }
-            )
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+            .then(if (onClick != null)
+                Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { onClick() } else Modifier)
+            .padding(horizontal = 16.dp, vertical = 22.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f)
         )
 
-        if (trailing != null) {
-            trailing()
-        } else if (icon != null) {
-            Icon(
+        when {
+            trailing != null -> trailing()
+            icon != null -> Icon(
                 painter = painterResource(icon),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
+                tint = MaterialTheme.colorScheme.outline
             )
         }
     }

@@ -6,12 +6,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.playlistmaker.R
-import com.example.playlistmaker.compose.AppTopBar
 import com.example.playlistmaker.media.domain.model.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.FavoriteTracksViewModel
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
@@ -27,7 +25,7 @@ fun MediaLibraryScreen(
     onTrackClick: (Track) -> Unit,
     onPlaylistClick: (Playlist) -> Unit,
     onCreatePlaylistClick: () -> Unit,
-    darkTheme: Boolean  // 🆕 Добавь этот параметр
+    darkTheme: Boolean
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val scope = rememberCoroutineScope()
@@ -36,36 +34,28 @@ fun MediaLibraryScreen(
         stringResource(R.string.playlists)
     )
 
-    // 🆕 Оборачиваем в PlaylistMakerTheme
     PlaylistMakerTheme(darkTheme = darkTheme) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { Text(stringResource(R.string.media)) }
-                )
+                TopAppBar(title = { Text(stringResource(R.string.media)) })
             }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                // Табы
-                TabRow(selectedTabIndex = pagerState.currentPage) {
+        ) { pv ->
+            Column(Modifier.fillMaxSize().padding(pv)) {
+
+                TabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                ) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
                             selected = pagerState.currentPage == index,
-                            onClick = {
-                                scope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
-                            },
-                            text = { Text(title) }
+                            onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                            text = { Text(title) },
                         )
                     }
                 }
 
-                // ViewPager с контентом
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxSize()
