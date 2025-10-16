@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.collectAsState  // 🆕
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -32,19 +32,17 @@ class MediaLibraryFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val darkTheme by settingsViewModel.darkThemeEnabled.observeAsState(false)
+                val darkTheme by settingsViewModel.darkThemeEnabled.collectAsState()
 
                 MediaLibraryScreen(
                     favoriteTracksViewModel = favoriteTracksViewModel,
                     playlistsViewModel = playlistsViewModel,
                     onTrackClick = { track ->
-                        // Навигация к AudioPlayer
                         val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
                         intent.putExtra(Constants.TRACK_KEY, track)
                         startActivity(intent)
                     },
                     onPlaylistClick = { playlist ->
-                        // Навигация к детальному просмотру плейлиста
                         val bundle = Bundle().apply {
                             putLong("playlist_id", playlist.id)
                         }
@@ -54,7 +52,6 @@ class MediaLibraryFragment : Fragment() {
                         )
                     },
                     onCreatePlaylistClick = {
-                        // Навигация к созданию плейлиста
                         findNavController().navigate(
                             R.id.action_mediaLibraryFragment_to_createPlaylistFragment
                         )
@@ -67,7 +64,6 @@ class MediaLibraryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Обновляем список плейлистов при возврате на экран
         playlistsViewModel.loadPlaylists()
     }
 }

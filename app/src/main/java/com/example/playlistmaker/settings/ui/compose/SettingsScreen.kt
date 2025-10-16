@@ -5,7 +5,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -20,7 +19,8 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     onBackClick: () -> Unit
 ) {
-    val darkThemeEnabled by viewModel.darkThemeEnabled.observeAsState(false)
+    // ✅ Для StateFlow используем collectAsState()
+    val darkThemeEnabled by viewModel.darkThemeEnabled.collectAsState()
 
     PlaylistMakerTheme(darkTheme = darkThemeEnabled) {
         Scaffold(
@@ -62,9 +62,9 @@ fun SettingsScreen(
                     icon = R.drawable.support_logo,
                     onClick = {
                         viewModel.writeToSupport(
-                            email = "alexeychistyakoм@yandex.ru",
-                            subject = "Сообщение разработчикам",
-                            body = "Спасибо за крутое приложение!"
+                            email = "support@example.com",
+                            subject = "Поддержка",
+                            body = "Здравствуйте!"
                         )
                     }
                 )
@@ -76,7 +76,7 @@ fun SettingsScreen(
                     title = stringResource(R.string.User_agreement),
                     icon = R.drawable.user_agreement,
                     onClick = {
-                        viewModel.openUserAgreement("https://yandex.ru/legal/practicum_offer/")
+                        viewModel.openUserAgreement("https://example.com/agreement")
                     }
                 )
             }
@@ -88,23 +88,15 @@ fun SettingsScreen(
 @Composable
 private fun SettingsTopBar(onBackClick: () -> Unit) {
     TopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.Settings),
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
+        title = { Text(stringResource(R.string.Settings)) },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
                     painter = painterResource(R.drawable.back_button_vector),
-                    contentDescription = "Назад"
+                    contentDescription = "Back"
                 )
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+        }
     )
 }
 
@@ -113,39 +105,35 @@ private fun SettingsItem(
     title: String,
     icon: Int?,
     onClick: (() -> Unit)?,
-    trailingContent: (@Composable () -> Unit)? = null
+    trailing: (@Composable () -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .then(
                 if (onClick != null) {
-                    Modifier.clickable(
-                        onClick = onClick,
-                        indication = null, // Убираем ripple, чтобы избежать конфликта
-                        interactionSource = remember { MutableInteractionSource() }
-                    )
+                    Modifier.clickable { onClick() }
                 } else {
                     Modifier
                 }
             )
-            .padding(horizontal = 16.dp, vertical = 21.dp),
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f)
+            color = MaterialTheme.colorScheme.onSurface
         )
 
-        if (trailingContent != null) {
-            trailingContent()
+        if (trailing != null) {
+            trailing()
         } else if (icon != null) {
             Icon(
                 painter = painterResource(icon),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.outline,
-                modifier = Modifier.size(24.dp)
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
     }

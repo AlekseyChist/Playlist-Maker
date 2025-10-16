@@ -19,7 +19,7 @@ import com.example.playlistmaker.search.domain.model.Track
 import com.example.playlistmaker.ui.theme.PlaylistMakerTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MediaLibraryScreen(
     favoriteTracksViewModel: FavoriteTracksViewModel,
@@ -27,7 +27,7 @@ fun MediaLibraryScreen(
     onTrackClick: (Track) -> Unit,
     onPlaylistClick: (Playlist) -> Unit,
     onCreatePlaylistClick: () -> Unit,
-    darkTheme: Boolean
+    darkTheme: Boolean  // 🆕 Добавь этот параметр
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val scope = rememberCoroutineScope()
@@ -36,19 +36,40 @@ fun MediaLibraryScreen(
         stringResource(R.string.playlists)
     )
 
+    // 🆕 Оборачиваем в PlaylistMakerTheme
     PlaylistMakerTheme(darkTheme = darkTheme) {
-        Scaffold(topBar = { AppTopBar(false, text = stringResource(R.string.media)) {} }) { pv ->
-            Column(Modifier.fillMaxSize().padding(pv)) {
-                SecondaryTabRow(selectedTabIndex = pagerState.currentPage) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.media)) }
+                )
+            }
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                // Табы
+                TabRow(selectedTabIndex = pagerState.currentPage) {
                     tabs.forEachIndexed { index, title ->
                         Tab(
                             selected = pagerState.currentPage == index,
-                            onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                            onClick = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
                             text = { Text(title) }
                         )
                     }
                 }
-                HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+
+                // ViewPager с контентом
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
                     when (page) {
                         0 -> FavoriteTracksTab(
                             viewModel = favoriteTracksViewModel,

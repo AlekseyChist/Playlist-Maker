@@ -73,6 +73,29 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
 
+        // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+        // Остальные зависимости Compose (если ещё нет)
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.ui:ui:1.6.0")
+
+    // Koin для Compose
+    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Activity Compose
+    implementation("androidx.activity:activity-compose:1.8.2")
+
+    // Compose runtime livedata
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+
+        // ViewModel для Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
     // OkHttp 4.x (совместим с Kotlin 1.9.x)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")

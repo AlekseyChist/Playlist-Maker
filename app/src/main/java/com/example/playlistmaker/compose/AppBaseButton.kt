@@ -4,7 +4,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.playlistmaker.ui.theme.customButtonColors
+import com.example.playlistmaker.ui.theme.pmButtonColors
 
 @Composable
 fun AppBaseButton(
@@ -16,7 +16,9 @@ fun AppBaseButton(
     FilledTonalButton(
         modifier = modifier,
         onClick = onClick,
-        colors = customButtonColors(),
+        colors = pmButtonColors(),
         enabled = isEnabled
-    ) { Text(text) }
+    ) {
+        Text(text)
+    }
 }

@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.Constants
@@ -28,8 +28,8 @@ class SearchFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                // ИСПРАВЛЕНО: Используем observeAsState() для LiveData
-                val darkTheme by settingsViewModel.darkThemeEnabled.observeAsState(false)
+                // ✅ Правильно: collectAsState() для StateFlow
+                val darkTheme by settingsViewModel.darkThemeEnabled.collectAsState()
 
                 SearchScreen(
                     viewModel = searchViewModel,

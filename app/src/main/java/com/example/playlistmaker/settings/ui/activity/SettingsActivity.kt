@@ -1,13 +1,14 @@
 package com.example.playlistmaker.settings.ui.activity
 
-
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import com.example.playlistmaker.R
 import com.google.android.material.switchmaterial.SwitchMaterial
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
@@ -46,8 +47,11 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.darkThemeEnabled.observe(this) { isDarkTheme ->
-            findViewById<SwitchMaterial>(R.id.themeSwitcher).isChecked = isDarkTheme
+        // ✅ Для StateFlow используем lifecycleScope.launch + collect
+        lifecycleScope.launch {
+            viewModel.darkThemeEnabled.collect { isDarkTheme ->
+                findViewById<SwitchMaterial>(R.id.themeSwitcher).isChecked = isDarkTheme
+            }
         }
     }
 }
