@@ -9,8 +9,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.compose.AppTopBar
 import com.example.playlistmaker.compose.Errors
@@ -25,6 +27,7 @@ import com.example.playlistmaker.ui.theme.pmButtonColors
 fun SearchScreen(
     viewModel: SearchViewModel,
     onTrackClick: (Track) -> Unit,
+    onBackClick: () -> Unit = {},
     darkTheme: Boolean
 ) {
     val state by viewModel.state.observeAsState(SearchState.History(emptyList()))
@@ -33,10 +36,43 @@ fun SearchScreen(
     PlaylistMakerTheme(darkTheme = darkTheme) {
         Scaffold(
             topBar = {
-                AppTopBar(
-                    false,
-                    text = stringResource(R.string.search)
-                ) {}
+                // Кастомный TopBar с стрелкой назад
+                Surface(
+                    color = MaterialTheme.colorScheme.background,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 14.dp, horizontal = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Стрелка назад
+                        IconButton(
+                            onClick = onBackClick,
+                            modifier = Modifier.padding(4.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.back_button_vector),
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+
+                        // Заголовок "Поиск"
+                        Text(
+                            text = stringResource(R.string.search),
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontSize = 22.sp,
+                                fontFamily = androidx.compose.ui.text.font.FontFamily(
+                                    androidx.compose.ui.text.font.Font(R.font.ys_text_medium)
+                                )
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    }
+                }
             }
         ) { paddingValues ->
             Column(

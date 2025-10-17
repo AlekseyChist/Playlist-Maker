@@ -22,11 +22,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/search"
-            android:textSize="@dimen/text_size_22"
-            android:textColor="@color/clear_history_button_background"
             android:layout_marginStart="@dimen/padding16"
-            android:fontFamily="@font/ys_text_medium"/>
+            android:fontFamily="@font/ys_text_medium"
+            android:text="@string/search"
+            android:textColor="@color/clear_history_button_background"
+            android:textSize="@dimen/text_size_22" />
     </LinearLayout>
 
     <FrameLayout

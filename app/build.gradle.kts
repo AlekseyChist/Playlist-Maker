@@ -55,6 +55,9 @@ dependencies {
     // Compose дополнительные библиотеки для медиатеки
     implementation("androidx.compose.foundation:foundation:1.5.4")
 
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+
+
     // Coil для загрузки изображений в Compose
     implementation("io.coil-kt:coil-compose:2.5.0")
 

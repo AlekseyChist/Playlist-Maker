@@ -5,21 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.Constants
 import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.example.playlistmaker.search.ui.compose.SearchScreen
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
-import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
     private val searchViewModel: SearchViewModel by viewModel()
-    private val settingsViewModel: SettingsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,9 +25,6 @@ class SearchFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                // ✅ Правильно: collectAsState() для StateFlow
-                val darkTheme by settingsViewModel.darkThemeEnabled.collectAsState()
-
                 SearchScreen(
                     viewModel = searchViewModel,
                     onTrackClick = { track ->
@@ -38,7 +32,10 @@ class SearchFragment : Fragment() {
                         intent.putExtra(Constants.TRACK_KEY, track)
                         startActivity(intent)
                     },
-                    darkTheme = darkTheme
+                    onBackClick = {
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                    },
+                    darkTheme = isSystemInDarkTheme()
                 )
             }
         }
