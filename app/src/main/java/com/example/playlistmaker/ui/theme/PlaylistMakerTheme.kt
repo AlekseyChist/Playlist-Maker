@@ -33,7 +33,7 @@ private fun lightScheme() = lightColorScheme(
     surfaceVariant     = Color(0xFFE6E8EB), // карточки/поля
     onSurfaceVariant   = Color(0xFFAEAFB4), // серый текст/иконки
 
-    outline            = Color(0xFFE6E8EB),
+    outline            = Color(0xFFAEAFB4),  // ИСПРАВЛЕНО: YP Text Gray для стрелок
     error              = Color(0xFFF56B6C)
 )
 
@@ -57,12 +57,10 @@ private fun darkScheme() = darkColorScheme(
     surfaceVariant     = Color(0xFF2D2E35),
     onSurfaceVariant   = Color(0xFFAEAFB4),
 
-    outline            = Color(0xFF3D3E43),
+    outline            = Color(0xFFFFFFFF),  // ИСПРАВЛЕНО: YP White для стрелок
     error              = Color(0xFFE84749),
     onError            = Color.White
 )
-
-/* -------- THEME -------- */
 
 @Composable
 fun PlaylistMakerTheme(

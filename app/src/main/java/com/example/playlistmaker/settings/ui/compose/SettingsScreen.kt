@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,7 +38,15 @@ fun SettingsScreen(
                 ) {
                     Switch(
                         checked = darkThemeEnabled,
-                        onCheckedChange = { viewModel.switchTheme(it) }
+                        onCheckedChange = { viewModel.switchTheme(it) },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color(0xFF3772E7), // Синий ползунок
+                            checkedTrackColor = Color(0xFF3772E7).copy(alpha = 0.5f), // Полупрозрачный трек
+                            uncheckedThumbColor = Color(0xFFAEAFB4), // Серый ползунок
+                            uncheckedTrackColor = Color(0xFFAEAFB4).copy(alpha = 0.5f), // Полупрозрачный трек
+                            uncheckedBorderColor = Color.Transparent,
+                            checkedBorderColor = Color.Transparent
+                        )
                     )
                 }
 

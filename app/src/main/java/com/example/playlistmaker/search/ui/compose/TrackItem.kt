@@ -99,7 +99,6 @@ fun TrackItem(
             modifier = Modifier
                 .padding(start = 8.dp)
                 .size(20.dp),
-            // Используем outline - в светлой теме будет #AEAFB4, в темной #FFFFFF
             tint = MaterialTheme.colorScheme.outline
         )
     }
