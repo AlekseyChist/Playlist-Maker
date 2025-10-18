@@ -38,7 +38,6 @@ fun PlaylistsTab(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.state.observeAsState(PlaylistsState.Empty)
-    val context = LocalContext.current
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -110,71 +109,66 @@ private fun PlaylistGridItem(
 ) {
     val context = LocalContext.current
 
-    Card(
+    // УБРАЛИ Card! Теперь просто Column без фона - прозрачный
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            .clickable { onClick() }
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
+        // Обложка плейлиста
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
         ) {
-            // Обложка плейлиста
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-            ) {
-                if (!playlist.coverPath.isNullOrEmpty()) {
-                    val coverFile = File(
-                        context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES),
-                        "playlist_covers/${playlist.coverPath}"
-                    )
-
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(coverFile)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "Playlist cover",
-                        contentScale = ContentScale.Crop,
-                        placeholder = painterResource(R.drawable.placeholder_image),
-                        error = painterResource(R.drawable.placeholder_image),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(R.drawable.placeholder_image),
-                        contentDescription = "Default cover",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-                }
-            }
-
-            // Информация о плейлисте
-            Column(
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text(
-                    text = playlist.name,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+            if (!playlist.coverPath.isNullOrEmpty()) {
+                val coverFile = File(
+                    context.getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES),
+                    "playlist_covers/${playlist.coverPath}"
                 )
 
-                Text(
-                    text = context.formatTracksCount(playlist.trackCount),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(coverFile)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Playlist cover",
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(R.drawable.placeholder_image),
+                    error = painterResource(R.drawable.placeholder_image),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(8.dp))
+                )
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.placeholder_image),
+                    contentDescription = "Default cover",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(8.dp))
                 )
             }
+        }
+
+        // Информация о плейлисте
+        Column(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            Text(
+                text = playlist.name,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                text = context.formatTracksCount(playlist.trackCount),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
