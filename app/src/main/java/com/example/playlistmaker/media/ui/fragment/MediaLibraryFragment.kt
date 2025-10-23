@@ -1,60 +1,69 @@
 package com.example.playlistmaker.media.ui.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.collectAsState  // 🆕
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.Constants
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentMediaLibraryBinding
-import com.example.playlistmaker.media.ui.adapter.MediaViewPagerAdapter
-import com.google.android.material.tabs.TabLayoutMediator
+import com.example.playlistmaker.media.ui.compose.MediaLibraryScreen
+import com.example.playlistmaker.media.ui.viewmodel.FavoriteTracksViewModel
+import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
+import com.example.playlistmaker.player.ui.activity.AudioPlayerActivity
+import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MediaLibraryFragment : Fragment() {
 
-    private var _binding: FragmentMediaLibraryBinding? = null
-    private val binding get() = _binding!!
-
-    private lateinit var tabMediator: TabLayoutMediator
+    private val favoriteTracksViewModel: FavoriteTracksViewModel by viewModel()
+    private val playlistsViewModel: PlaylistsViewModel by viewModel()
+    private val settingsViewModel: SettingsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMediaLibraryBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+        return ComposeView(requireContext()).apply {
+            setContent {
+                val darkTheme by settingsViewModel.darkThemeEnabled.collectAsState()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setupViewPager()
-    }
-
-    private fun setupViewPager() {
-        val fragments = listOf(
-            FragmentFavoriteTracks(),
-            PlaylistsFragment()
-        )
-
-        val adapter = MediaViewPagerAdapter(childFragmentManager, lifecycle, fragments)
-        binding.viewPager.adapter = adapter
-
-        tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            when(position) {
-                0 -> tab.text = getString(R.string.favorite_tracks)
-                1 -> tab.text = getString(R.string.playlists)
+                MediaLibraryScreen(
+                    favoriteTracksViewModel = favoriteTracksViewModel,
+                    playlistsViewModel = playlistsViewModel,
+                    onTrackClick = { track ->
+                        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
+                        intent.putExtra(Constants.TRACK_KEY, track)
+                        startActivity(intent)
+                    },
+                    onPlaylistClick = { playlist ->
+                        val bundle = Bundle().apply {
+                            putLong("playlist_id", playlist.id)
+                        }
+                        findNavController().navigate(
+                            R.id.action_mediaLibraryFragment_to_playlistDetailFragment,
+                            bundle
+                        )
+                    },
+                    onCreatePlaylistClick = {
+                        findNavController().navigate(
+                            R.id.action_mediaLibraryFragment_to_createPlaylistFragment
+                        )
+                    },
+                    darkTheme = darkTheme
+                )
             }
         }
-        tabMediator.attach()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (::tabMediator.isInitialized) {
-            tabMediator.detach()
-        }
-        _binding = null
+    override fun onResume() {
+        super.onResume()
+        playlistsViewModel.loadPlaylists()
     }
 }

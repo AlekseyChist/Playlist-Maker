@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/playlistmaker/media/ui/adapter/PlaylistAdapter.kt
 package com.example.playlistmaker.media.ui.adapter
 
 import android.os.Environment

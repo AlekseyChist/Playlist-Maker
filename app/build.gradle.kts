@@ -1,9 +1,8 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.devtools.ksp") version "1.9.10-1.0.13"}
-
-
+    id("com.android.application")
+    kotlin("android")
+    id("com.google.devtools.ksp")
+}
 
 android {
     namespace = "com.example.playlistmaker"
@@ -15,13 +14,14 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
         viewBinding = true
+        compose = true
     }
+    composeOptions { kotlinCompilerExtensionVersion = "1.5.4" }
 
     buildTypes {
         release {
@@ -32,42 +32,85 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+    kotlinOptions { jvmTarget = "1.8" }
 }
 
-
 dependencies {
+    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.animation:animation")
+    implementation("androidx.activity:activity-compose:1.9.3")
 
-    val roomVersion = "2.6.1"
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-    implementation (libs.logging.interceptor)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.koin.android.v353)
-    implementation("io.insert-koin:koin-android-compat:3.4.0")
-    implementation("io.insert-koin:koin-androidx-workmanager:3.4.0")
-    implementation("io.insert-koin:koin-androidx-navigation:3.4.0")
-    implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.insert.koin.koin.android)
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.glide)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.lifecycle.viewmodel.android)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+
+    // Compose дополнительные библиотеки для медиатеки
+    implementation("androidx.compose.foundation:foundation:1.5.4")
+
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+
+
+    // Coil для загрузки изображений в Compose
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
+    implementation("androidx.compose.runtime:runtime-livedata")
+
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.3")
+
+    // Room (через KSP)
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+
+        // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+        // Остальные зависимости Compose (если ещё нет)
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.ui:ui:1.6.0")
+
+    // Koin для Compose
+    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Activity Compose
+    implementation("androidx.activity:activity-compose:1.8.2")
+
+    // Compose runtime livedata
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+
+        // ViewModel для Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    // OkHttp 4.x (совместим с Kotlin 1.9.x)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    implementation("io.insert-koin:koin-android:3.5.6")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-android:2.8.6")
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 }
